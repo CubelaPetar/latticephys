@@ -15,9 +15,12 @@ A_CUO2 = 3.85  # Å
 A_AFM = 3.0  # Å
 
 
-def main():
-    hexagonal_site = lambda a: [a / 2, a / (2 * np.sqrt(3))]  # second honeycomb site
+def hexagonal_site(a):
+    """Second honeycomb site, at distance a / sqrt(3) from the origin."""
+    return [a / 2, a / (2 * np.sqrt(3))]
 
+
+def main():
     kagome_vectors = primitive_vectors("hexagonal", A_KAGOME)
     structures = [
         (

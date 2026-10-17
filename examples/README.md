@@ -1,6 +1,6 @@
 # Examples
 
-Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Parameters are constants at the top of each file; the docstring explains the physics. Animations (pygame) loop until the window is closed, `SECONDS_PER_PERIOD` sets the playback speed.
+Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Parameters are constants at the top of each file; the docstring explains the physics. Animations (pygame) loop until the window is closed; `SECONDS_PER_PERIOD` (or `SECONDS` in `wave_2d.py`) sets the playback speed, `TIMESTEP` only the accuracy.
 
 ## Molecules
 

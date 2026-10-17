@@ -1,10 +1,6 @@
 # TODO
 
-## Library for lattice systems
-
-- [x] band structures along symmetry points in Brillouin zones (1D, 2D in-plane)
-- [x] solving coupled differential equations for lattice dynamics (1D, velocity Verlet)
-- [x] drawing a lattice / structure and simulating its oscillations (1D, 2D)
+Done: 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations.
 
 ## Next
 

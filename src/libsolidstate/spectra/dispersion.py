@@ -48,6 +48,10 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     standing wave Re[e_mu exp(i q.R)] / sqrt(m_mu) for simulate(), in the atom
     order of periodic_supercell().
     """
+    fit = cells * crystal.vectors @ q / (2 * np.pi)
+    if not np.allclose(fit, np.round(fit), atol=1e-8):
+        raise ValueError("q does not fit the supercell, use q = (i b1 + j b2) / cells")
+
     omega_squared, vectors = np.linalg.eigh(crystal_dynamical_matrix(q, crystal, bonds))
     polarization = (vectors[:, branch] / np.repeat(np.sqrt(crystal.masses), 2)).reshape(-1, 2)
 

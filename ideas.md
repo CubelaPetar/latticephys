@@ -29,6 +29,7 @@ Start with the classical Heisenberg Hamiltonian and find all the symmetry broken
 - etc.
 
 ## Phonons in chains
+**done in libsolidstate**
 
 Look at a simple chain of atoms and simulate its oscillations.
 
@@ -36,6 +37,7 @@ Look at a simple chain of atoms and simulate its oscillations.
 - Two-atomic chain with different masses
 
 ## Phonons in 2D
+**done in libsolidstate (in-plane)**
 
 Extend my knowledge with a 2D system where I already have a class for the crystal structures.
 

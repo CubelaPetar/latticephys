@@ -7,7 +7,7 @@ def simulate(force_constants, masses, u0, p0, dt, steps):
     """Integrate with velocity Verlet (symplectic, all atoms updated together).
 
     force_constants: (N, N) matrix K
-    masses:          (N,) masses
+    masses:          (N,) masses, one per degree of freedom (np.repeat(masses, 2) in 2D)
     u0, p0:          initial displacements and momenta
     Returns displacements u and momenta p, both of shape (steps + 1, N).
     """

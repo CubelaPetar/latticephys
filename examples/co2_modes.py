@@ -1,10 +1,12 @@
 """Longitudinal normal modes of CO2 (O=C=O) as a linear spring model.
 
-Measured: symmetric stretch 1388 cm^-1 (Raman), asymmetric stretch 2349 cm^-1.
+Measured: symmetric stretch ≈ 1340 cm^-1 (seen as the Raman doublet 1285 / 1388 cm^-1
+due to Fermi resonance with the bending overtone), asymmetric stretch 2349 cm^-1.
 """
 
 import numpy as np
 
+from libsolidstate.lattice.chain import chain_force_constants
 from libsolidstate.spectra.modes import normal_modes
 from libsolidstate.units import OMEGA_TO_INV_CM, OMEGA_TO_THZ
 
@@ -14,8 +16,7 @@ MASS_C = 12.011  # amu
 
 
 def main():
-    k = SPRING_CONSTANT
-    K = k * np.array([[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
+    K = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
     masses = np.array([MASS_O, MASS_C, MASS_O])
 
     omega_squared, vectors = normal_modes(K, masses)

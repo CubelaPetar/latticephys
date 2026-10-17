@@ -12,7 +12,7 @@ def primitive_vectors(lattice, a, b=None, angle=None):
     "rectangular":          a, b
     "centered rectangular": a, b of the conventional cell
     "square":               a
-    "hexagonal":            a (lattice constant, |a1| = |a2| = a)
+    "hexagonal":            a (lattice constant, |a1| = |a2| = a, 60° between them)
     """
     if lattice in ("oblique", "rectangular", "centered rectangular") and b is None:
         raise ValueError(f"{lattice} lattice needs b")

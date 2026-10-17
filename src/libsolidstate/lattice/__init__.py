@@ -1,1 +1,1 @@
-"""Bravais lattices, basis and crystal structures."""
+"""Bravais lattices, crystal structures, reciprocal lattice and spring models."""

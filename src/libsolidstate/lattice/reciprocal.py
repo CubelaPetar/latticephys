@@ -56,6 +56,7 @@ def special_points(lattice, vectors):
     "square":      Gamma, X (edge centre), M (corner)
     "rectangular": Gamma, X, Y (edge centres along b1, b2), S (corner)
     "hexagonal":   Gamma, M (edge centre), K (corner)
+    Assumes the vectors of primitive_vectors() (for hexagonal: 60° between a1, a2).
     """
     b1, b2 = reciprocal_vectors(vectors)
     gamma = np.zeros(2)

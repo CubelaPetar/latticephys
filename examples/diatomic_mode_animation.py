@@ -33,6 +33,8 @@ BLUE = (100, 149, 237)
 
 
 def main():
+    if not np.isclose(QA * CELLS / (2 * np.pi), round(QA * CELLS / (2 * np.pi))):
+        raise ValueError("QA must be a multiple of 2 pi / CELLS to fit the periodic chain")
     a = LATTICE_CONSTANT
     q = QA / a
     masses = np.array([MASS_1, MASS_2])

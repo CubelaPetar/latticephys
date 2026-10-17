@@ -33,7 +33,8 @@ BLUE = (100, 149, 237)
 
 
 def main():
-    crystal = Crystal(primitive_vectors("hexagonal", A), [[0.0, 0.0], [A / 2, A / (2 * np.sqrt(3))]], [MASS, MASS], ["C", "C"])
+    honeycomb = [[0.0, 0.0], [A / 2, A / (2 * np.sqrt(3))]]
+    crystal = Crystal(primitive_vectors("hexagonal", A), honeycomb, [MASS, MASS], ["C", "C"])
     bonds = neighbour_bonds(crystal, SPRING_CONSTANTS)
     positions, masses, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
     K = force_constants(len(positions), supercell_bonds, dim=2)

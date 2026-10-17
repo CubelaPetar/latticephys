@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
+from libsolidstate.dynamics.integrate import simulate
 from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
 from libsolidstate.lattice.reciprocal import brillouin_zone, k_path, reciprocal_vectors, special_points
-from libsolidstate.dynamics.integrate import simulate
 from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
 from libsolidstate.spectra.dispersion import bloch_mode, crystal_dispersion
 from libsolidstate.spectra.modes import normal_modes
@@ -101,7 +101,8 @@ def test_supercell_layout():
     crystal = graphene()
     positions, masses, _ = periodic_supercell(crystal, [], 3)
     assert positions.shape == (3 * 3 * 2, 2)
-    np.testing.assert_allclose(positions[(1 * 3 + 2) * 2 + 1], crystal.vectors[0] + 2 * crystal.vectors[1] + crystal.positions[1])
+    expected = crystal.vectors[0] + 2 * crystal.vectors[1] + crystal.positions[1]  # atom 1 of cell (1, 2)
+    np.testing.assert_allclose(positions[(1 * 3 + 2) * 2 + 1], expected)
     np.testing.assert_allclose(masses, 12.0)
 
 
@@ -119,3 +120,10 @@ def test_bloch_mode_oscillates_in_supercell():
     u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), dt, steps)
     t = dt * np.arange(steps + 1)
     np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)
+
+
+def test_bloch_mode_rejects_q_not_fitting_supercell():
+    crystal = graphene()
+    q = reciprocal_vectors(crystal.vectors)[0] / 3
+    with pytest.raises(ValueError):
+        bloch_mode(crystal, neighbour_bonds(crystal, [1.0]), q, branch=0, cells=4)

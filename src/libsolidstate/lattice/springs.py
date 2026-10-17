@@ -1,4 +1,4 @@
-"""Force-constant matrix of atoms coupled by central springs."""
+"""Central springs: force-constant matrices, neighbour bonds of crystals and periodic supercells."""
 
 import numpy as np
 
