@@ -11,6 +11,7 @@ EV = 1.602176634e-19  # J (exact)
 ANGSTROM = 1e-10  # m
 HBAR = 1.054571817e-34  # J s (exact)
 SPEED_OF_LIGHT = 299792458.0  # m/s (exact)
+K_B = 8.617333262e-5  # eV/K
 
 TIME = math.sqrt(AMU * ANGSTROM**2 / EV)  # s
 TIME_FS = TIME / 1e-15

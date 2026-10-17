@@ -16,27 +16,31 @@ Uses `pygame-ce` (drop-in fork of pygame, `import pygame`), since pygame has no 
 
 Inputs in Å, amu and eV (spring constants in eV/Å²). Time is then in units of √(amu·Å²/eV) ≈ 10.18 fs. `libsolidstate.units` has the factors to convert ω to THz, meV and cm⁻¹.
 
-## Examples
+## Quickstart
 
-Run from the repo root with the venv's Python (or `source .venv/bin/activate` first, then `python ...`):
+```python
+import numpy as np
+from libsolidstate.spectra.dispersion import dispersion
+from libsolidstate.units import OMEGA_TO_THZ
 
-```sh
-.venv/bin/python examples/co2_modes.py         # CO2 normal modes, printed
-.venv/bin/python examples/co2_animation.py     # CO2 symmetric stretch, pygame window
-.venv/bin/python examples/chain_animation.py   # periodic chain, pygame window
-.venv/bin/python examples/chain_dispersion.py  # monatomic + diatomic omega(q), matplotlib
-.venv/bin/python examples/crystals_2d.py       # NaCl plane, graphene, AFM, matplotlib
+a = 2.5                                        # Å
+masses = [12.011, 15.999]                      # amu
+springs = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom, atom, cell offset, k in eV/Å²)
+qs = np.linspace(0, np.pi / a, 5)
+print(dispersion(qs, masses, springs, a) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
 ```
 
-Parameters are constants at the top of each example. Animations loop until the window is closed; `SECONDS_PER_PERIOD` sets the playback speed, `TIMESTEP` only the accuracy.
+## Examples
+
+Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. See [`examples/README.md`](examples/README.md) for the list.
 
 ## Layout
 
 | Path | Content |
 |---|---|
-| `src/libsolidstate/lattice/` | Bravais lattices, basis, crystal structures |
-| `src/libsolidstate/spectra/` | Dynamical matrix, normal modes, dispersions |
+| `src/libsolidstate/lattice/` | Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, force constants |
+| `src/libsolidstate/spectra/` | Normal modes, dynamical matrix, dispersions |
 | `src/libsolidstate/dynamics/` | Time integration and pygame animation |
+| `src/libsolidstate/units.py` | Unit system and conversions |
 | `examples/` | Concrete systems (CO₂, chains, 2D crystals) |
 | `tests/` | Checks against analytic results |
-| `notes/` | Condensed matter script (LaTeX) |

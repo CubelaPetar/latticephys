@@ -37,3 +37,13 @@ def test_matches_finite_periodic_chain():
     omega_squared = np.linalg.eigvalsh(K / np.sqrt(np.outer(masses, masses)))
 
     np.testing.assert_allclose(np.sort(omega.ravel() ** 2), omega_squared, atol=1e-12)
+
+
+def test_fixed_chain_lies_on_dispersion():
+    """Fixed chain of N atoms: omega_j = omega(q_j) with q_j = j pi / ((N + 1) a)."""
+    k, m, n = 1.0, 2.0, 10
+    omega_squared = np.linalg.eigvalsh(chain_force_constants(n, k, boundary="fixed") / m)
+
+    qs = np.arange(1, n + 1) * np.pi / ((n + 1) * A)
+    omega = dispersion(qs, [m], [(0, 0, 1, k)], A)[:, 0]
+    np.testing.assert_allclose(np.sqrt(omega_squared), omega, atol=1e-12)
