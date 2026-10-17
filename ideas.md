@@ -38,3 +38,9 @@ Look at a simple chain of atoms and simulate its oscillations.
 ## Phonons in 2D
 
 Extend my knowledge with a 2D system where I already have a class for the crystal structures.
+
+## Crystal structures (from crystals2D)
+
+- Database of crystal structures, callable by chemical formula
+- TUI for building structures; save structures typed in manually
+- Tight-binding electron spectrum on the same lattices

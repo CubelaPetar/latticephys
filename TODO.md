@@ -8,4 +8,5 @@
 
 ## Next
 
-- [ ] clean up crystals2D and merge into `lattice/`, then extend to 2D
+- [ ] 2D phonons: nearest-neighbour search on a `Crystal` → spring list, 2D `dispersion()` along symmetry paths
+- [ ] 2D dynamics and animation

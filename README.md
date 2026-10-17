@@ -25,6 +25,7 @@ Run from the repo root with the venv's Python (or `source .venv/bin/activate` fi
 .venv/bin/python examples/co2_animation.py     # CO2 symmetric stretch, pygame window
 .venv/bin/python examples/chain_animation.py   # periodic chain, pygame window
 .venv/bin/python examples/chain_dispersion.py  # monatomic + diatomic omega(q), matplotlib
+.venv/bin/python examples/crystals_2d.py       # NaCl plane, graphene, AFM, matplotlib
 ```
 
 Parameters are constants at the top of each example. Animations loop until the window is closed; `SECONDS_PER_PERIOD` sets the playback speed, `TIMESTEP` only the accuracy.
