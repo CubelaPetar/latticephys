@@ -12,6 +12,19 @@ python3 -m venv .venv
 
 Uses `pygame-ce` (drop-in fork of pygame, `import pygame`), since pygame has no wheels for recent Python versions.
 
+## Examples
+
+Run from the repo root with the venv's Python (or `source .venv/bin/activate` first, then `python ...`):
+
+```sh
+.venv/bin/python examples/co2_modes.py         # CO2 normal modes, printed
+.venv/bin/python examples/co2_animation.py     # CO2 symmetric stretch, pygame window
+.venv/bin/python examples/chain_animation.py   # chain between fixed walls, pygame window
+.venv/bin/python examples/chain_dispersion.py  # monatomic + diatomic omega(q), matplotlib
+```
+
+Parameters are constants at the top of each example. Animations loop until the window is closed.
+
 ## Layout
 
 | Path | Content |
