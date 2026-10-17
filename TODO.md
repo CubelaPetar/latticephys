@@ -2,15 +2,12 @@
 
 ## Library for lattice systems
 
-Write a library for common functions used in lattice systems.
-
-This includes:
 - [ ] drawing band structures along symmetry points in Brillouin zones
-- [ ] solving coupled differential equations for lattice dynamics (Hamiltonian mechanics)
-- [ ] drawing a lattice / structure and simulating its oscillations 
+- [x] solving coupled differential equations for lattice dynamics (1D, velocity Verlet)
+- [ ] drawing a lattice / structure and simulating its oscillations (1D done)
 
-## ODEs
+## Next
 
-- [ ] think about scaling
-- [ ] boundary conditions need better implementation (automate)
-- [ ] extend to 2D
+- [ ] 1D dispersions: monatomic and diatomic chain ω(q)
+- [ ] think about scaling (units, time step vs. frame rate)
+- [ ] clean up crystals2D and merge into `lattice/`, then extend to 2D
