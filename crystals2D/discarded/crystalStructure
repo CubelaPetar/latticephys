@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+
+###################################################################################
+#
+# Title:  2D Bravais Lattice - Crystal Structure and Phonon Spectrum
+# Author: Petar Cubela
+# Date of creation:   22.12.2022
+# Description:
+#
+# The goal is to write a class which plots the crystal structure by specifying the
+# Bravais lattice and the basis. Finally, only the sum formula and additional info
+# making the input unique should be necessary.
+#
+####################################################################################
+
+"""
+Write a class which has the atoms as objects and the Bravais lattice by name.
+"""
+
+#--------# Notes #--------#
+#-------------------------#
+
+# - inlcude the atoms next
+# - rewrite. Class not optimally used/understood
+
+#--------# TODO #---------#
+#-------------------------#
+
+# - think about scaling of the lengths (measure in Bohr radius)
+# - how would it be possible to update the lenghts out of the class
+# - all atoms plotted in one figure without plt.plot
+
+#------# Modules #--------#
+#-------------------------#
+
+import math
+import numpy as np
+import matplotlib.pylab as plt
+
+#-----# Constants #-------#
+#-------------------------#
+
+WHITE     = (255, 255, 255)
+YELLOW    = (255, 255, 0)
+BLUE      = (100,149, 237)
+RED       = (188, 39, 50)
+DARK_GREY = (80, 78, 81)
+
+class CrystalStructure:
+    """
+    Create a crystal structure based on the Bravais lattice and a basis.
+    
+    Instances:
+
+    lattice:    Name of the desired Bravais lattice 
+    radius:     Radius of the basis atom ink units of Angstrom
+    color:      color of the basis atom
+    name:       symbol of the basis atom 
+
+    Returns:
+    
+    ??
+    """
+
+    BRAVAIS_LATTICE         = [ "Oblique", "Rectangular", "Centered Rectangular", "Square", "Hexagonal" ]
+    MAX_POINTS_X            = 6
+    MAX_POINTS_Y            = 6
+
+    def __init__(self, lattice,  radius, color, name) -> None:
+
+        # Lattice properties
+        self.lattice        = lattice
+        self.length_a       = 0
+        self.length_b       = 0
+
+        self.centered       = False
+
+
+        # Basis properties
+        self.radius         = radius 
+        self.color          = color 
+        self.name           = name
+        
+        self.volume         = math.pi * self.radius**2
+        self.basis          = np.array([ 0, 0 ])
+
+        self.angle          = 0
+
+        if self.lattice == self.BRAVAIS_LATTICE[0]:
+            self.angle      = 79        # in principle arbitrary (\neq 0, \pi/2, \pi, ...) 
+            if self.length_a == 0:
+                self.length_a   = 1 
+                self.length_b   = 2 
+        elif self.lattice == self.BRAVAIS_LATTICE[1]:
+            self.angle      = 90
+            if self.length_a == 0:
+                self.length_a   = 1 
+                self.length_b   = 2 
+        elif self.lattice == self.BRAVAIS_LATTICE[2]:
+            self.angle      = 90
+            self.centered   = True
+            if self.length_a == 0:
+                self.length_a   = 1 
+                self.length_b   = 2 
+        elif self.lattice == self.BRAVAIS_LATTICE[3]:
+            self.angle      = 90 
+            if self.length_a == 0:
+                self.length_a   = 1 
+                self.length_b   = 1
+        elif self.lattice == self.BRAVAIS_LATTICE[4]:
+            self.angle      = 60
+            if self.length_a == 0:
+                self.length_a   = 1 
+                self.length_b   = 1
+        else:
+            print("Invalid input!")
+
+        self.lattice_vec_a       = self.length_a * np.array([ 1.0, 0.0 ])
+        self.lattice_vec_b       = self.length_b * np.array([ math.cos( math.pi * self.angle / 180.00 ), math.sin( math.pi * self.angle / 180.00 ) ])
+
+        if self.centered == True:
+            self.lattice_vec_a   = 1 / 2 * np.array( [ self.length_a, self.length_b ] )
+            self.lattice_vec_b   = 1 / 2 * np.array( [ self.length_a,-self.length_b ] )
+            
+        
+    def points(self) -> list:
+        """ Get the coordinates of the points """
+        coordinates = []
+        for i in range( -self.MAX_POINTS_X + 1, self.MAX_POINTS_X + 1 ):
+            for j in range( -self.MAX_POINTS_Y + 1, self.MAX_POINTS_Y + 1 ):
+                x_coordinate = self.basis[0] + i * self.lattice_vec_a[0] + j * self.lattice_vec_b[0]
+                y_coordinate = self.basis[1] + i * self.lattice_vec_a[1] + j * self.lattice_vec_b[1]
+
+                x_center_coordinate = self.basis[0] + 1 / 2 * ( self.lattice_vec_a[0] + self.lattice_vec_b[0] )
+                y_center_coordinate = self.basis[1] + 1 / 2 * ( self.lattice_vec_a[1] + self.lattice_vec_b[1] )
+
+                if x_coordinate > -int( self.MAX_POINTS_X / 2 ) and x_coordinate < int( self.MAX_POINTS_X / 2 ) + 1:
+                    if y_coordinate > -int( self.MAX_POINTS_Y / 2 ) and y_coordinate < int( self.MAX_POINTS_Y / 2 ) + 1:
+                        coordinates.append( ( x_coordinate, y_coordinate ) )                                               # Bravais lattice points
+                if not self.centered:
+                    continue
+                else:
+                    if x_center_coordinate + x_coordinate > -int( self.MAX_POINTS_X / 2 ) and x_center_coordinate + x_coordinate < int( self.MAX_POINTS_X /2 ) + 1:
+                        if y_center_coordinate + y_coordinate > -int( self.MAX_POINTS_X / 2 ) and y_center_coordinate + y_coordinate < int( self.MAX_POINTS_X / 2 ) + 1:
+                            coordinates.append( ( x_center_coordinate + x_coordinate, y_center_coordinate + y_coordinate) )    # Center points with same lattice
+        return coordinates
+
+    def draw(self) -> None:
+        """ Draw the lattice (structure?) """
+        #fig, axis = plt.subplots()
+
+        # Draw all lattice points of the Bravais lattice
+        points = self.points()                                                             
+        plt.scatter( [ points[i][0] for i in range(0, len(points)) ],\
+                      [ points[i][1] for i in range(0, len(points)) ],\
+                      s = self.volume,  c = self.color, alpha = 0.5)
+
+        #---------------- Plot the PRIMITIVE unit cell -------------------------------------#
+        plt.plot((0, self.lattice_vec_a[0]), (0, self.lattice_vec_a[1]), c = 'orange', lw = 0.5, ls = '-.')
+        plt.plot((self.lattice_vec_a[0], (self.lattice_vec_a + self.lattice_vec_b)[0]), (self.lattice_vec_a[1], (self.lattice_vec_a + self.lattice_vec_b)[1]), c = 'orange', lw = 0.5, ls = '-.')
+
+        plt.plot((0, self.lattice_vec_b[0]), (0, self.lattice_vec_b[1]), c = 'orange', lw = 0.5, ls = '-.')
+        plt.plot((self.lattice_vec_b[0], (self.lattice_vec_a + self.lattice_vec_b)[0]), (self.lattice_vec_b[1], (self.lattice_vec_a + self.lattice_vec_b)[1]), c = 'orange', lw = 0.5, ls = '-.')
+        #----------------------------------------------------------------------------------#
+
+
+        #plt.axis('off')
+        #plt.set_aspect('equal', adjustable='box')       
+
+
+
+
+
+
+def main() -> None:
+    """ __main__ """
+
+#    C1 = CrystalStructure("Hexagonal", 1.7, 'blue', "C")
+#    C1.lattice_vec_a = 1 / 2 * np.array([ 3, math.sqrt(3) ])
+#    C1.lattice_vec_b = 1 / 2 * np.array([ 3,-math.sqrt(3) ])
+#    C1.basis         = 1 / 2 * np.array([ 1, math.sqrt(3)])
+#    C2 = CrystalStructure("Hexagonal", 1.7, 'red', "C")
+#    C2.lattice_vec_a = 1 / 2 * np.array([ 3, math.sqrt(3) ])
+#    C2.lattice_vec_b = 1 / 2 * np.array([ 3,-math.sqrt(3) ])
+#    C2.basis         = 1 / 2 * np.array([-1, math.sqrt(3) ])
+
+    Na = CrystalStructure("Square", 2.27, 'blue', "Na")
+    Na.basis          = np.array([ 0, 0 ])
+    Cl = CrystalStructure("Square", 1.75, 'red', "Cl")
+    Cl.basis          = 1 / 2 * np.array([ Cl.length_a, Cl.length_b ])
+
+    atoms = [ Na, Cl ]
+    for atom in atoms:
+
+        atom.draw()
+
+    plt.show()
+
+main()

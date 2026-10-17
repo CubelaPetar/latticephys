@@ -1,0 +1,207 @@
+#!/bin/python3
+
+###################################################################################
+#
+# Title:  Atom in lattices class
+# Author: Petar Cubela
+# Date of creation: 28.12.2022
+# Description:
+#
+#
+####################################################################################
+
+"""
+Illustration of the eigenmodes of molecules or lattices.
+"""
+
+#------# Modules #--------#
+
+#import math
+import pygame
+
+#-------------------------#
+
+#-----# Constants #-------#
+
+pygame.init()
+
+WIDTH, HEIGHT = 800, 800
+WIN           = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Planet Simulation")
+
+WHITE     = (255, 255, 255)
+YELLOW    = (255, 255, 0)
+BLUE      = (100,149, 237)
+RED       = (188, 39, 50)
+DARK_GREY = (80, 78, 81)
+
+FONT      = pygame.font.SysFont("comicsans", 20)
+
+
+SPRING_CONST  = 10
+MASS1         = 10 
+MASS2         = 20
+
+RADIUS        = 20
+RADIUS2       = 30
+
+#-------------------------#
+
+# TODO: Choose BC correct
+
+class Atoms():
+    """ Create all atoms coupled by springs a molecule or lattice"""
+
+    TIMESTEP = .01
+    SCALE    = 100
+
+    def __init__(self, number:int, x: float, y: float, p_x: float, p_y: float, mass: float, spring_const: float, color: tuple, radius: float, boundary_cond: str):
+        self.number         = number
+        self.x              = x
+        self.y              = y
+        self.p_x            = p_x
+        self.p_y            = p_y
+
+        self.rx0            = 0     # equilibrium position 
+        self.ry0            = 0     # equilibrium position 
+
+        self.boundary_cond  = boundary_cond     # closed, open or half closed (periodic: needs more work)
+
+        self.mass           = mass
+        self.spring_const   = spring_const
+
+        self.color          = color
+        self.radius         = radius
+
+        self.trajectory     = []
+        self.momentum       = []
+
+
+    def draw(self, win):
+        x                    = self.x * self.SCALE + WIDTH /2
+        y                    = self.y * self.SCALE + HEIGHT /2
+
+        if len(self.trajectory) > 2:
+            updated_points      = []
+            for point in self.trajectory:
+                x, y             = point
+                x                = (self.rx0 + x) * self.SCALE + WIDTH /2
+                y                = (self.ry0 + y) * self.SCALE + HEIGHT /2
+                updated_points.append((x, y))
+
+            #pygame.draw.lines(win, self.color, False, updated_points, 2)
+
+        pygame.draw.circle(win, self.color, (x, y), self.radius)
+
+
+#        distance_label = FONT.render(f"{self.x}", True, WHITE)
+#        win.blit(distance_label, (x - distance_label.get_width()/2, (y - distance_label.get_height()/2)))
+
+
+
+    def attraction(self, other):
+        other_x, other_y     = other.x, other.y
+        distance_x           = self.x - other_x
+        distance_y           = self.y - other_y
+
+        force_x              = 0.
+        force_y              = 0.
+    
+        force_x              = - self.spring_const * distance_x
+        force_y              = - self.spring_const * distance_y
+
+        return force_x, force_y
+
+    def velocity(self):
+        velocity_x                  = self.p_x / self.mass
+        velocity_y                  = self.p_y / self.mass
+
+        return velocity_x, velocity_y
+
+    def update_position(self, atoms) -> None:
+        total_fx = total_fy      = 0.0
+        total_vx = total_vy      = 0.0
+
+        index               = atoms.index(self)
+        
+        if index == 0:
+            fx, fy              = self.attraction(atoms[index+1])
+        elif index == (self.number - 1):
+            fx, fy              = self.attraction(atoms[index-1])
+        else:
+            fx, fy              = self.attraction(atoms[index-1])
+            fx                 += self.attraction(atoms[index+1])[0]
+            fy                 += self.attraction(atoms[index+1])[1]
+
+        vx, vy              = self.velocity()
+        total_fx           += fx
+        total_fy           += fy
+        total_vx           += vx
+        total_vy           += vy
+
+
+        self.p_x          += total_fx * self.TIMESTEP
+        self.p_y          += total_fy * self.TIMESTEP
+
+        # inlcude boundary conditions
+        #if index == 0: or index == (self.number - 1):
+        #   self.x = 0
+        #   self.y = 0
+        #else:
+        self.x            += total_vx * self.TIMESTEP
+        self.y            += total_vy * self.TIMESTEP
+
+        self.trajectory.append((self.x, self.y))
+        self.momentum.append((self.p_x, self.p_y))
+
+
+def main():
+    run           = True
+    clock         = pygame.time.Clock()
+
+
+    N = 3
+    small_mass1   = Atoms(N,+0.5, 0, 5, 0, MASS1, SPRING_CONST,  BLUE, RADIUS, "open" )
+    small_mass1.rx0 = -1
+
+    large_mass    = Atoms(N, 0, 0, 0, 0, MASS2, SPRING_CONST,  RED, RADIUS2, "open" )
+    large_mass.rx0 = 0
+
+    small_mass2   = Atoms(N,-0.5, 0,-5, 0, MASS1, SPRING_CONST,  BLUE, RADIUS, "open" )
+    small_mass2.rx0 = +1
+
+    atoms       = [ small_mass1, large_mass, small_mass2 ]
+
+#    atoms = []
+#    N = 11
+#    for j in range(N):
+#        #if j%2 == 0:
+#            atoms.append(Atoms( N, 0.0, 3, 0, 0, MASS1, SPRING_CONST,  RED, RADIUS, "closed" ))
+#            atoms[j].rx0 =  WIDTH /  50 *  ( -1/2  + j / (N - 1) )
+        #else:
+        #    atoms.append(Atoms( N,-0.0, 3, 0, 0, MASS1, SPRING_CONST,  BLUE, RADIUS, "closed" ))
+        #    atoms[j].rx0 = ( WIDTH / 2 / 50 + 1 ) * ( -1 + j / N )
+
+
+
+    while run:
+        clock.tick(60)
+        WIN.fill((0, 0, 0))
+        #pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        for atom in atoms:
+            atom.update_position(atoms)
+            atom.draw(WIN)
+
+        pygame.display.update()
+
+    pygame.quit()
+
+
+
+if __name__ == '__main__':
+    main()
