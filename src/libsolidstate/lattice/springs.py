@@ -28,3 +28,36 @@ def force_constants(n_atoms, bonds, dim=1):
         K[si, sj] -= block
         K[sj, si] -= block
     return K
+
+
+def neighbour_bonds(crystal, spring_constants, search=3):
+    """Periodic bonds of a crystal to its neighbour shells.
+
+    spring_constants: spring constant per shell, [k1] for nearest neighbours,
+                      [k1, k2] to add second neighbours, ...
+    search:           cells searched in each direction
+
+    Shells are the distinct atom distances in ascending order. Returns a list
+    of (mu, nu, n, k, r): spring k between atom mu in cell 0 and atom nu in
+    cell n (integer array), r the bond vector. Each bond appears once.
+    """
+    steps = range(-search, search + 1)
+    candidates = []
+    for mu, r_mu in enumerate(crystal.positions):
+        for nu, r_nu in enumerate(crystal.positions):
+            for n in ((i, j) for i in steps for j in steps):
+                # count each bond only from one end: (mu, 0) -- (nu, n) equals (nu, 0) -- (mu, -n)
+                if nu < mu or (nu == mu and n <= (0, 0)):
+                    continue
+                r = r_nu + np.array(n) @ crystal.vectors - r_mu
+                candidates.append((mu, nu, np.array(n), np.linalg.norm(r), r))
+
+    distances = np.array([c[3] for c in candidates])
+    shells = np.unique(np.round(distances, 6))[: len(spring_constants)]
+
+    bonds = []
+    for mu, nu, n, distance, r in candidates:
+        shell = np.flatnonzero(np.isclose(shells, distance, atol=1e-6))
+        if len(shell):
+            bonds.append((mu, nu, n, spring_constants[shell[0]], r))
+    return bonds

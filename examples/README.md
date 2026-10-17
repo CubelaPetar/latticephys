@@ -27,3 +27,4 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 |---|---|---|
 | `crystals_2d.py` | NaCl plane, graphene, hBN, triangular, kagome, CuO₂ (Lieb), AFM | `Crystal`, `plot_crystal` |
 | `brillouin_zones.py` | First Brillouin zones of the five 2D Bravais lattices | `plot_brillouin_zone` |
+| `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `crystal_dispersion`, `k_path`, `plot_bands` |

@@ -48,3 +48,41 @@ def _clip(polygon, normal, offset):
     result = np.array(result)
     distinct = np.linalg.norm(result - np.roll(result, -1, axis=0), axis=1) > 1e-9 * np.abs(result).max()
     return result[distinct]
+
+
+def special_points(lattice, vectors):
+    """High-symmetry points of the Brillouin zone (1/Å) for the lattices with standard labels.
+
+    "square":      Gamma, X (edge centre), M (corner)
+    "rectangular": Gamma, X, Y (edge centres along b1, b2), S (corner)
+    "hexagonal":   Gamma, M (edge centre), K (corner)
+    """
+    b1, b2 = reciprocal_vectors(vectors)
+    gamma = np.zeros(2)
+    if lattice == "square":
+        return {"Γ": gamma, "X": b1 / 2, "M": (b1 + b2) / 2}
+    if lattice == "rectangular":
+        return {"Γ": gamma, "X": b1 / 2, "Y": b2 / 2, "S": (b1 + b2) / 2}
+    if lattice == "hexagonal":
+        return {"Γ": gamma, "M": b1 / 2, "K": (2 * b1 + b2) / 3}
+    raise ValueError(f"no standard labels for {lattice} lattice, give the k-points explicitly")
+
+
+def k_path(points, n=300):
+    """About n wave vectors on straight segments through the given k-points.
+
+    Returns qs (M, 2), the distance along the path (M,) and the distance of
+    each given point (len(points),), e.g. for tick positions.
+    """
+    points = np.asarray(points, dtype=float)
+    lengths = np.linalg.norm(np.diff(points, axis=0), axis=1)
+    corners = np.concatenate([[0.0], np.cumsum(lengths)])
+
+    qs, distance = [], []
+    for start, end, d0, length in zip(points[:-1], points[1:], corners[:-1], lengths):
+        t = np.linspace(0, 1, max(2, round(n * length / corners[-1])), endpoint=False)
+        qs.append(start + t[:, None] * (end - start))
+        distance.append(d0 + t * length)
+    qs.append(points[-1:])
+    distance.append(corners[-1:])
+    return np.concatenate(qs), np.concatenate(distance), corners

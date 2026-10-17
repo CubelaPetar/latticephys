@@ -1,4 +1,4 @@
-"""Phonon dispersion of a 1D lattice with a basis."""
+"""Phonon dispersion of lattices with a basis (1D chains and 2D crystals)."""
 
 import numpy as np
 
@@ -10,20 +10,60 @@ def dynamical_matrix(q, masses, springs, a):
     springs: list of (mu, nu, n, k): spring k between atom mu in cell 0
              and atom nu in cell n
     """
-    m = np.asarray(masses, dtype=float)
-    D = np.zeros((len(m), len(m)), dtype=complex)
-    for mu, nu, n, k in springs:
-        phase = np.exp(1j * q * n * a)
-        coupling = k / np.sqrt(m[mu] * m[nu])
-        D[mu, mu] += k / m[mu]
-        D[nu, nu] += k / m[nu]
-        D[mu, nu] -= coupling * phase
-        D[nu, mu] -= coupling * np.conj(phase)
-    return D
+    bonds = [(mu, nu, [n], k, [1.0]) for mu, nu, n, k in springs]
+    return _dynamical_matrix(np.atleast_1d(q), masses, bonds, [[a]])
 
 
 def dispersion(qs, masses, springs, a):
-    """Branch frequencies omega(q), shape (len(qs), B), ascending per q."""
-    omega_squared = np.array([np.linalg.eigvalsh(dynamical_matrix(q, masses, springs, a)) for q in qs])
-    # remove round-off negatives of the acoustic branch at q = 0
-    return np.sqrt(np.clip(omega_squared, 0, None))
+    """Branch frequencies omega(q) of a 1D lattice, shape (len(qs), B), ascending per q.
+
+    Negative values are unstable modes with imaginary frequency.
+    """
+    return _frequencies([dynamical_matrix(q, masses, springs, a) for q in qs])
+
+
+def crystal_dynamical_matrix(q, crystal, bonds):
+    """Bloch dynamical matrix D(q) of a crystal, shape (B d, B d).
+
+    q:     wave vector (1/Å)
+    bonds: list of (mu, nu, n, k, r) as returned by neighbour_bonds()
+    Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
+    """
+    return _dynamical_matrix(np.asarray(q, dtype=float), crystal.masses, bonds, crystal.vectors)
+
+
+def crystal_dispersion(crystal, bonds, qs):
+    """Branch frequencies omega(q) of a crystal, shape (len(qs), B d), ascending per q.
+
+    Negative values are unstable modes with imaginary frequency.
+    """
+    return _frequencies([crystal_dynamical_matrix(q, crystal, bonds) for q in qs])
+
+
+def _dynamical_matrix(q, masses, bonds, vectors):
+    """D(q) in d dimensions; each bond adds the block k e e^T of a central spring."""
+    m = np.asarray(masses, dtype=float)
+    vectors = np.asarray(vectors, dtype=float)
+    dim = len(vectors)
+
+    D = np.zeros((len(m) * dim, len(m) * dim), dtype=complex)
+    for mu, nu, n, k, r in bonds:
+        e = np.atleast_1d(np.asarray(r, dtype=float))
+        e = e / np.linalg.norm(e)
+        block = k * np.outer(e, e)
+        phase = np.exp(1j * q @ (np.asarray(n) @ vectors))
+
+        smu = slice(mu * dim, (mu + 1) * dim)
+        snu = slice(nu * dim, (nu + 1) * dim)
+        D[smu, smu] += block / m[mu]
+        D[snu, snu] += block / m[nu]
+        D[smu, snu] -= block * phase / np.sqrt(m[mu] * m[nu])
+        D[snu, smu] -= block * np.conj(phase) / np.sqrt(m[mu] * m[nu])
+    return D
+
+
+def _frequencies(matrices):
+    """omega = sign(omega^2) sqrt(|omega^2|), with round-off around zero set to 0."""
+    omega_squared = np.array([np.linalg.eigvalsh(D) for D in matrices])
+    omega_squared[np.abs(omega_squared) < 1e-10 * np.abs(omega_squared).max()] = 0.0
+    return np.sign(omega_squared) * np.sqrt(np.abs(omega_squared))
