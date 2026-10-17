@@ -4,12 +4,12 @@
 
 - [x] band structures along symmetry points in Brillouin zones (1D, 2D in-plane)
 - [x] solving coupled differential equations for lattice dynamics (1D, velocity Verlet)
-- [ ] drawing a lattice / structure and simulating its oscillations (1D done)
+- [x] drawing a lattice / structure and simulating its oscillations (1D, 2D)
 
 ## Next
 
-- [ ] 2D dynamics and animation (supercell from `neighbour_bonds` + `force_constants`, pygame in 2D)
 - [ ] out-of-plane modes (3D displacements, e.g. graphene ZA branch)
+- [ ] `animate()`: optionally colour atoms by displacement, so small waves are visible; draw bonds
 
 ## Later
 

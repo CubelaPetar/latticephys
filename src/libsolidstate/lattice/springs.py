@@ -61,3 +61,26 @@ def neighbour_bonds(crystal, spring_constants, search=3):
         if len(shell):
             bonds.append((mu, nu, n, spring_constants[shell[0]], r))
     return bonds
+
+
+def periodic_supercell(crystal, bonds, cells):
+    """cells x cells unit cells with periodic boundaries, for force_constants(dim=2).
+
+    bonds: periodic bonds from neighbour_bonds(); cells should exceed their range.
+    Returns positions (M, 2), masses (M,) and bonds (i, j, k, r) of the M atoms.
+    Atom mu of cell (c1, c2), at c1 a1 + c2 a2, has index (c1 * cells + c2) * B + mu.
+    """
+    n_basis = len(crystal.masses)
+
+    def index(c1, c2, mu):
+        return ((c1 % cells) * cells + c2 % cells) * n_basis + mu
+
+    cell_ids = [(c1, c2) for c1 in range(cells) for c2 in range(cells)]
+    positions = np.array([np.array(c) @ crystal.vectors + r for c in cell_ids for r in crystal.positions])
+    masses = np.tile(crystal.masses, cells * cells)
+    supercell_bonds = [
+        (index(c1, c2, mu), index(c1 + n[0], c2 + n[1], nu), k, r)
+        for c1, c2 in cell_ids
+        for mu, nu, n, k, r in bonds
+    ]
+    return positions, masses, supercell_bonds

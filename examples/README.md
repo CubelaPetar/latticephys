@@ -28,3 +28,5 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 | `crystals_2d.py` | NaCl plane, graphene, hBN, triangular, kagome, CuO₂ (Lieb), AFM | `Crystal`, `plot_crystal` |
 | `brillouin_zones.py` | First Brillouin zones of the five 2D Bravais lattices | `plot_brillouin_zone` |
 | `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `crystal_dispersion`, `k_path`, `plot_bands` |
+| `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
+| `wave_2d.py` | One displaced atom launches longitudinal and transverse waves (pygame) | `periodic_supercell`, `force_constants`, `simulate`, `animate` |

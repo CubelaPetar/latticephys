@@ -3,8 +3,9 @@ import pytest
 
 from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
 from libsolidstate.lattice.reciprocal import brillouin_zone, k_path, reciprocal_vectors, special_points
-from libsolidstate.lattice.springs import force_constants, neighbour_bonds
-from libsolidstate.spectra.dispersion import crystal_dispersion
+from libsolidstate.dynamics.integrate import simulate
+from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
+from libsolidstate.spectra.dispersion import bloch_mode, crystal_dispersion
 from libsolidstate.spectra.modes import normal_modes
 
 A = 2.46
@@ -69,21 +70,9 @@ def test_matches_finite_periodic_supercell():
     """An N x N periodic supercell has exactly the frequencies at q = (i b1 + j b2) / N."""
     crystal, cells = graphene(), 4
     bonds = neighbour_bonds(crystal, [10.0, 2.0])
-    n_basis = len(crystal.masses)
-
-    def index(c1, c2, mu):
-        return ((c1 % cells) * cells + c2 % cells) * n_basis + mu
-
-    supercell_bonds = [
-        (index(c1, c2, mu), index(c1 + n[0], c2 + n[1], nu), k, r)
-        for c1 in range(cells)
-        for c2 in range(cells)
-        for mu, nu, n, k, r in bonds
-    ]
-    n_atoms = cells * cells * n_basis
-    K = force_constants(n_atoms, supercell_bonds, dim=2)
-    masses = np.repeat(np.tile(crystal.masses, cells * cells), 2)
-    omega_squared, _ = normal_modes(K, masses)
+    positions, masses, supercell_bonds = periodic_supercell(crystal, bonds, cells)
+    K = force_constants(len(positions), supercell_bonds, dim=2)
+    omega_squared, _ = normal_modes(K, np.repeat(masses, 2))
 
     b1, b2 = reciprocal_vectors(crystal.vectors)
     qs = [(i * b1 + j * b2) / cells for i in range(cells) for j in range(cells)]
@@ -106,3 +95,27 @@ def test_k_path():
     np.testing.assert_allclose(qs[-1], points[-1])
     np.testing.assert_allclose(corners, [0, 1, 2])
     assert np.all(np.diff(distance) > 0)
+
+
+def test_supercell_layout():
+    crystal = graphene()
+    positions, masses, _ = periodic_supercell(crystal, [], 3)
+    assert positions.shape == (3 * 3 * 2, 2)
+    np.testing.assert_allclose(positions[(1 * 3 + 2) * 2 + 1], crystal.vectors[0] + 2 * crystal.vectors[1] + crystal.positions[1])
+    np.testing.assert_allclose(masses, 12.0)
+
+
+def test_bloch_mode_oscillates_in_supercell():
+    """Optical Bloch mode at M, set up in a supercell, evolves as u0 cos(omega t)."""
+    crystal, cells = graphene(), 4
+    bonds = neighbour_bonds(crystal, [10.0, 2.0])
+    positions, masses, supercell_bonds = periodic_supercell(crystal, bonds, cells)
+    K = force_constants(len(positions), supercell_bonds, dim=2)
+
+    q = reciprocal_vectors(crystal.vectors)[0] / 2
+    omega, u0 = bloch_mode(crystal, bonds, q, branch=3, cells=cells)
+
+    dt, steps = 0.001, 3000
+    u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), dt, steps)
+    t = dt * np.arange(steps + 1)
+    np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)

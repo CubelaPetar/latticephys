@@ -40,6 +40,23 @@ def crystal_dispersion(crystal, bonds, qs):
     return _frequencies([crystal_dynamical_matrix(q, crystal, bonds) for q in qs])
 
 
+def bloch_mode(crystal, bonds, q, branch, cells):
+    """Frequency and displacements of one Bloch mode in a cells x cells supercell.
+
+    q must fit the supercell, q = (i b1 + j b2) / cells. For degenerate branches
+    the returned mode is one arbitrary combination. Displacements (2 M,) start the
+    standing wave Re[e_mu exp(i q.R)] / sqrt(m_mu) for simulate(), in the atom
+    order of periodic_supercell().
+    """
+    omega_squared, vectors = np.linalg.eigh(crystal_dynamical_matrix(q, crystal, bonds))
+    polarization = (vectors[:, branch] / np.repeat(np.sqrt(crystal.masses), 2)).reshape(-1, 2)
+
+    cell_vectors = np.array([np.array([c1, c2]) @ crystal.vectors for c1 in range(cells) for c2 in range(cells)])
+    u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
+    omega = np.sign(omega_squared[branch]) * np.sqrt(np.abs(omega_squared[branch]))
+    return omega, u0.ravel()
+
+
 def _dynamical_matrix(q, masses, bonds, vectors):
     """D(q) in d dimensions; each bond adds the block k e e^T of a central spring."""
     m = np.asarray(masses, dtype=float)
