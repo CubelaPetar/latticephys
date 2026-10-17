@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib.patches import Circle, Polygon
 
 from libsolidstate.lattice.bravais2d import atom_positions
+from libsolidstate.lattice.reciprocal import brillouin_zone, reciprocal_vectors
 
 
 def plot_crystal(crystal, radii, colors, cells=3, ax=None):
@@ -31,4 +32,29 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
     ax.set_aspect("equal")
     ax.set_xlabel("x (Å)")
     ax.set_ylabel("y (Å)")
+    return ax
+
+
+def plot_brillouin_zone(vectors, ax=None):
+    """Draw the first Brillouin zone, reciprocal lattice points and b1, b2."""
+    if ax is None:
+        _, ax = plt.subplots(figsize=(6, 6))
+
+    b1, b2 = reciprocal_vectors(vectors)
+    n = np.arange(-2, 3)
+    points = np.array([i * b1 + j * b2 for i in n for j in n])
+    ax.scatter(points[:, 0], points[:, 1], color="black", s=10)
+
+    ax.add_patch(Polygon(brillouin_zone(vectors), alpha=0.3, color="tab:blue"))
+    for b, label in ((b1, "$b_1$"), (b2, "$b_2$")):
+        ax.annotate("", xy=b, xytext=(0, 0), arrowprops=dict(arrowstyle="->", color="tab:red"))
+        ax.annotate(label, xy=b, color="tab:red")
+    ax.annotate(r"$\Gamma$", xy=(0, 0), xytext=(3, 3), textcoords="offset points")
+
+    extent = 1.2 * np.max(np.linalg.norm([b1, b2, b1 + b2, b1 - b2], axis=1))
+    ax.set_xlim(-extent, extent)
+    ax.set_ylim(-extent, extent)
+    ax.set_aspect("equal")
+    ax.set_xlabel(r"$k_x$ (1/Å)")
+    ax.set_ylabel(r"$k_y$ (1/Å)")
     return ax
