@@ -10,3 +10,10 @@ authors = [{ name = "Petar Cubela" }]
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
 dependencies = ["numpy", "matplotlib", "pygame-ce"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "SIM"]
+ignore = ["SIM300"]  # allow `value == pytest.approx(expected)`

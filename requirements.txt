@@ -2,4 +2,5 @@ numpy==2.5.4
 matplotlib==3.11.2
 pygame-ce==2.5.8
 pytest==9.1.1
+ruff==0.17.1
 -e .

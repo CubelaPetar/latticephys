@@ -8,6 +8,7 @@ Python library for lattice systems: crystal structures, phonon spectra (band str
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/pytest
+.venv/bin/ruff check
 ```
 
 Uses `pygame-ce` (drop-in fork of pygame, `import pygame`), since pygame has no wheels for recent Python versions.
