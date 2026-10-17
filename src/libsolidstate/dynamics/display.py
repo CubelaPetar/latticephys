@@ -6,12 +6,14 @@ import pygame
 BLACK = (0, 0, 0)
 
 
-def animate(equilibrium_positions, u, radii, colors, scale=100, fps=60, size=(800, 800)):
-    """Show one time step per frame and loop until the window is closed.
+def animate(equilibrium_positions, u, dt, speed, radii, colors, scale=100, fps=60, size=(800, 800)):
+    """Play the trajectory in a loop until the window is closed.
 
-    equilibrium_positions: (N,) positions in model units
-    u:                     (steps, N) displacements, e.g. from simulate()
-    scale:                 pixels per model length unit
+    equilibrium_positions: (N,) positions in Å
+    u:                     (steps, N) displacements in Å, e.g. from simulate()
+    dt:                    time step of u in internal time units
+    speed:                 simulation time shown per second of wall-clock time
+    scale:                 pixels per Å
     """
     pygame.init()
     window = pygame.display.set_mode(size)
@@ -19,7 +21,7 @@ def animate(equilibrium_positions, u, radii, colors, scale=100, fps=60, size=(80
     clock = pygame.time.Clock()
 
     x0 = np.asarray(equilibrium_positions, dtype=float)
-    frame = 0
+    time = 0.0
     running = True
     while running:
         clock.tick(fps)
@@ -27,12 +29,13 @@ def animate(equilibrium_positions, u, radii, colors, scale=100, fps=60, size=(80
             if event.type == pygame.QUIT:
                 running = False
 
+        frame = int(time / dt) % len(u)
         window.fill(BLACK)
         x = (x0 + u[frame]) * scale + size[0] / 2
         for xi, radius, color in zip(x, radii, colors):
             pygame.draw.circle(window, color, (xi, size[1] / 2), radius)
         pygame.display.update()
 
-        frame = (frame + 1) % len(u)
+        time += speed / fps
 
     pygame.quit()

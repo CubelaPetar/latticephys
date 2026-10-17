@@ -8,5 +8,4 @@
 
 ## Next
 
-- [ ] think about scaling (units, time step vs. frame rate)
 - [ ] clean up crystals2D and merge into `lattice/`, then extend to 2D
