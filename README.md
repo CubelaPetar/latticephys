@@ -1,8 +1,24 @@
-# Lattices
+# libsolidstate
 
-Create a library for solving lattice Hamiltonians and plotting their band structures in the Brillouin zone.
+Python library for lattice systems: crystal structures, phonon spectra (band structures along symmetry paths) and time-domain simulation of lattice oscillations.
 
-## Notes on lattice systems
+## Setup
 
-The Hamiltonian for lattice systems is usually described by coupled harmonic oscillators. This results due to a expansion about the minimum of the real potential energy.
-Such Hamiltonians require the solution of a second order linear differential equation in time. Hence, a initial value problem which needs special care when solved numerically.
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/pytest
+```
+
+Uses `pygame-ce` (drop-in fork of pygame, `import pygame`), since pygame has no wheels for recent Python versions.
+
+## Layout
+
+| Path | Content |
+|---|---|
+| `src/libsolidstate/lattice/` | Bravais lattices, basis, crystal structures |
+| `src/libsolidstate/spectra/` | Dynamical matrix, normal modes, dispersions |
+| `src/libsolidstate/dynamics/` | Time integration and pygame animation |
+| `examples/` | Concrete systems (CO₂, chains, 2D crystals) |
+| `tests/` | Checks against analytic results |
+| `notes/` | Condensed matter script (LaTeX) |
