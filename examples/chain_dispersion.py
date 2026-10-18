@@ -17,9 +17,9 @@ def main():
     k = SPRING_CONSTANT
     qs = np.linspace(-np.pi / a, np.pi / a, 401)
 
-    monatomic = dispersion(qs, [MASS_1], [(0, 0, 1, k)], a) * OMEGA_TO_THZ
+    monatomic = dispersion([MASS_1], [(0, 0, 1, k)], a, qs) * OMEGA_TO_THZ
     # atom 0 -- atom 1 inside the cell, atom 1 -- atom 0 of the next cell
-    diatomic = dispersion(qs, [MASS_1, MASS_2], [(0, 1, 0, k), (1, 0, 1, k)], a) * OMEGA_TO_THZ
+    diatomic = dispersion([MASS_1, MASS_2], [(0, 1, 0, k), (1, 0, 1, k)], a, qs) * OMEGA_TO_THZ
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
     left.plot(qs * a, monatomic)

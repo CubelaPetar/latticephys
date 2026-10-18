@@ -29,7 +29,7 @@ def main():
     a, k, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
     # midpoints of the Brillouin zone, avoiding q = 0 where omega = 0
     qs = (np.arange(Q_POINTS) + 0.5) / Q_POINTS * 2 * np.pi / a - np.pi / a
-    omega = dispersion(qs, [m], [(0, 0, 1, k)], a)[:, 0]
+    omega = dispersion([m], [(0, 0, 1, k)], a, qs)[:, 0]
 
     debye = a * np.sqrt(k / m) * np.abs(qs)  # linear dispersion with the same sound velocity
     einstein = np.full_like(omega, omega.mean())

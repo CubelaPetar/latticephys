@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def dynamical_matrix(q, masses, springs, a):
+def dynamical_matrix(masses, springs, a, q):
     """Bloch dynamical matrix D(q) of a 1D lattice with lattice constant a.
 
     masses:  (B,) masses of the basis atoms in one unit cell
@@ -11,25 +11,25 @@ def dynamical_matrix(q, masses, springs, a):
              and atom nu in cell n
     """
     bonds = [(mu, nu, [n], k, [1.0]) for mu, nu, n, k in springs]
-    return _dynamical_matrix(np.atleast_1d(q), masses, bonds, [[a]])
+    return _dynamical_matrix(masses, bonds, [[a]], np.atleast_1d(q))
 
 
-def dispersion(qs, masses, springs, a):
+def dispersion(masses, springs, a, qs):
     """Branch frequencies omega(q) of a 1D lattice, shape (len(qs), B), ascending per q.
 
     Negative values are unstable modes with imaginary frequency.
     """
-    return _frequencies([dynamical_matrix(q, masses, springs, a) for q in qs])
+    return _frequencies([dynamical_matrix(masses, springs, a, q) for q in qs])
 
 
-def crystal_dynamical_matrix(q, crystal, bonds):
+def crystal_dynamical_matrix(crystal, bonds, q):
     """Bloch dynamical matrix D(q) of a crystal, shape (B d, B d).
 
-    q:     wave vector (1/Å)
     bonds: list of (mu, nu, n, k, r) as returned by neighbour_bonds()
+    q:     wave vector (1/Å)
     Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
     """
-    return _dynamical_matrix(np.asarray(q, dtype=float), crystal.masses, bonds, crystal.vectors)
+    return _dynamical_matrix(crystal.masses, bonds, crystal.vectors, np.asarray(q, dtype=float))
 
 
 def crystal_dispersion(crystal, bonds, qs):
@@ -37,7 +37,7 @@ def crystal_dispersion(crystal, bonds, qs):
 
     Negative values are unstable modes with imaginary frequency.
     """
-    return _frequencies([crystal_dynamical_matrix(q, crystal, bonds) for q in qs])
+    return _frequencies([crystal_dynamical_matrix(crystal, bonds, q) for q in qs])
 
 
 def bloch_mode(crystal, bonds, q, branch, cells):
@@ -52,7 +52,7 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     if not np.allclose(fit, np.round(fit), atol=1e-8):
         raise ValueError("q does not fit the supercell, use q = (i b1 + j b2) / cells")
 
-    omega_squared, vectors = np.linalg.eigh(crystal_dynamical_matrix(q, crystal, bonds))
+    omega_squared, vectors = np.linalg.eigh(crystal_dynamical_matrix(crystal, bonds, q))
     polarization = (vectors[:, branch] / np.repeat(np.sqrt(crystal.masses), 2)).reshape(-1, 2)
 
     cell_vectors = np.array([np.array([c1, c2]) @ crystal.vectors for c1 in range(cells) for c2 in range(cells)])
@@ -61,7 +61,7 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     return omega, u0.ravel()
 
 
-def _dynamical_matrix(q, masses, bonds, vectors):
+def _dynamical_matrix(masses, bonds, vectors, q):
     """D(q) in d dimensions; each bond adds the block k e e^T of a central spring."""
     m = np.asarray(masses, dtype=float)
     vectors = np.asarray(vectors, dtype=float)

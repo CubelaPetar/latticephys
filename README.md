@@ -28,7 +28,7 @@ a = 2.5                                        # Å
 masses = [12.011, 15.999]                      # amu
 springs = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom, atom, cell offset, k in eV/Å²)
 qs = np.linspace(0, np.pi / a, 5)
-print(dispersion(qs, masses, springs, a) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
+print(dispersion(masses, springs, a, qs) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
 ```
 
 ## Examples

@@ -40,7 +40,7 @@ def main():
     masses = np.array([MASS_1, MASS_2])
     springs = [(0, 1, 0, SPRING_CONSTANT), (1, 0, 1, SPRING_CONSTANT)]
 
-    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(q, masses, springs, a))
+    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(masses, springs, a, q))
     branch = {"acoustic": 0, "optical": 1}[BRANCH]
     omega = np.sqrt(max(omega_squared[branch], 0.0))
     print(f"{BRANCH} mode at qa = {QA:.3f}: nu = {omega * OMEGA_TO_THZ:.2f} THz")

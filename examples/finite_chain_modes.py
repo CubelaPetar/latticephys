@@ -21,7 +21,7 @@ LATTICE_CONSTANT = 1.5  # Å
 def main():
     a = LATTICE_CONSTANT
     qs = np.linspace(0, np.pi / a, 200)
-    curve = dispersion(qs, [MASS], [(0, 0, 1, SPRING_CONSTANT)], a)[:, 0] * OMEGA_TO_THZ
+    curve = dispersion([MASS], [(0, 0, 1, SPRING_CONSTANT)], a, qs)[:, 0] * OMEGA_TO_THZ
 
     K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
     omega_squared, vectors = normal_modes(K, np.full(N_ATOMS, MASS))
