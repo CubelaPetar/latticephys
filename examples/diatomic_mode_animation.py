@@ -1,17 +1,18 @@
 """Animate one Bloch mode of the diatomic chain: acoustic or optical branch at wave vector q.
 
-At q = 0 the acoustic mode is a rigid translation (starting at rest nothing moves),
-in the optical mode the two atoms of each cell move against each other. At the zone edge q = pi/a only the
-heavy atoms move on the acoustic branch and only the light atoms on the optical branch.
+In the optical mode at q = 0 the two atoms of each cell move against each other
+(the acoustic mode there is a rigid translation and does not oscillate). At the
+zone edge q = pi/a only the heavy atoms move on the acoustic branch and only the
+light atoms on the optical branch.
 """
 
 import numpy as np
 
 from libsolidstate.dynamics.display import animate
 from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.chain import chain_force_constants
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.spectra.dispersion import dynamical_matrix
+from libsolidstate.lattice.springs import force_constants, periodic_supercell
+from libsolidstate.spectra.dispersion import bloch_mode
 from libsolidstate.units import OMEGA_TO_THZ
 
 BRANCH = "optical"  # "acoustic" or "optical"
@@ -33,42 +34,27 @@ BLUE = (100, 149, 237)
 
 
 def main():
-    if not np.isclose(QA * CELLS / (2 * np.pi), round(QA * CELLS / (2 * np.pi))):
-        raise ValueError("QA must be a multiple of 2 pi / CELLS to fit the periodic chain")
     a = LATTICE_CONSTANT
-    q = QA / a
-    masses = np.array([MASS_1, MASS_2])
-    crystal = Crystal([[a]], [0.0, a / 2], masses, ["C", "O"])
+    crystal = Crystal([[a]], [0.0, a / 2], [MASS_1, MASS_2], ["C", "O"])
     bonds = [(0, 1, 0, SPRING_CONSTANT), (1, 0, 1, SPRING_CONSTANT)]
+    supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
+    K = force_constants(supercell, supercell_bonds)
+    positions, masses = supercell.positions, supercell.masses
 
-    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(crystal, bonds, q))
     branch = {"acoustic": 0, "optical": 1}[BRANCH]
-    omega = np.sqrt(max(omega_squared[branch], 0.0))
+    omega, u0 = bloch_mode(crystal, bonds, QA / a, branch, CELLS)
+    if omega <= 0:
+        raise ValueError("this mode does not oscillate (omega = 0), choose another branch or QA")
     print(f"{BRANCH} mode at qa = {QA:.3f}: nu = {omega * OMEGA_TO_THZ:.2f} THz")
 
-    # standing Bloch wave u_{mu,n} = Re[e_mu exp(i q n a)] / sqrt(m_mu), starting at rest
-    cells = np.arange(CELLS)
-    polarization = vectors[:, branch] / np.sqrt(masses)
-    u0 = np.real(np.outer(np.exp(1j * q * cells * a), polarization)).ravel()
     u0 *= AMPLITUDE / np.abs(u0).max()
-
-    all_masses = np.tile(masses, CELLS)
-    K = chain_force_constants(2 * CELLS, SPRING_CONSTANT, boundary="periodic")
-    # rigid translation at q = 0 has no period; show it with the optical period instead
-    period = 2 * np.pi / (omega if omega > 1e-8 else np.sqrt(omega_squared[1]))
+    period = 2 * np.pi / omega
     steps = round(PERIODS * period / TIMESTEP)
-    u, _ = simulate(K, all_masses, u0, np.zeros_like(u0), TIMESTEP, steps)
+    u, _ = simulate(K, np.repeat(masses, crystal.dim), u0, np.zeros_like(u0), TIMESTEP, steps)
 
-    x0 = a / 2 * (np.arange(2 * CELLS) - (2 * CELLS - 1) / 2)
-    animate(
-        x0,
-        u,
-        TIMESTEP,
-        period / SECONDS_PER_PERIOD,
-        radii=[12, 15] * CELLS,
-        colors=[RED, BLUE] * CELLS,
-        scale=30,
-    )
+    centred = positions - positions.mean(axis=0)
+    animate(centred, u, TIMESTEP, period / SECONDS_PER_PERIOD,
+            radii=[12, 15] * CELLS, colors=[RED, BLUE] * CELLS, scale=30)
 
 
 if __name__ == "__main__":

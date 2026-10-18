@@ -26,7 +26,7 @@ def dispersion(crystal, bonds, qs):
 
     Negative values are unstable modes with imaginary frequency.
     """
-    return _frequencies([dynamical_matrix(crystal, bonds, q) for q in qs])
+    return _frequencies(np.array([np.linalg.eigvalsh(dynamical_matrix(crystal, bonds, q)) for q in qs]))
 
 
 def bloch_mode(crystal, bonds, q, branch, cells):
@@ -44,16 +44,19 @@ def bloch_mode(crystal, bonds, q, branch, cells):
 
     d = crystal.dim
     omega_squared, vectors = np.linalg.eigh(dynamical_matrix(crystal, bonds, q))
-    polarization = (vectors[:, branch] / np.repeat(np.sqrt(crystal.masses), d)).reshape(-1, d)
+    e = vectors[:, branch]
+    # eigh returns e with an arbitrary complex phase; with e.g. e = (0, i) the real part
+    # below would vanish everywhere, so make the largest component real
+    e = e * np.exp(-1j * np.angle(e[np.argmax(np.abs(e))]))
+    polarization = (e / np.repeat(np.sqrt(crystal.masses), d)).reshape(-1, d)
 
     cell_vectors = cell_offsets(cells, d) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
-    omega = np.sign(omega_squared[branch]) * np.sqrt(np.abs(omega_squared[branch]))
-    return omega, u0.ravel()
+    return _frequencies(omega_squared)[branch], u0.ravel()
 
 
-def _frequencies(matrices):
+def _frequencies(omega_squared):
     """omega = sign(omega^2) sqrt(|omega^2|), with round-off around zero set to 0."""
-    omega_squared = np.array([np.linalg.eigvalsh(D) for D in matrices])
+    omega_squared = omega_squared.copy()
     omega_squared[np.abs(omega_squared) < 1e-10 * np.abs(omega_squared).max()] = 0.0
     return np.sign(omega_squared) * np.sqrt(np.abs(omega_squared))

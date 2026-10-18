@@ -15,7 +15,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 |---|---|---|
 | `chain_animation.py` | Periodic chain, one atom displaced (pygame) | `chain_force_constants`, `simulate`, `animate` |
 | `chain_dispersion.py` | ω(q) of monatomic and diatomic chain | `dispersion` |
-| `diatomic_mode_animation.py` | One acoustic or optical Bloch mode (pygame) | `dynamical_matrix`, `simulate`, `animate` |
+| `diatomic_mode_animation.py` | One acoustic or optical Bloch mode (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
 | `finite_chain_modes.py` | Fixed-chain modes lie on ω(q) at q_j = jπ/((N+1)a) | `normal_modes`, `dispersion` |
 | `mass_defect.py` | Localized mode of a light impurity above the band | `normal_modes` |
 | `wave_packet.py` | Packet moving with the group velocity (space–time plot) | `simulate` |

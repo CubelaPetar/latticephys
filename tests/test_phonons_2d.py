@@ -141,3 +141,19 @@ def test_supercell_keeps_bond_vectors():
     original = [crystal.bond_vector(mu, nu, n) for mu, nu, n, _ in bonds] * 9
     wrapped = [supercell.bond_vector(i, j, n) for i, j, n, _ in supercell_bonds]
     np.testing.assert_allclose(wrapped, original, atol=1e-12)
+
+
+@pytest.mark.parametrize("point", ["Γ", "M", "K"])
+@pytest.mark.parametrize("branch", range(4))
+def test_bloch_mode_start_is_never_zero(point, branch):
+    """The largest polarization component is made real, so max |u0| >= 1 / sqrt(B d m_max)."""
+    crystal = graphene()
+    q = special_points("hexagonal", crystal.vectors)[point]
+    _, u0 = bloch_mode(crystal, neighbour_bonds(crystal, [10.0, 2.0]), q, branch=branch, cells=6)
+    assert np.abs(u0).max() >= 1 / np.sqrt(4 * crystal.masses.max()) - 1e-12
+
+
+@pytest.mark.parametrize("branch", [0, 1])
+def test_bloch_mode_acoustic_at_gamma_is_exactly_zero(branch):
+    omega, _ = bloch_mode(graphene(), neighbour_bonds(graphene(), [10.0, 2.0]), [0.0, 0.0], branch=branch, cells=6)
+    assert omega == 0.0

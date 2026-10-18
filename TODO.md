@@ -2,10 +2,6 @@
 
 Done: `Crystal` + bonds `(mu, nu, n, k)` in any dimension; 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations.
 
-## Cleanup first (before new features)
-
-- [ ] `diatomic_mode_animation.py`: use `bloch_mode()` (works in 1D now) instead of building the initial state by hand
-
 ## Next
 
 - [ ] out-of-plane modes (3D displacements, e.g. graphene ZA branch)

@@ -1,10 +1,11 @@
 import numpy as np
 import pytest
 
+from libsolidstate.dynamics.integrate import simulate
 from libsolidstate.lattice.chain import chain_force_constants
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import dispersion, dynamical_matrix
+from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
+from libsolidstate.spectra.dispersion import bloch_mode, dispersion, dynamical_matrix
 
 A = 1.0
 QS = np.linspace(-np.pi / A, np.pi / A, 101)
@@ -82,3 +83,35 @@ def test_simple_cubic():
 def test_wrong_q_dimension():
     with pytest.raises(ValueError):
         dynamical_matrix(monatomic(1.0), [(0, 0, 1, 1.0)], [0.1, 0.2])
+
+
+def test_bloch_mode_oscillates_in_periodic_chain():
+    """Optical Bloch mode at q a = pi / 2, set up in a periodic chain, evolves as u0 cos(omega t)."""
+    crystal, cells = diatomic(1.0, 3.0), 8
+    supercell, supercell_bonds = periodic_supercell(crystal, DIATOMIC_BONDS, cells)
+    omega, u0 = bloch_mode(crystal, DIATOMIC_BONDS, np.pi / (2 * A), branch=1, cells=cells)
+
+    dt, steps = 0.001, 5000
+    u, _ = simulate(force_constants(supercell, supercell_bonds), supercell.masses, u0, np.zeros_like(u0), dt, steps)
+    t = dt * np.arange(steps + 1)
+    np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)
+
+
+@pytest.mark.parametrize("branch, resting", [(0, 0), (1, 1)])
+def test_zone_edge_modes_move_one_sublattice(branch, resting):
+    """At q = pi/a the acoustic mode moves only the heavy atoms (1), the optical mode only the light ones (0)."""
+    _, u0 = bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, np.pi / A, branch=branch, cells=2)
+    u0 = u0.reshape(-1, 2)
+    np.testing.assert_allclose(u0[:, resting], 0, atol=1e-12)
+    assert np.all(np.abs(u0[:, 1 - resting]) > 0.1)
+
+
+def test_bloch_mode_rejects_q_not_fitting_chain():
+    with pytest.raises(ValueError):
+        bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, np.pi / (3 * A), branch=0, cells=8)
+
+
+def test_bloch_mode_zero_mode_is_exactly_zero():
+    """Round-off must not turn the acoustic mode at q = 0 into a tiny positive omega (endless period)."""
+    omega, _ = bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, 0.0, branch=0, cells=8)
+    assert omega == 0.0
