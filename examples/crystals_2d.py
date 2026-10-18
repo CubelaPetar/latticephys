@@ -3,7 +3,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
+from libsolidstate.lattice.bravais2d import primitive_vectors
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.plot import plot_crystal
 
 A_NACL = 5.64  # Å, conventional cell

@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Polygon
 
-from libsolidstate.lattice.bravais2d import atom_positions
+from libsolidstate.lattice.crystal import atom_positions
 from libsolidstate.lattice.reciprocal import brillouin_zone, reciprocal_vectors
 
 
 def plot_crystal(crystal, radii, colors, cells=3, ax=None):
-    """Draw atoms as circles with radius in Å and outline the primitive cell."""
+    """Draw a 2D crystal: atoms as circles with radius in Å, primitive cell outlined."""
+    if crystal.dim != 2:
+        raise ValueError("plot_crystal needs a 2D crystal")
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 6))
 

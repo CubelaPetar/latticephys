@@ -1,8 +1,7 @@
 """Animate one Bloch mode of the diatomic chain: acoustic or optical branch at wave vector q.
 
 At q = 0 the acoustic mode is a rigid translation (starting at rest nothing moves),
-in the optical mode the two
-atoms of each cell move against each other. At the zone edge q = pi/a only the
+in the optical mode the two atoms of each cell move against each other. At the zone edge q = pi/a only the
 heavy atoms move on the acoustic branch and only the light atoms on the optical branch.
 """
 
@@ -11,6 +10,7 @@ import numpy as np
 from libsolidstate.dynamics.display import animate
 from libsolidstate.dynamics.integrate import simulate
 from libsolidstate.lattice.chain import chain_force_constants
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.spectra.dispersion import dynamical_matrix
 from libsolidstate.units import OMEGA_TO_THZ
 
@@ -38,9 +38,10 @@ def main():
     a = LATTICE_CONSTANT
     q = QA / a
     masses = np.array([MASS_1, MASS_2])
-    springs = [(0, 1, 0, SPRING_CONSTANT), (1, 0, 1, SPRING_CONSTANT)]
+    crystal = Crystal([[a]], [0.0, a / 2], masses, ["C", "O"])
+    bonds = [(0, 1, 0, SPRING_CONSTANT), (1, 0, 1, SPRING_CONSTANT)]
 
-    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(masses, springs, a, q))
+    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(crystal, bonds, q))
     branch = {"acoustic": 0, "optical": 1}[BRANCH]
     omega = np.sqrt(max(omega_squared[branch], 0.0))
     print(f"{BRANCH} mode at qa = {QA:.3f}: nu = {omega * OMEGA_TO_THZ:.2f} THz")

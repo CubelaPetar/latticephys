@@ -1,10 +1,10 @@
-"""Reciprocal lattice and Brillouin zone of 2D lattices."""
+"""Reciprocal lattice (any dimension); Brillouin zone, special points and k-paths of 2D lattices."""
 
 import numpy as np
 
 
 def reciprocal_vectors(vectors):
-    """Reciprocal vectors b1, b2 as rows, with a_i . b_j = 2 pi delta_ij (1/Å)."""
+    """Reciprocal vectors b_j as rows, with a_i . b_j = 2 pi delta_ij (1/Å), any dimension."""
     return 2 * np.pi * np.linalg.inv(vectors).T
 
 
@@ -16,6 +16,8 @@ def wigner_seitz_cell(vectors):
     returned by primitive_vectors().
     """
     vectors = np.asarray(vectors, dtype=float)
+    if vectors.shape != (2, 2):
+        raise ValueError("wigner_seitz_cell needs 2D lattice vectors")
     n = range(-2, 3)
     points = [i * vectors[0] + j * vectors[1] for i in n for j in n if (i, j) != (0, 0)]
 
@@ -58,6 +60,8 @@ def special_points(lattice, vectors):
     "hexagonal":   Gamma, M (edge centre), K (corner)
     Assumes the vectors of primitive_vectors() (for hexagonal: 60° between a1, a2).
     """
+    if np.shape(vectors) != (2, 2):
+        raise ValueError("special_points needs 2D lattice vectors")
     b1, b2 = reciprocal_vectors(vectors)
     gamma = np.zeros(2)
     if lattice == "square":

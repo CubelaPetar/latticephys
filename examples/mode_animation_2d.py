@@ -9,7 +9,8 @@ import numpy as np
 
 from libsolidstate.dynamics.display import animate
 from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
+from libsolidstate.lattice.bravais2d import primitive_vectors
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.reciprocal import special_points
 from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
 from libsolidstate.spectra.dispersion import bloch_mode
@@ -36,8 +37,9 @@ def main():
     honeycomb = [[0.0, 0.0], [A / 2, A / (2 * np.sqrt(3))]]
     crystal = Crystal(primitive_vectors("hexagonal", A), honeycomb, [MASS, MASS], ["C", "C"])
     bonds = neighbour_bonds(crystal, SPRING_CONSTANTS)
-    positions, masses, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
-    K = force_constants(len(positions), supercell_bonds, dim=2)
+    supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
+    K = force_constants(supercell, supercell_bonds)
+    positions, masses = supercell.positions, supercell.masses
 
     q = special_points("hexagonal", crystal.vectors)[POINT]
     omega, u0 = bloch_mode(crystal, bonds, q, BRANCH, CELLS)

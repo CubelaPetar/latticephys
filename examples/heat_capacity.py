@@ -8,6 +8,7 @@ like the Debye model, while the Einstein model is exponentially suppressed.
 import matplotlib.pyplot as plt
 import numpy as np
 
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.spectra.dispersion import dispersion
 from libsolidstate.units import K_B, OMEGA_TO_MEV, OMEGA_TO_THZ
 
@@ -29,7 +30,7 @@ def main():
     a, k, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
     # midpoints of the Brillouin zone, avoiding q = 0 where omega = 0
     qs = (np.arange(Q_POINTS) + 0.5) / Q_POINTS * 2 * np.pi / a - np.pi / a
-    omega = dispersion([m], [(0, 0, 1, k)], a, qs)[:, 0]
+    omega = dispersion(Crystal([[a]], [0.0], [m], ["C"]), [(0, 0, 1, k)], qs)[:, 0]
 
     debye = a * np.sqrt(k / m) * np.abs(qs)  # linear dispersion with the same sound velocity
     einstein = np.full_like(omega, omega.mean())

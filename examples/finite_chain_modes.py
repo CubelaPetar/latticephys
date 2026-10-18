@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from libsolidstate.lattice.chain import chain_force_constants
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.spectra.dispersion import dispersion
 from libsolidstate.spectra.modes import normal_modes
 from libsolidstate.units import OMEGA_TO_THZ
@@ -21,7 +22,8 @@ LATTICE_CONSTANT = 1.5  # Å
 def main():
     a = LATTICE_CONSTANT
     qs = np.linspace(0, np.pi / a, 200)
-    curve = dispersion([MASS], [(0, 0, 1, SPRING_CONSTANT)], a, qs)[:, 0] * OMEGA_TO_THZ
+    chain = Crystal([[a]], [0.0], [MASS], ["C"])
+    curve = dispersion(chain, [(0, 0, 1, SPRING_CONSTANT)], qs)[:, 0] * OMEGA_TO_THZ
 
     K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
     omega_squared, vectors = normal_modes(K, np.full(N_ATOMS, MASS))

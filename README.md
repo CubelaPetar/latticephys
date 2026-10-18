@@ -21,14 +21,15 @@ Inputs in Å, amu and eV (spring constants in eV/Å²). Time is then in units of
 
 ```python
 import numpy as np
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.spectra.dispersion import dispersion
 from libsolidstate.units import OMEGA_TO_THZ
 
-a = 2.5                                        # Å
-masses = [12.011, 15.999]                      # amu
-springs = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom, atom, cell offset, k in eV/Å²)
+a = 2.5                                                              # Å
+chain = Crystal([[a]], [0.0, a / 2], [12.011, 15.999], ["C", "O"])   # vectors, positions, masses (amu), names
+bonds = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom mu, atom nu, cell of nu, k in eV/Å²)
 qs = np.linspace(0, np.pi / a, 5)
-print(dispersion(masses, springs, a, qs) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
+print(dispersion(chain, bonds, qs) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
 ```
 
 ## Examples

@@ -9,7 +9,7 @@ BLACK = (0, 0, 0)
 def animate(equilibrium_positions, u, dt, speed, radii, colors, scale=100, fps=60, size=(800, 800)):
     """Play the trajectory in a loop until the window is closed.
 
-    equilibrium_positions: (N,) positions in 1D or (N, 2) in 2D, in Å
+    equilibrium_positions: (N,) or (N, 1) positions in 1D, (N, 2) in 2D, in Å
     u:                     (steps, N) or (steps, 2 N) displacements in Å, e.g. from
                            simulate(), ordered atom by atom [u_0x, u_0y, u_1x, ...]
     dt:                    time step of u in internal time units
@@ -17,8 +17,11 @@ def animate(equilibrium_positions, u, dt, speed, radii, colors, scale=100, fps=6
     scale:                 pixels per Å; the origin is the window centre
     """
     x0 = np.asarray(equilibrium_positions, dtype=float)
-    if x0.ndim == 1:
+    x0 = x0.reshape(len(x0), -1)
+    if x0.shape[1] == 1:
         x0 = np.column_stack([x0, np.zeros_like(x0)])
+    if x0.shape[1] != 2:
+        raise ValueError("animate shows 1D or 2D systems")
     u = np.asarray(u).reshape(len(u), len(x0), -1)
     if u.shape[2] == 1:
         u = np.concatenate([u, np.zeros_like(u)], axis=2)

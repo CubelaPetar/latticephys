@@ -9,7 +9,8 @@ import numpy as np
 
 from libsolidstate.dynamics.display import animate
 from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
+from libsolidstate.lattice.bravais2d import primitive_vectors
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
 from libsolidstate.units import TIME_FS
 
@@ -31,8 +32,9 @@ RED = (188, 39, 50)
 def main():
     crystal = Crystal(primitive_vectors("hexagonal", A), [[0.0, 0.0]], [MASS], ["C"])
     bonds = neighbour_bonds(crystal, [SPRING_CONSTANT])
-    positions, masses, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
-    K = force_constants(len(positions), supercell_bonds, dim=2)
+    supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
+    K = force_constants(supercell, supercell_bonds)
+    positions, masses = supercell.positions, supercell.masses
 
     centred = positions - positions.mean(axis=0)
     centre = np.argmin(np.linalg.norm(centred, axis=1))

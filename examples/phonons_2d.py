@@ -10,10 +10,11 @@ modes need 3D displacements and are not included.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bravais2d import Crystal, primitive_vectors
+from libsolidstate.lattice.bravais2d import primitive_vectors
+from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.reciprocal import k_path, special_points
 from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import crystal_dispersion
+from libsolidstate.spectra.dispersion import dispersion
 from libsolidstate.spectra.plot import plot_bands
 from libsolidstate.units import OMEGA_TO_THZ
 
@@ -51,7 +52,7 @@ def main():
         qs, distance, corners = k_path([points[label] for label in labels])
 
         bonds = neighbour_bonds(crystal, spring_constants)
-        frequencies = crystal_dispersion(crystal, bonds, qs) * OMEGA_TO_THZ
+        frequencies = dispersion(crystal, bonds, qs) * OMEGA_TO_THZ
 
         plot_bands(distance, frequencies, corners, labels, ax=axis)
         axis.set_title(f"{title}\nk = {spring_constants} eV/Å²")

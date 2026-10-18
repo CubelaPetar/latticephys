@@ -1,11 +1,10 @@
 # TODO
 
-Done: 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations.
+Done: `Crystal` + bonds `(mu, nu, n, k)` in any dimension; 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations.
 
 ## Cleanup first (before new features)
 
-- [ ] one bond format instead of three: `(mu, nu, n, k)` 1D lattices, `(mu, nu, n, k, r)` crystals, `(i, j, k, r)` finite systems (e.g. describe 1D chains with `Crystal` too); then merge into `dispersion(crystal, bonds, qs)` and `dynamical_matrix(crystal, bonds, q)` for any dimension
-- [ ] `bloch_mode()` for 1D as well; `diatomic_mode_animation.py` builds its initial state by hand
+- [ ] `diatomic_mode_animation.py`: use `bloch_mode()` (works in 1D now) instead of building the initial state by hand
 
 ## Next
 
