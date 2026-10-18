@@ -41,8 +41,9 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. See [`e
 | Path | Content |
 |---|---|
 | `src/libsolidstate/lattice/` | Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, force constants |
-| `src/libsolidstate/spectra/` | Normal modes, dynamical matrix, dispersions |
+| `src/libsolidstate/spectra/` | Normal modes, dynamical matrix, dispersions, sound velocities, thermal properties |
 | `src/libsolidstate/dynamics/` | Time integration and pygame animation |
 | `src/libsolidstate/units.py` | Unit system and conversions |
+| `src/libsolidstate/export.py` | JSON export, e.g. for web pages |
 | `examples/` | Concrete systems (CO₂, chains, 2D crystals) |
 | `tests/` | Checks against analytic results |

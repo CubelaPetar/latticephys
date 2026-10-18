@@ -30,3 +30,22 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 | `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `dispersion`, `k_path`, `plot_bands` |
 | `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
 | `wave_2d.py` | One displaced atom launches longitudinal and transverse waves (pygame) | `periodic_supercell`, `force_constants`, `simulate`, `animate` |
+| `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `heat_capacity` |
+| `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
+| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dynamical_matrix` |
+| `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
+| `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `neighbour_bonds`, `dispersion` |
+
+## Data export
+
+`export_for_site.py [directory]` writes `diatomic_chain.json` and `graphene.json` (default directory `site_data/`) with `save_json`:
+
+| Key | Content |
+|---|---|
+| `system`, `units` | name; Å, THz, amu |
+| `crystal` | `vectors` (d×d), `positions` (B×d), `masses`, `names` |
+| `dispersion` | `distance` along the path, `frequencies` (points × branches), `ticks` and `labels` of the k-points |
+| `supercell` | `cells` per direction, `positions` and `names` of all atoms |
+| `modes` | list of `point`, `branch`, `frequency`, `displacements` (atoms × d, max 1) |
+
+Animate a mode as `positions + scale * displacements * cos(2π frequency t)`. Zero-frequency modes (translations) do not move.

@@ -10,20 +10,14 @@ import numpy as np
 
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.spectra.dispersion import dispersion
-from libsolidstate.units import K_B, OMEGA_TO_MEV, OMEGA_TO_THZ
+from libsolidstate.spectra.thermal import heat_capacity
+from libsolidstate.units import OMEGA_TO_THZ
 
 SPRING_CONSTANT = 10.0  # eV/Å²
 MASS = 12.011  # amu
 LATTICE_CONSTANT = 1.5  # Å
 Q_POINTS = 20000  # sampling of the Brillouin zone
 TEMPERATURES = np.linspace(1, 1500, 300)  # K
-
-
-def heat_capacity(omega, temperatures):
-    """C_V per mode in units of k_B, averaged over the given angular frequencies."""
-    energy = omega * OMEGA_TO_MEV / 1000  # eV
-    x = energy[None, :] / (K_B * temperatures[:, None])
-    return np.mean(x**2 * np.exp(-x) / (1 - np.exp(-x)) ** 2, axis=1)
 
 
 def main():
