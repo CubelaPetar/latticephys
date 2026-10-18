@@ -20,3 +20,6 @@ TIME_FS = TIME / 1e-15
 OMEGA_TO_THZ = 1 / (2 * math.pi * TIME) / 1e12  # ... nu = omega / 2 pi in THz
 OMEGA_TO_MEV = HBAR / TIME / EV * 1e3  # ... hbar omega in meV
 OMEGA_TO_INV_CM = 1 / (2 * math.pi * TIME) / SPEED_OF_LIGHT / 100  # ... nu / c in cm^-1
+
+# multiply a velocity in Å per internal time unit to get km/s
+VELOCITY_TO_KM_S = ANGSTROM / TIME / 1e3

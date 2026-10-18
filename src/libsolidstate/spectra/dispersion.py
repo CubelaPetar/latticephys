@@ -26,7 +26,21 @@ def dispersion(crystal, bonds, qs):
 
     Negative values are unstable modes with imaginary frequency.
     """
-    return _frequencies(np.array([np.linalg.eigvalsh(dynamical_matrix(crystal, bonds, q)) for q in qs]))
+    omega_squared = np.array([np.linalg.eigvalsh(dynamical_matrix(crystal, bonds, q)) for q in qs])
+    return _frequencies(omega_squared, _zero_tolerance(crystal, bonds))
+
+
+def sound_velocities(crystal, bonds, directions, dq=1e-4):
+    """Velocities omega / q of the d acoustic branches for small q along each direction.
+
+    directions: (M, d) directions (normalized here)
+    dq:         |q| used for the slope (1/Å); relative error ~ (dq a)^2
+    Returns (M, d) velocities in Å per internal time unit, ascending per direction
+    (transverse before longitudinal); see units.VELOCITY_TO_KM_S.
+    """
+    directions = np.atleast_2d(np.asarray(directions, dtype=float))
+    directions = directions / np.linalg.norm(directions, axis=1, keepdims=True)
+    return dispersion(crystal, bonds, dq * directions)[:, : crystal.dim] / dq
 
 
 def bloch_mode(crystal, bonds, q, branch, cells):
@@ -52,11 +66,16 @@ def bloch_mode(crystal, bonds, q, branch, cells):
 
     cell_vectors = cell_offsets(cells, d) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
-    return _frequencies(omega_squared)[branch], u0.ravel()
+    return _frequencies(omega_squared, _zero_tolerance(crystal, bonds))[branch], u0.ravel()
 
 
-def _frequencies(omega_squared):
-    """omega = sign(omega^2) sqrt(|omega^2|), with round-off around zero set to 0."""
-    omega_squared = omega_squared.copy()
-    omega_squared[np.abs(omega_squared) < 1e-10 * np.abs(omega_squared).max()] = 0.0
+def _zero_tolerance(crystal, bonds):
+    """|omega^2| below this is round-off of a zero mode; relative to the scale sum |k| / m_min of D."""
+    return 1e-10 * sum(abs(k) for *_, k in bonds) / crystal.masses.min()
+
+
+def _frequencies(omega_squared, tolerance):
+    """omega = sign(omega^2) sqrt(|omega^2|), with round-off below tolerance set to 0."""
+    omega_squared = np.array(omega_squared, dtype=float)
+    omega_squared[np.abs(omega_squared) < tolerance] = 0.0
     return np.sign(omega_squared) * np.sqrt(np.abs(omega_squared))

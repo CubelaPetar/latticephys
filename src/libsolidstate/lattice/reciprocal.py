@@ -2,10 +2,22 @@
 
 import numpy as np
 
+from libsolidstate.lattice.crystal import cell_offsets
+
 
 def reciprocal_vectors(vectors):
     """Reciprocal vectors b_j as rows, with a_i . b_j = 2 pi delta_ij (1/Å), any dimension."""
     return 2 * np.pi * np.linalg.inv(vectors).T
+
+
+def q_grid(vectors, n):
+    """The n^d wave vectors q = (i_1 b_1 + ... + i_d b_d) / n, 0 <= i_j < n (1/Å), any dimension.
+
+    These are exactly the wave vectors of a periodic supercell of n^d cells,
+    so sums over them are Brillouin-zone averages for a crystal of that size.
+    """
+    vectors = np.atleast_2d(vectors)
+    return cell_offsets(n, len(vectors)) / n @ reciprocal_vectors(vectors)
 
 
 def wigner_seitz_cell(vectors):
