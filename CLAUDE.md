@@ -20,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Scope
 
-Lattice physics with single-particle or harmonic methods: phonons now; tight-binding electrons, classical spins / linear spin waves and electron–phonon models fit later. Many-body methods (ED, DMRG, QMC) do not; research code such as the magnetic-polaron repo `../1D_t_XXZ` uses this library instead of being merged into it. Dimensions: 1D and 2D done, 3D next.
+Lattice physics with single-particle or harmonic methods: phonons now; tight-binding electrons, classical spins / linear spin waves and electron–phonon models fit later. Dimensions: 1D and 2D done, 3D next.
 
 ## Architecture
 
