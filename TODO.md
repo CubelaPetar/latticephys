@@ -1,13 +1,13 @@
 # TODO
 
-Done: `Crystal` + bonds `(mu, nu, n, k)` in any dimension; 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations; DOS, heat capacity, ⟨u²⟩ and sound velocities; JSON export.
+Done: `Crystal` + bonds `(mu, nu, n, k)` in any dimension; 1D and 2D (in-plane) band structures along symmetry paths, lattice dynamics with velocity Verlet, 2D crystal and Brillouin zone plots, 1D and 2D animations (optionally coloured by displacement); DOS, heat capacity, ⟨u²⟩ and sound velocities; JSON export.
 
 Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items below are the library features they need.
 
 ## Next
 
 - [ ] out-of-plane modes (3D displacements, e.g. graphene ZA branch)
-- [ ] `animate()`: optionally colour atoms by displacement, so small waves are visible; draw bonds; centre and scale to the window itself (now done in each example)
+- [ ] `animate()`: draw bonds; centre and scale to the window itself (now done in each example)
 
 ## Later
 

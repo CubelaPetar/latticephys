@@ -17,7 +17,7 @@ Sorted by folder. **Needs** names the library feature from `TODO.md` that must c
 
 ## 2D lattices
 
-All animations here profit from colouring atoms by displacement (`animate()` item in `TODO.md`).
+Animations here should colour atoms by displacement: `animate(..., color_scale=...)`, as in `wave_2d.py`.
 
 - **Refraction and reflection at an interface:** heavier half of a triangular supercell, plane wave packet at an angle; total internal reflection above the critical angle. Test: Snell's law sin θ₁ / c₁ = sin θ₂ / c₂.
 - **Rayleigh edge waves:** a kick at the edge of a wide strip travels along the edge, slower than c_T. Test: lowest strip branch at large q against the Rayleigh equation (2D value not yet known to us, compute it).
