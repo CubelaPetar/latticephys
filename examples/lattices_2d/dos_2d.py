@@ -9,13 +9,13 @@ for two in-plane degrees of freedom) at high T.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.reciprocal import q_grid, special_points
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.phonons.spectra import density_of_states
-from libsolidstate.phonons.thermal import heat_capacity
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.reciprocal import q_grid, special_points
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import dispersion
+from latticephys.phonons.spectra import density_of_states
+from latticephys.phonons.thermal import heat_capacity
+from latticephys.units import OMEGA_TO_THZ
 
 A = 2.46  # Å
 MASS = 12.011  # amu

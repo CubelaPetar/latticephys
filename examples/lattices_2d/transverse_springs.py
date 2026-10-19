@@ -9,13 +9,13 @@ invariant, so they are a model for bulk crystals, not for free molecules or ribb
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.plot import plot_bands
-from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.reciprocal import k_path, special_points
+from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 A = 2.5  # Å
 MASS = 12.011  # amu

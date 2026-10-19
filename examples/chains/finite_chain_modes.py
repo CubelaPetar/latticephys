@@ -7,11 +7,11 @@ q_j = j pi / ((N + 1) a), j = 1 .. N, from the continuous curve omega(q).
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.dispersion import dispersion
+from latticephys.phonons.modes import normal_modes
+from latticephys.units import OMEGA_TO_THZ
 
 N_ATOMS = 10
 SPRING_CONSTANT = 10.0  # eV/Å²

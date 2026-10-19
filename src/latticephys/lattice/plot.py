@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Polygon
 
-from libsolidstate.lattice.crystal import atom_positions
-from libsolidstate.lattice.reciprocal import brillouin_zone, reciprocal_vectors
+from latticephys.lattice.crystal import atom_positions
+from latticephys.lattice.reciprocal import brillouin_zone, reciprocal_vectors
 
 
 def plot_crystal(crystal, radii, colors, cells=3, ax=None):

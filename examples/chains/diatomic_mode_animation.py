@@ -8,13 +8,13 @@ light atoms on the optical branch.
 
 import numpy as np
 
-from libsolidstate.lattice.bonds import periodic_supercell
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.dispersion import bloch_mode
-from libsolidstate.phonons.display import animate
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.springs import force_constants
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import periodic_supercell
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.dispersion import bloch_mode
+from latticephys.phonons.display import animate
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.springs import force_constants
+from latticephys.units import OMEGA_TO_THZ
 
 BRANCH = "optical"  # "acoustic" or "optical"
 QA = np.pi / 2  # q times a, in [-pi, pi]; must be a multiple of 2 pi / CELLS

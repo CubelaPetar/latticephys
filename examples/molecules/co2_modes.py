@@ -6,9 +6,9 @@ due to Fermi resonance with the bending overtone), asymmetric stretch 2349 cm^-1
 
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.units import OMEGA_TO_INV_CM, OMEGA_TO_THZ
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.modes import normal_modes
+from latticephys.units import OMEGA_TO_INV_CM, OMEGA_TO_THZ
 
 SPRING_CONSTANT = 100.0  # eV/Å², C=O bond (≈ 1600 N/m)
 MASS_O = 15.999  # amu

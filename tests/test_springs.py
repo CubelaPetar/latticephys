@@ -1,8 +1,8 @@
 import numpy as np
 
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.phonons.springs import force_constants
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.springs import force_constants
 
 UNUSED = 100.0  # lattice constant of molecules, whose bonds all stay in cell 0
 

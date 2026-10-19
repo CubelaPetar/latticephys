@@ -13,12 +13,12 @@ Masses and spring constants are illustrative.
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.plot import plot_bands
-from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.lattice.structures import kagome, lieb
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.reciprocal import k_path, special_points
+from latticephys.lattice.structures import kagome, lieb
+from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 A = 4.0  # Å
 SPRING_CONSTANTS = [10.0, 3.0]  # eV/Å², first and second shell

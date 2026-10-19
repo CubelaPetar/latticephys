@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.bravais2d import primitive_vectors
 
 
 def lengths_and_angle(vectors):

@@ -2,10 +2,10 @@
 
 import numpy as np
 
-from libsolidstate.lattice.reciprocal import q_grid
-from libsolidstate.phonons.dispersion import dynamical_matrix
-from libsolidstate.phonons.modes import diagonalize
-from libsolidstate.units import K_B, OMEGA_TO_MEV
+from latticephys.lattice.reciprocal import q_grid
+from latticephys.phonons.dispersion import dynamical_matrix
+from latticephys.phonons.modes import diagonalize
+from latticephys.units import K_B, OMEGA_TO_MEV
 
 
 def heat_capacity(omega, temperatures):

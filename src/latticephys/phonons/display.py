@@ -45,7 +45,7 @@ def animate(equilibrium_positions, u, dt, speed, radii, colors, scale=100, fps=6
 
     pygame.init()
     window = pygame.display.set_mode(size)
-    pygame.display.set_caption("libsolidstate")
+    pygame.display.set_caption("latticephys")
     clock = pygame.time.Clock()
 
     time = 0.0

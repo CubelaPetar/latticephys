@@ -10,11 +10,11 @@ bending of the strip). Some modes carry most of their weight on the edges: with
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.plot import plot_crystal
-from libsolidstate.phonons.dispersion import atom_weights, dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.plot import plot_crystal
+from latticephys.phonons.dispersion import atom_weights, dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 A = 2.46  # Å, graphene lattice constant = period of the zigzag ribbon
 MASS = 12.011  # amu

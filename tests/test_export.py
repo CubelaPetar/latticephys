@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pytest
 
-from libsolidstate.export import save_json
+from latticephys.export import save_json
 
 
 def test_round_trip_with_numpy(tmp_path):

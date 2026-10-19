@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.structures import honeycomb
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.structures import honeycomb
 
 A = 2.46
 

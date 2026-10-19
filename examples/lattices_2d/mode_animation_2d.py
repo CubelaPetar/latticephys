@@ -7,14 +7,14 @@ each other; degenerate modes (Γ optical, K) show one arbitrary combination.
 
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.reciprocal import special_points
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import bloch_mode
-from libsolidstate.phonons.display import animate
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.springs import force_constants
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.reciprocal import special_points
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import bloch_mode
+from latticephys.phonons.display import animate
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.springs import force_constants
+from latticephys.units import OMEGA_TO_THZ
 
 POINT = "M"  # "Γ", "M" or "K"
 BRANCH = 3  # 0 .. 3

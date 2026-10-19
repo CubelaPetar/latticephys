@@ -3,9 +3,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 SPRING_CONSTANT = 10.0  # eV/Å²
 MASS_1 = 12.011  # amu (C)

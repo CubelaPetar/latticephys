@@ -2,11 +2,11 @@
 
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.display import animate
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.units import TIME_FS
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.display import animate
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.modes import normal_modes
+from latticephys.units import TIME_FS
 
 N_ATOMS = 11
 SPRING_CONSTANT = 10.0  # eV/Å²

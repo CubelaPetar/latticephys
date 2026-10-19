@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from libsolidstate.phonons.dispersion import dynamical_matrix
-from libsolidstate.phonons.modes import diagonalize
+from latticephys.phonons.dispersion import dynamical_matrix
+from latticephys.phonons.modes import diagonalize
 
 
 def density_of_states(omega, grid, sigma, weights=None):

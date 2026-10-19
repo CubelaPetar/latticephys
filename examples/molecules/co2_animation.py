@@ -2,10 +2,10 @@
 
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.display import animate
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.units import TIME_FS
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.display import animate
+from latticephys.phonons.integrate import simulate
+from latticephys.units import TIME_FS
 
 SPRING_CONSTANT = 100.0  # eV/Å²
 MASS_O = 15.999  # amu

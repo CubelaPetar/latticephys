@@ -33,7 +33,7 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 - `Crystal(vectors, positions, masses, names)`: vectors (d, d) as rows, positions (B, d) Cartesian. A molecule is a Crystal whose bonds all stay in cell 0.
 - Bond `(mu, nu, n, k)`: atom mu in cell 0 to atom nu in cell n (int in 1D, tuple otherwise), each bond listed once. The last entry is the model parameter: a spring k or (k_L, k_T) now, hopping or exchange later.
 - Degrees of freedom atom by atom `[u_0x, u_0y, u_1x, ...]`; masses per degree of freedom `np.repeat(masses, d)`.
-- Units in: Å, amu, eV (k in eV/Å²); internal time unit ≈ 10.18 fs. Convert only at output with `libsolidstate.units`.
+- Units in: Å, amu, eV (k in eV/Å²); internal time unit ≈ 10.18 fs. Convert only at output with `latticephys.units`.
 - Frequencies are always ω, never ω²: negative = unstable, zero modes exactly 0. All eigenproblems of dynamical matrices go through `phonons.modes.diagonalize`.
 - Tests: the docstring states the analytic formula or independent calculation being checked.
 - Examples: topic folders in `examples/`, parameters as constants at the top, docstring explains the physics, `main()`. Each is listed in `examples/README.md`. Planned examples go to `examples/IDEAS.md`, the library features they need to `TODO.md`.
@@ -42,4 +42,4 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 
 `.venv/bin/pytest && .venv/bin/ruff check`. `tests/test_examples.py` runs every example headless (Agg backend, `animate()` skipped, exports into a temp dir).
 
-Push to `origin` (Gitea); the GitHub repo `CubelaPetar/libsolidstate` (remote `public`) is public.
+Push to `origin` (Gitea); the GitHub repo `CubelaPetar/latticephys` (remote `public`) is public.

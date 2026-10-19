@@ -1,6 +1,6 @@
 import pytest
 
-from libsolidstate import units
+from latticephys import units
 
 
 def test_time_unit():

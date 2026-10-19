@@ -9,12 +9,12 @@ stays isotropic for long waves.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import sound_velocities
-from libsolidstate.units import VELOCITY_TO_KM_S
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import sound_velocities
+from latticephys.units import VELOCITY_TO_KM_S
 
 MASS = 12.011  # amu
 ANGLES = np.linspace(0, 2 * np.pi, 361)

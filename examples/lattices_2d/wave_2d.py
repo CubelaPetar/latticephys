@@ -8,13 +8,13 @@ periodic, so the waves re-enter from the opposite side.
 
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.display import animate
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.springs import force_constants
-from libsolidstate.units import TIME_FS
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.display import animate
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.springs import force_constants
+from latticephys.units import TIME_FS
 
 A = 2.46  # Å
 MASS = 12.011  # amu

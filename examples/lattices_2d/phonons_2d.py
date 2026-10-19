@@ -9,14 +9,14 @@ modes need 3D displacements and are not included.
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.plot import plot_bands
-from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.reciprocal import k_path, special_points
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 A_SQUARE = 2.5  # Å
 A_HEXAGONAL = 2.46  # Å

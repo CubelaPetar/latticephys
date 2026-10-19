@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import colormaps
 
-from libsolidstate.phonons.display import displacement_colors
+from latticephys.phonons.display import displacement_colors
 
 
 def test_displacement_colors_scale_and_saturate():

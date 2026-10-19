@@ -3,8 +3,8 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "libsolidstate"
-version = "0.1.0"
+name = "latticephys"
+version = "0.2.0"
 description = "Lattice structures, phonon spectra and lattice dynamics"
 authors = [{ name = "Petar Cubela" }]
 license = { file = "LICENSE" }

@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
 
 
 def honeycomb(a, masses, names):

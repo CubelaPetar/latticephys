@@ -1,14 +1,14 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.reciprocal import reciprocal_vectors
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import atom_weights, dispersion
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.phonons.spectra import density_of_states, structure_factor
-from libsolidstate.phonons.springs import force_constants
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import reciprocal_vectors
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import atom_weights, dispersion
+from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.spectra import density_of_states, structure_factor
+from latticephys.phonons.springs import force_constants
 
 A = 1.0
 DIATOMIC_BONDS = [(0, 1, 0, 1.0), (1, 0, 1, 1.0)]

@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from libsolidstate.lattice.crystal import cell_offsets
-from libsolidstate.phonons.modes import diagonalize
-from libsolidstate.phonons.springs import _fourier_force_constants
+from latticephys.lattice.crystal import cell_offsets
+from latticephys.phonons.modes import diagonalize
+from latticephys.phonons.springs import _fourier_force_constants
 
 
 def dynamical_matrix(crystal, bonds, q):

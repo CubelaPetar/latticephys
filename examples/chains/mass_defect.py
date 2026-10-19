@@ -8,9 +8,9 @@ omega_L = omega_max / sqrt(1 - eps^2), and the amplitude decays as
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.modes import normal_modes
+from latticephys.units import OMEGA_TO_THZ
 
 N_ATOMS = 41
 SPRING_CONSTANT = 10.0  # eV/Å²

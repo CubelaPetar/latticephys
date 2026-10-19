@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from libsolidstate.lattice.crystal import cell_offsets
+from latticephys.lattice.crystal import cell_offsets
 
 
 def reciprocal_vectors(vectors):

@@ -1,13 +1,13 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.reciprocal import q_grid
-from libsolidstate.phonons.dispersion import dispersion, sound_velocities
-from libsolidstate.phonons.thermal import heat_capacity, mean_square_displacement
-from libsolidstate.units import K_B, OMEGA_TO_MEV
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import q_grid
+from latticephys.phonons.dispersion import dispersion, sound_velocities
+from latticephys.phonons.thermal import heat_capacity, mean_square_displacement
+from latticephys.units import K_B, OMEGA_TO_MEV
 
 A = 2.46
 K, M = 10.0, 12.011

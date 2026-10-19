@@ -2,10 +2,10 @@
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.plot import plot_crystal
-from libsolidstate.lattice.structures import honeycomb, kagome, lieb
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.plot import plot_crystal
+from latticephys.lattice.structures import honeycomb, kagome, lieb
 
 A_NACL = 5.64  # Å, conventional cell
 A_GRAPHENE = 2.46  # Å, lattice constant (C-C distance a / sqrt(3) = 1.42 Å)

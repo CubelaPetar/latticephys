@@ -8,7 +8,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pytest
 
-import libsolidstate.phonons.display as display
+import latticephys.phonons.display as display
 
 matplotlib.use("Agg")
 EXAMPLES = sorted((Path(__file__).parent.parent / "examples").glob("*/*.py"))

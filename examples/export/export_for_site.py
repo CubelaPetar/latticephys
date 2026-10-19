@@ -10,13 +10,13 @@ from pathlib import Path
 
 import numpy as np
 
-from libsolidstate.export import save_json
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.lattice.structures import honeycomb
-from libsolidstate.phonons.dispersion import bloch_mode, dispersion
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.export import save_json
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import k_path, special_points
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import bloch_mode, dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 
 def system_data(name, crystal, bonds, points, path, mode_points, cells):

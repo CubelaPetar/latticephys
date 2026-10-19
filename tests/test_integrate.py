@@ -1,8 +1,8 @@
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.modes import normal_modes
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.modes import normal_modes
 
 
 def energy(K, masses, u, p):

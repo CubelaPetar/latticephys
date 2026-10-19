@@ -2,8 +2,8 @@
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.plot import plot_brillouin_zone
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.plot import plot_brillouin_zone
 
 LATTICES = [
     ("Oblique (a = 3, b = 4 Å, 75°)", primitive_vectors("oblique", 3.0, 4.0, 75.0)),

@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.structures import honeycomb, kagome, lieb
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.structures import honeycomb, kagome, lieb
 
 
 @pytest.mark.parametrize(

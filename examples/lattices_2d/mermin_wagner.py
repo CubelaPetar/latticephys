@@ -9,12 +9,12 @@ The dashed line is the 2D long-wavelength result k_B T A_cell / (2 pi m) (1/c_L^
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bonds import neighbour_bonds
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.dispersion import sound_velocities
-from libsolidstate.phonons.thermal import mean_square_displacement
-from libsolidstate.units import K_B
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.dispersion import sound_velocities
+from latticephys.phonons.thermal import mean_square_displacement
+from latticephys.units import K_B
 
 MASS = 12.011  # amu
 SPRING_CONSTANT = 10.0  # eV/Å², nearest neighbours

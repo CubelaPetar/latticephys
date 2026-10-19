@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.springs import force_constants
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.springs import force_constants
 
 A = 1.0
 QS = np.linspace(-np.pi / A, np.pi / A, 101)

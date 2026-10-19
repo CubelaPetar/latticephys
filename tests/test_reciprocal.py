@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.reciprocal import (
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.reciprocal import (
     brillouin_zone,
     k_path,
     reciprocal_vectors,

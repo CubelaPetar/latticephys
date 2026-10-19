@@ -7,8 +7,8 @@ comes from the crystal.
 
 import numpy as np
 
-from libsolidstate.lattice.crystal import Crystal, cell_offsets
-from libsolidstate.lattice.reciprocal import reciprocal_vectors
+from latticephys.lattice.crystal import Crystal, cell_offsets
+from latticephys.lattice.reciprocal import reciprocal_vectors
 
 
 def neighbour_bonds(crystal, spring_constants, search=3):

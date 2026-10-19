@@ -1,15 +1,15 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.reciprocal import k_path, reciprocal_vectors, special_points
-from libsolidstate.lattice.structures import honeycomb, kagome, lieb
-from libsolidstate.phonons.dispersion import bloch_mode, dispersion, group_velocities
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.phonons.modes import normal_modes
-from libsolidstate.phonons.springs import force_constants
+from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.bravais2d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import k_path, reciprocal_vectors, special_points
+from latticephys.lattice.structures import honeycomb, kagome, lieb
+from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
+from latticephys.phonons.integrate import simulate
+from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.springs import force_constants
 
 A = 2.46
 

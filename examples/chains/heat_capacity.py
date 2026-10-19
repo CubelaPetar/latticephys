@@ -8,11 +8,11 @@ like the Debye model, while the Einstein model is exponentially suppressed.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.phonons.dispersion import dispersion
-from libsolidstate.phonons.spectra import density_of_states
-from libsolidstate.phonons.thermal import heat_capacity
-from libsolidstate.units import OMEGA_TO_THZ
+from latticephys.lattice.crystal import Crystal
+from latticephys.phonons.dispersion import dispersion
+from latticephys.phonons.spectra import density_of_states
+from latticephys.phonons.thermal import heat_capacity
+from latticephys.units import OMEGA_TO_THZ
 
 SPRING_CONSTANT = 10.0  # eV/Å²
 MASS = 12.011  # amu

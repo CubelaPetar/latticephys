@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.modes import diagonalize, normal_modes
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.modes import diagonalize, normal_modes
 
 
 @pytest.mark.parametrize("k, m, M", [(1.0, 1.0, 2.0), (10.0, 16.0, 12.0)])

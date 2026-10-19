@@ -8,9 +8,9 @@ fast at small q0 and nearly stops at the zone edge, and it spreads due to disper
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.integrate import simulate
-from libsolidstate.units import TIME_FS
+from latticephys.phonons.chain import chain_force_constants
+from latticephys.phonons.integrate import simulate
+from latticephys.units import TIME_FS
 
 N_ATOMS = 300
 SPRING_CONSTANT = 10.0  # eV/Å²
