@@ -1,4 +1,4 @@
-"""Plot 2D crystal structures to scale with matplotlib."""
+"""Plot 2D crystal structures, Brillouin zones and band structures with matplotlib."""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -59,4 +59,18 @@ def plot_brillouin_zone(vectors, ax=None):
     ax.set_aspect("equal")
     ax.set_xlabel(r"$k_x$ (1/Å)")
     ax.set_ylabel(r"$k_y$ (1/Å)")
+    return ax
+
+
+def plot_bands(distance, frequencies, corners, labels, ax=None):
+    """Branches against the distance along a k-path, with the k-points as ticks."""
+    if ax is None:
+        _, ax = plt.subplots(figsize=(6, 4))
+
+    ax.plot(distance, frequencies, color="tab:blue")
+    for corner in corners:
+        ax.axvline(corner, color="grey", lw=0.5)
+    ax.axhline(0, color="grey", lw=0.5)
+    ax.set_xticks(corners, labels)
+    ax.set_xlim(corners[0], corners[-1])
     return ax

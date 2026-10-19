@@ -1,8 +1,8 @@
 import numpy as np
 
-from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.chain import chain_force_constants
-from libsolidstate.spectra.modes import normal_modes
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.integrate import simulate
+from libsolidstate.phonons.modes import normal_modes
 
 
 def energy(K, masses, u, p):
@@ -22,8 +22,8 @@ def test_normal_mode_oscillates_harmonically():
     """Starting in a normal mode, u(t) = u0 cos(omega t)."""
     K = chain_force_constants(3, 1.0, boundary="free")
     masses = np.array([1.0, 2.0, 1.0])
-    omega_squared, vectors = normal_modes(K, masses)
-    omega = np.sqrt(omega_squared[2])
+    omegas, vectors = normal_modes(K, masses)
+    omega = omegas[2]
     u0 = 0.1 * vectors[:, 2] / np.sqrt(masses)
 
     dt, steps = 0.001, 10_000

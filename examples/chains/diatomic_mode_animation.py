@@ -8,11 +8,12 @@ light atoms on the optical branch.
 
 import numpy as np
 
-from libsolidstate.dynamics.display import animate
-from libsolidstate.dynamics.integrate import simulate
+from libsolidstate.lattice.bonds import periodic_supercell
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.springs import force_constants, periodic_supercell
-from libsolidstate.spectra.dispersion import bloch_mode
+from libsolidstate.phonons.dispersion import bloch_mode
+from libsolidstate.phonons.display import animate
+from libsolidstate.phonons.integrate import simulate
+from libsolidstate.phonons.springs import force_constants
 from libsolidstate.units import OMEGA_TO_THZ
 
 BRANCH = "optical"  # "acoustic" or "optical"

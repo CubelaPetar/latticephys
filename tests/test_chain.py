@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from libsolidstate.lattice.chain import chain_force_constants
+from libsolidstate.phonons.chain import chain_force_constants
 
 
 def test_free_chain():

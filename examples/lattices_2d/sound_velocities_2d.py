@@ -9,10 +9,11 @@ stays isotropic for long waves.
 import matplotlib.pyplot as plt
 import numpy as np
 
+from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.bravais2d import primitive_vectors
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import sound_velocities
+from libsolidstate.lattice.structures import honeycomb
+from libsolidstate.phonons.dispersion import sound_velocities
 from libsolidstate.units import VELOCITY_TO_KM_S
 
 MASS = 12.011  # amu
@@ -21,11 +22,10 @@ ANGLES = np.linspace(0, 2 * np.pi, 361)
 
 def main():
     a = 2.46
-    honeycomb = [[0.0, 0.0], [a / 2, a / (2 * np.sqrt(3))]]
     cases = [
         ("Triangular, k = [10]", Crystal(primitive_vectors("hexagonal", a), [[0.0, 0.0]], [MASS], ["C"]), [10.0]),
         ("Square, k = [10, 3]", Crystal(primitive_vectors("square", 2.5), [[0.0, 0.0]], [MASS], ["C"]), [10.0, 3.0]),
-        ("Graphene, k = [25, 5]", Crystal(primitive_vectors("hexagonal", a), honeycomb, [MASS] * 2, ["C"] * 2),
+        ("Graphene, k = [25, 5]", honeycomb(a, [MASS] * 2, ["C"] * 2),
          [25.0, 5.0]),
     ]
     directions = np.column_stack([np.cos(ANGLES), np.sin(ANGLES)])

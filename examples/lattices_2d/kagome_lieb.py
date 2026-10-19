@@ -13,12 +13,11 @@ Masses and spring constants are illustrative.
 
 import matplotlib.pyplot as plt
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
+from libsolidstate.lattice.bonds import neighbour_bonds
+from libsolidstate.lattice.plot import plot_bands
 from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import dispersion
-from libsolidstate.spectra.plot import plot_bands
+from libsolidstate.lattice.structures import kagome, lieb
+from libsolidstate.phonons.dispersion import dispersion
 from libsolidstate.units import OMEGA_TO_THZ
 
 A = 4.0  # Å
@@ -26,15 +25,9 @@ SPRING_CONSTANTS = [10.0, 3.0]  # eV/Å², first and second shell
 
 
 def main():
-    hexagonal = primitive_vectors("hexagonal", A)
-    kagome = Crystal(hexagonal, [[0.0, 0.0], hexagonal[0] / 2, hexagonal[1] / 2], [12.011] * 3, ["A", "B", "C"])
-    lieb = Crystal(
-        primitive_vectors("square", A), [[0.0, 0.0], [A / 2, 0.0], [0.0, A / 2]], [63.546, 15.999, 15.999],
-        ["Cu", "O", "O"],
-    )
     cases = [
-        ("Kagome", kagome, "hexagonal", ["Γ", "M", "K", "Γ"]),
-        ("Lieb (CuO2)", lieb, "square", ["Γ", "X", "M", "Γ"]),
+        ("Kagome", kagome(A, [12.011] * 3, ["A", "B", "C"]), "hexagonal", ["Γ", "M", "K", "Γ"]),
+        ("Lieb (CuO2)", lieb(A, [63.546, 15.999, 15.999], ["Cu", "O", "O"]), "square", ["Γ", "X", "M", "Γ"]),
     ]
 
     fig, axes = plt.subplots(2, 2, figsize=(11, 8), sharey="row")

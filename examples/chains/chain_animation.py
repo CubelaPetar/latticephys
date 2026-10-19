@@ -2,10 +2,10 @@
 
 import numpy as np
 
-from libsolidstate.dynamics.display import animate
-from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.chain import chain_force_constants
-from libsolidstate.spectra.modes import normal_modes
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.display import animate
+from libsolidstate.phonons.integrate import simulate
+from libsolidstate.phonons.modes import normal_modes
 from libsolidstate.units import TIME_FS
 
 N_ATOMS = 11
@@ -25,8 +25,8 @@ def main():
     K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="periodic")
     masses = np.full(N_ATOMS, MASS)
 
-    omega_squared, _ = normal_modes(K, masses)
-    slowest = np.sqrt(omega_squared[omega_squared > 1e-10].min())
+    omega, _ = normal_modes(K, masses)
+    slowest = omega[omega > 0].min()
     period = 2 * np.pi / slowest
     print(f"slowest mode period: {period * TIME_FS:.1f} fs")
     steps = round(PERIODS * period / TIMESTEP)

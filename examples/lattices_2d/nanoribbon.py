@@ -10,10 +10,11 @@ bending of the strip). Some modes carry most of their weight on the edges: with
 import matplotlib.pyplot as plt
 import numpy as np
 
+from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.plot import plot_crystal
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import dynamical_matrix
+from libsolidstate.phonons.dispersion import dynamical_matrix
+from libsolidstate.phonons.modes import diagonalize
 from libsolidstate.units import OMEGA_TO_THZ
 
 A = 2.46  # Å, graphene lattice constant = period of the zigzag ribbon
@@ -44,9 +45,8 @@ def main():
     qs = np.linspace(0, np.pi / A, 200)
     frequencies, weights = [], []
     for qx in qs:
-        omega_squared, vectors = np.linalg.eigh(dynamical_matrix(ribbon, bonds, [qx, 0.0]))
-        # negative values would be unstable modes, as in dispersion()
-        frequencies.append(np.sign(omega_squared) * np.sqrt(np.abs(omega_squared)) * OMEGA_TO_THZ)
+        omega, vectors = diagonalize(dynamical_matrix(ribbon, bonds, [qx, 0.0]))
+        frequencies.append(omega * OMEGA_TO_THZ)
         weights.append((np.abs(vectors[np.repeat(edge, 2)]) ** 2).sum(axis=0))
     frequencies, weights = np.array(frequencies), np.array(weights)
 

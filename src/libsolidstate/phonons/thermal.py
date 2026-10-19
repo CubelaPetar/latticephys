@@ -3,7 +3,8 @@
 import numpy as np
 
 from libsolidstate.lattice.reciprocal import q_grid
-from libsolidstate.spectra.dispersion import _zero_tolerance, dynamical_matrix
+from libsolidstate.phonons.dispersion import dynamical_matrix
+from libsolidstate.phonons.modes import diagonalize
 from libsolidstate.units import K_B, OMEGA_TO_MEV
 
 
@@ -33,14 +34,13 @@ def mean_square_displacement(crystal, bonds, cells, temperature):
     """
     d, n_basis = crystal.dim, len(crystal.masses)
     qs = q_grid(crystal.vectors, cells)
-    tolerance = _zero_tolerance(crystal, bonds)
     total = np.zeros(n_basis)
     for q in qs:
-        omega_squared, vectors = np.linalg.eigh(dynamical_matrix(crystal, bonds, q))
-        zero = np.abs(omega_squared) < tolerance
-        if np.any(omega_squared[~zero] < 0) or (np.any(zero) and np.any(q != 0)):
+        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
+        zero = omega == 0
+        if np.any(omega < 0) or (np.any(zero) and np.any(q != 0)):
             raise ValueError(f"floppy or unstable mode at q = {q}, <u^2> diverges")
 
-        weight = np.abs(vectors[:, ~zero]) ** 2 / omega_squared[~zero]
+        weight = np.abs(vectors[:, ~zero]) ** 2 / omega[~zero] ** 2
         total += weight.reshape(n_basis, d, -1).sum(axis=(1, 2))
     return K_B * temperature / len(qs) * total / crystal.masses

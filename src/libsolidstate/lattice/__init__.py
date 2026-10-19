@@ -1,1 +1,1 @@
-"""Bravais lattices, crystal structures, reciprocal lattice and spring models."""
+"""Geometry: Bravais lattices, crystal structures, reciprocal lattice, bonds and plots."""

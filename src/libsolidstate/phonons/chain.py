@@ -3,7 +3,7 @@
 import numpy as np
 
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.springs import force_constants
+from libsolidstate.phonons.springs import force_constants
 
 
 def chain_force_constants(n, k, boundary="free"):

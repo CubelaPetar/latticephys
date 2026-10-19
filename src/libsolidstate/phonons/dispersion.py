@@ -3,7 +3,8 @@
 import numpy as np
 
 from libsolidstate.lattice.crystal import cell_offsets
-from libsolidstate.lattice.springs import _fourier_force_constants
+from libsolidstate.phonons.modes import diagonalize
+from libsolidstate.phonons.springs import _fourier_force_constants
 
 
 def dynamical_matrix(crystal, bonds, q):
@@ -26,8 +27,7 @@ def dispersion(crystal, bonds, qs):
 
     Negative values are unstable modes with imaginary frequency.
     """
-    omega_squared = np.array([np.linalg.eigvalsh(dynamical_matrix(crystal, bonds, q)) for q in qs])
-    return _frequencies(omega_squared, _zero_tolerance(crystal, bonds))
+    return np.array([diagonalize(dynamical_matrix(crystal, bonds, q))[0] for q in qs])
 
 
 def sound_velocities(crystal, bonds, directions, dq=1e-4):
@@ -57,7 +57,7 @@ def bloch_mode(crystal, bonds, q, branch, cells):
         raise ValueError("q does not fit the supercell, use q = (i b1 + j b2 + ...) / cells")
 
     d = crystal.dim
-    omega_squared, vectors = np.linalg.eigh(dynamical_matrix(crystal, bonds, q))
+    omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
     e = vectors[:, branch]
     # eigh returns e with an arbitrary complex phase; with e.g. e = (0, i) the real part
     # below would vanish everywhere, so make the largest component real
@@ -66,16 +66,4 @@ def bloch_mode(crystal, bonds, q, branch, cells):
 
     cell_vectors = cell_offsets(cells, d) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
-    return _frequencies(omega_squared, _zero_tolerance(crystal, bonds))[branch], u0.ravel()
-
-
-def _zero_tolerance(crystal, bonds):
-    """|omega^2| below this is round-off of a zero mode; relative to the scale sum |k| / m_min of D."""
-    return 1e-10 * sum(abs(k) for *_, k in bonds) / crystal.masses.min()
-
-
-def _frequencies(omega_squared, tolerance):
-    """omega = sign(omega^2) sqrt(|omega^2|), with round-off below tolerance set to 0."""
-    omega_squared = np.array(omega_squared, dtype=float)
-    omega_squared[np.abs(omega_squared) < tolerance] = 0.0
-    return np.sign(omega_squared) * np.sqrt(np.abs(omega_squared))
+    return omega[branch], u0.ravel()

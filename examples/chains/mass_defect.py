@@ -8,8 +8,8 @@ omega_L = omega_max / sqrt(1 - eps^2), and the amplitude decays as
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.chain import chain_force_constants
-from libsolidstate.spectra.modes import normal_modes
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.modes import normal_modes
 from libsolidstate.units import OMEGA_TO_THZ
 
 N_ATOMS = 41
@@ -24,8 +24,7 @@ def main():
     masses[centre] = IMPURITY_MASS
 
     K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
-    omega_squared, vectors = normal_modes(K, masses)
-    omega = np.sqrt(omega_squared)
+    omega, vectors = normal_modes(K, masses)
 
     omega_max = 2 * np.sqrt(SPRING_CONSTANT / MASS)
     eps = 1 - IMPURITY_MASS / MASS

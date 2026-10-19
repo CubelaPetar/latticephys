@@ -25,16 +25,16 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 
 | Example | Shows | Uses |
 |---|---|---|
-| `crystals_2d.py` | NaCl plane, graphene, hBN, triangular, kagome, CuO₂ (Lieb), AFM | `Crystal`, `plot_crystal` |
+| `crystals_2d.py` | NaCl plane, graphene, hBN, triangular, kagome, CuO₂ (Lieb), AFM | `Crystal`, `honeycomb`, `kagome`, `lieb`, `plot_crystal` |
 | `brillouin_zones.py` | First Brillouin zones of the five 2D Bravais lattices | `plot_brillouin_zone` |
 | `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `dispersion`, `k_path`, `plot_bands` |
 | `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
 | `wave_2d.py` | One displaced atom launches longitudinal and transverse waves (pygame) | `periodic_supercell`, `force_constants`, `simulate`, `animate` |
 | `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `heat_capacity` |
 | `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
-| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dynamical_matrix` |
+| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dynamical_matrix`, `diagonalize` |
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
-| `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `neighbour_bonds`, `dispersion` |
+| `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |
 
 ## Data export (`export/`)
 

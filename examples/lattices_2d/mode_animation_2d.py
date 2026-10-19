@@ -7,13 +7,13 @@ each other; degenerate modes (Γ optical, K) show one arbitrary combination.
 
 import numpy as np
 
-from libsolidstate.dynamics.display import animate
-from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
+from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
 from libsolidstate.lattice.reciprocal import special_points
-from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
-from libsolidstate.spectra.dispersion import bloch_mode
+from libsolidstate.lattice.structures import honeycomb
+from libsolidstate.phonons.dispersion import bloch_mode
+from libsolidstate.phonons.display import animate
+from libsolidstate.phonons.integrate import simulate
+from libsolidstate.phonons.springs import force_constants
 from libsolidstate.units import OMEGA_TO_THZ
 
 POINT = "M"  # "Γ", "M" or "K"
@@ -34,8 +34,7 @@ BLUE = (100, 149, 237)
 
 
 def main():
-    honeycomb = [[0.0, 0.0], [A / 2, A / (2 * np.sqrt(3))]]
-    crystal = Crystal(primitive_vectors("hexagonal", A), honeycomb, [MASS, MASS], ["C", "C"])
+    crystal = honeycomb(A, [MASS, MASS], ["C", "C"])
     bonds = neighbour_bonds(crystal, SPRING_CONSTANTS)
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
     K = force_constants(supercell, supercell_bonds)

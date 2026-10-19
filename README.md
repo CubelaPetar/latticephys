@@ -22,7 +22,7 @@ Inputs in Å, amu and eV (spring constants in eV/Å²). Time is then in units of
 ```python
 import numpy as np
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.spectra.dispersion import dispersion
+from libsolidstate.phonons.dispersion import dispersion
 from libsolidstate.units import OMEGA_TO_THZ
 
 a = 2.5                                                              # Å
@@ -40,9 +40,8 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 
 | Path | Content |
 |---|---|
-| `src/libsolidstate/lattice/` | Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, force constants |
-| `src/libsolidstate/spectra/` | Normal modes, dynamical matrix, dispersions, sound velocities, thermal properties |
-| `src/libsolidstate/dynamics/` | Time integration and pygame animation |
+| `src/libsolidstate/lattice/` | Geometry, independent of the physics: Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, k-paths, bonds and supercells, plots |
+| `src/libsolidstate/phonons/` | Springs, dynamical matrix, normal modes, dispersions, sound velocities, thermal properties, time integration, pygame animation |
 | `src/libsolidstate/units.py` | Unit system and conversions |
 | `src/libsolidstate/export.py` | JSON export, e.g. for web pages |
 | `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `export/`); planned ones in `IDEAS.md` |

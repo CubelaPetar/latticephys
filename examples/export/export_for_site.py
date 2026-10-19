@@ -11,11 +11,11 @@ from pathlib import Path
 import numpy as np
 
 from libsolidstate.export import save_json
-from libsolidstate.lattice.bravais2d import primitive_vectors
+from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.reciprocal import k_path, special_points
-from libsolidstate.lattice.springs import neighbour_bonds, periodic_supercell
-from libsolidstate.spectra.dispersion import bloch_mode, dispersion
+from libsolidstate.lattice.structures import honeycomb
+from libsolidstate.phonons.dispersion import bloch_mode, dispersion
 from libsolidstate.units import OMEGA_TO_THZ
 
 
@@ -56,9 +56,7 @@ def main():
     chain_bonds = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]
     chain_points = {"-π/a": [-np.pi / a], "Γ": [0.0], "π/a": [np.pi / a]}
 
-    g = 2.46
-    graphene = Crystal(primitive_vectors("hexagonal", g), [[0.0, 0.0], [g / 2, g / (2 * np.sqrt(3))]],
-                       [12.011] * 2, ["C"] * 2)
+    graphene = honeycomb(2.46, [12.011] * 2, ["C"] * 2)
     graphene_bonds = neighbour_bonds(graphene, [25.0, 5.0])
     graphene_points = special_points("hexagonal", graphene.vectors)
 

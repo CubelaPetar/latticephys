@@ -7,10 +7,10 @@ q_j = j pi / ((N + 1) a), j = 1 .. N, from the continuous curve omega(q).
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.chain import chain_force_constants
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.spectra.dispersion import dispersion
-from libsolidstate.spectra.modes import normal_modes
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.dispersion import dispersion
+from libsolidstate.phonons.modes import normal_modes
 from libsolidstate.units import OMEGA_TO_THZ
 
 N_ATOMS = 10
@@ -26,12 +26,12 @@ def main():
     curve = dispersion(chain, [(0, 0, 1, SPRING_CONSTANT)], qs)[:, 0] * OMEGA_TO_THZ
 
     K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
-    omega_squared, vectors = normal_modes(K, np.full(N_ATOMS, MASS))
+    omega, vectors = normal_modes(K, np.full(N_ATOMS, MASS))
     q_finite = np.arange(1, N_ATOMS + 1) * np.pi / ((N_ATOMS + 1) * a)
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4))
     left.plot(qs * a, curve, label="infinite chain")
-    left.plot(q_finite * a, np.sqrt(omega_squared) * OMEGA_TO_THZ, "o", label=f"fixed chain, N = {N_ATOMS}")
+    left.plot(q_finite * a, omega * OMEGA_TO_THZ, "o", label=f"fixed chain, N = {N_ATOMS}")
     left.set_xlabel(r"$q a$")
     left.set_ylabel(r"$\nu$ (THz)")
     left.set_xticks([0, np.pi / 2, np.pi], ["0", r"$\pi/2$", r"$\pi$"])

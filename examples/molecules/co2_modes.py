@@ -6,8 +6,8 @@ due to Fermi resonance with the bending overtone), asymmetric stretch 2349 cm^-1
 
 import numpy as np
 
-from libsolidstate.lattice.chain import chain_force_constants
-from libsolidstate.spectra.modes import normal_modes
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.modes import normal_modes
 from libsolidstate.units import OMEGA_TO_INV_CM, OMEGA_TO_THZ
 
 SPRING_CONSTANT = 100.0  # eV/Å², C=O bond (≈ 1600 N/m)
@@ -19,13 +19,12 @@ def main():
     K = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
     masses = np.array([MASS_O, MASS_C, MASS_O])
 
-    omega_squared, vectors = normal_modes(K, masses)
+    omega, vectors = normal_modes(K, masses)
     displacements = vectors / np.sqrt(masses)[:, None]
 
     for j in range(len(masses)):
-        omega = np.sqrt(max(omega_squared[j], 0.0))
         print(
-            f"{omega * OMEGA_TO_INV_CM:7.1f} cm^-1  {omega * OMEGA_TO_THZ:5.1f} THz"
+            f"{omega[j] * OMEGA_TO_INV_CM:7.1f} cm^-1  {omega[j] * OMEGA_TO_THZ:5.1f} THz"
             f"   displacements = {np.round(displacements[:, j], 4)}"
         )
 

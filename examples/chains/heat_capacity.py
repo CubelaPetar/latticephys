@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.spectra.dispersion import dispersion
-from libsolidstate.spectra.thermal import heat_capacity
+from libsolidstate.phonons.dispersion import dispersion
+from libsolidstate.phonons.thermal import heat_capacity
 from libsolidstate.units import OMEGA_TO_THZ
 
 SPRING_CONSTANT = 10.0  # eV/Å²

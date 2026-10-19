@@ -1,41 +1,14 @@
-"""Central springs between atoms of a Crystal: force constants, neighbour bonds and periodic supercells.
+"""Bonds between atoms of a Crystal: neighbour shells and periodic supercells.
 
-A bond (mu, nu, n, k) is a spring k between atom mu in cell 0 and atom nu in
-cell n (integer tuple, or int in 1D). Its direction comes from the crystal.
+A bond (mu, nu, n, k) couples atom mu in cell 0 to atom nu in cell n (integer
+tuple, or int in 1D) with a parameter k, e.g. a spring constant. Its direction
+comes from the crystal.
 """
 
 import numpy as np
 
 from libsolidstate.lattice.crystal import Crystal, cell_offsets
-
-
-def force_constants(crystal, bonds):
-    """Force-constant matrix K of the atoms of one cell, V = 1/2 u^T K u.
-
-    Bonds to other cells (n != 0) couple to the periodic images, so for a
-    periodic_supercell() this is the finite periodic system; for a molecule
-    all bonds have n = 0. Shape (B d, B d), degrees of freedom ordered atom
-    by atom: [u_0x, u_0y, u_1x, u_1y, ...]. Use np.repeat(masses, d) as masses.
-    """
-    return _fourier_force_constants(crystal, bonds, np.zeros(crystal.dim)).real
-
-
-def _fourier_force_constants(crystal, bonds, q):
-    """Phi(q) = sum over bonds of the central-spring block k e e^T with Bloch phases."""
-    d = crystal.dim
-    phi = np.zeros((len(crystal.masses) * d, len(crystal.masses) * d), dtype=complex)
-    for mu, nu, n, k in bonds:
-        r = crystal.bond_vector(mu, nu, n)
-        block = k * np.outer(r, r) / (r @ r)
-        phase = np.exp(1j * q @ (np.atleast_1d(n) @ crystal.vectors))
-
-        smu = slice(mu * d, (mu + 1) * d)
-        snu = slice(nu * d, (nu + 1) * d)
-        phi[smu, smu] += block
-        phi[snu, snu] += block
-        phi[smu, snu] -= block * phase
-        phi[snu, smu] -= block * np.conj(phase)
-    return phi
+from libsolidstate.lattice.reciprocal import reciprocal_vectors
 
 
 def neighbour_bonds(crystal, spring_constants, search=3):
@@ -46,7 +19,8 @@ def neighbour_bonds(crystal, spring_constants, search=3):
     search:           cells searched in each direction
 
     Shells are the distinct atom distances in ascending order. Returns a list
-    of bonds (mu, nu, n, k), each bond once.
+    of bonds (mu, nu, n, k), each bond once. Raises if search is too small to
+    find all requested shells completely.
     """
     origin = (0,) * crystal.dim
     candidates = []
@@ -59,6 +33,8 @@ def neighbour_bonds(crystal, spring_constants, search=3):
                 candidates.append((mu, nu, n, np.linalg.norm(crystal.bond_vector(mu, nu, n))))
 
     shells = np.unique(np.round([c[3] for c in candidates], 6))[: len(spring_constants)]
+    if len(shells) < len(spring_constants) or shells[-1] >= _search_radius(crystal, search) - 1e-6:
+        raise ValueError(f"{len(spring_constants)} shells need more than search = {search} cells, increase search")
 
     bonds = []
     for mu, nu, n, distance in candidates:
@@ -66,6 +42,18 @@ def neighbour_bonds(crystal, spring_constants, search=3):
         if len(shell):
             bonds.append((mu, nu, n, spring_constants[shell[0]]))
     return bonds
+
+
+def _search_radius(crystal, search):
+    """Every bond to a cell outside |n_i| <= search is at least this long.
+
+    Along the unit normal b_i / |b_i| of the lattice planes a bond to cell n has
+    the component (2 pi n_i + (r_nu - r_mu) . b_i) / |b_i|.
+    """
+    b = reciprocal_vectors(crystal.vectors)
+    b_norm = np.linalg.norm(b, axis=1)
+    spread = np.abs((crystal.positions[:, None, :] - crystal.positions[None, :, :]) @ b.T).max(axis=(0, 1))
+    return np.min((2 * np.pi * (search + 1) - spread) / b_norm)
 
 
 def periodic_supercell(crystal, bonds, cells):

@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
 
+from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.bravais2d import primitive_vectors
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.reciprocal import q_grid
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import dispersion, sound_velocities
-from libsolidstate.spectra.thermal import heat_capacity, mean_square_displacement
+from libsolidstate.phonons.dispersion import dispersion, sound_velocities
+from libsolidstate.phonons.thermal import heat_capacity, mean_square_displacement
 from libsolidstate.units import K_B, OMEGA_TO_MEV
 
 A = 2.46

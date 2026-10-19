@@ -1,11 +1,12 @@
 import numpy as np
 import pytest
 
-from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.chain import chain_force_constants
+from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
 from libsolidstate.lattice.crystal import Crystal
-from libsolidstate.lattice.springs import force_constants, neighbour_bonds, periodic_supercell
-from libsolidstate.spectra.dispersion import bloch_mode, dispersion, dynamical_matrix
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.dispersion import bloch_mode, dispersion, dynamical_matrix
+from libsolidstate.phonons.integrate import simulate
+from libsolidstate.phonons.springs import force_constants
 
 A = 1.0
 QS = np.linspace(-np.pi / A, np.pi / A, 101)

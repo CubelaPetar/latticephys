@@ -7,7 +7,7 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 ## Next
 
 - [ ] out-of-plane modes (3D displacements, e.g. graphene ZA branch)
-- [ ] `animate()`: optionally colour atoms by displacement, so small waves are visible; draw bonds
+- [ ] `animate()`: optionally colour atoms by displacement, so small waves are visible; draw bonds; centre and scale to the window itself (now done in each example)
 
 ## Later
 

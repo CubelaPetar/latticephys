@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from libsolidstate.dynamics.display import animate
-from libsolidstate.dynamics.integrate import simulate
-from libsolidstate.lattice.chain import chain_force_constants
+from libsolidstate.phonons.chain import chain_force_constants
+from libsolidstate.phonons.display import animate
+from libsolidstate.phonons.integrate import simulate
 from libsolidstate.units import TIME_FS
 
 SPRING_CONSTANT = 100.0  # eV/Å²

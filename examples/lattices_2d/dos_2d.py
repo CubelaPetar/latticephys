@@ -9,12 +9,11 @@ for two in-plane degrees of freedom) at high T.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.crystal import Crystal
+from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.reciprocal import q_grid, special_points
-from libsolidstate.lattice.springs import neighbour_bonds
-from libsolidstate.spectra.dispersion import dispersion
-from libsolidstate.spectra.thermal import heat_capacity
+from libsolidstate.lattice.structures import honeycomb
+from libsolidstate.phonons.dispersion import dispersion
+from libsolidstate.phonons.thermal import heat_capacity
 from libsolidstate.units import OMEGA_TO_THZ
 
 A = 2.46  # Å
@@ -25,8 +24,7 @@ TEMPERATURES = np.geomspace(5, 3000, 200)  # K
 
 
 def main():
-    honeycomb = [[0.0, 0.0], [A / 2, A / (2 * np.sqrt(3))]]
-    crystal = Crystal(primitive_vectors("hexagonal", A), honeycomb, [MASS, MASS], ["C", "C"])
+    crystal = honeycomb(A, [MASS, MASS], ["C", "C"])
     bonds = neighbour_bonds(crystal, SPRING_CONSTANTS)
 
     omega = dispersion(crystal, bonds, q_grid(crystal.vectors, GRID))

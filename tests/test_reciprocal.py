@@ -2,7 +2,13 @@ import numpy as np
 import pytest
 
 from libsolidstate.lattice.bravais2d import primitive_vectors
-from libsolidstate.lattice.reciprocal import brillouin_zone, reciprocal_vectors, wigner_seitz_cell
+from libsolidstate.lattice.reciprocal import (
+    brillouin_zone,
+    k_path,
+    reciprocal_vectors,
+    special_points,
+    wigner_seitz_cell,
+)
 
 LATTICES = [
     ("oblique", (2.0, 3.0, 75.0)),
@@ -46,3 +52,21 @@ def test_hexagonal_brillouin_zone():
     corners = brillouin_zone(primitive_vectors("hexagonal", a))
     assert len(corners) == 6
     np.testing.assert_allclose(np.linalg.norm(corners, axis=1), 4 * np.pi / (3 * a))
+
+
+def test_hexagonal_special_points():
+    a = 2.46
+    points = special_points("hexagonal", primitive_vectors("hexagonal", a))
+    assert np.linalg.norm(points["K"]) == pytest.approx(4 * np.pi / (3 * a))
+    assert np.linalg.norm(points["M"]) == pytest.approx(2 * np.pi / (np.sqrt(3) * a))
+    corners = brillouin_zone(primitive_vectors("hexagonal", a))
+    assert np.min(np.linalg.norm(corners - points["K"], axis=1)) == pytest.approx(0, abs=1e-12)
+
+
+def test_k_path():
+    points = [[0, 0], [1, 0], [1, 1]]
+    qs, distance, corners = k_path(points, n=20)
+    np.testing.assert_allclose(qs[0], points[0])
+    np.testing.assert_allclose(qs[-1], points[-1])
+    np.testing.assert_allclose(corners, [0, 1, 2])
+    assert np.all(np.diff(distance) > 0)
