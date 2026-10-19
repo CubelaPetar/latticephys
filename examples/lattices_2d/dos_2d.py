@@ -13,6 +13,7 @@ from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.reciprocal import q_grid, special_points
 from libsolidstate.lattice.structures import honeycomb
 from libsolidstate.phonons.dispersion import dispersion
+from libsolidstate.phonons.spectra import density_of_states
 from libsolidstate.phonons.thermal import heat_capacity
 from libsolidstate.units import OMEGA_TO_THZ
 
@@ -20,6 +21,7 @@ A = 2.46  # Å
 MASS = 12.011  # amu
 SPRING_CONSTANTS = [25.0, 5.0]  # eV/Å², first and second neighbours
 GRID = 150  # GRID x GRID wave vectors in the Brillouin zone
+SMEARING = 0.2  # THz, Gaussian width of each mode in the DOS
 TEMPERATURES = np.geomspace(5, 3000, 200)  # K
 
 
@@ -32,7 +34,8 @@ def main():
     per_atom = crystal.dim * heat_capacity(omega, TEMPERATURES)
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(12, 4.5))
-    left.hist(omega.ravel() * OMEGA_TO_THZ, bins=200, density=True)
+    grid = np.linspace(0, 1.05 * omega.max() * OMEGA_TO_THZ, 500)
+    left.plot(grid, density_of_states(omega * OMEGA_TO_THZ, grid, sigma=SMEARING))
     for nu in at_m * OMEGA_TO_THZ:
         left.axvline(nu, color="grey", ls="--", lw=0.8)
     left.set_xlabel(r"$\nu$ (THz)")

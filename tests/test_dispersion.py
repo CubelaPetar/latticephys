@@ -4,7 +4,7 @@ import pytest
 from libsolidstate.lattice.bonds import neighbour_bonds, periodic_supercell
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.phonons.chain import chain_force_constants
-from libsolidstate.phonons.dispersion import bloch_mode, dispersion, dynamical_matrix
+from libsolidstate.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
 from libsolidstate.phonons.integrate import simulate
 from libsolidstate.phonons.springs import force_constants
 
@@ -116,3 +116,19 @@ def test_bloch_mode_zero_mode_is_exactly_zero():
     """Round-off must not turn the acoustic mode at q = 0 into a tiny positive omega (endless period)."""
     omega, _ = bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, 0.0, branch=0, cells=8)
     assert omega == 0.0
+
+
+def test_group_velocity_monatomic_chain():
+    """v = a sqrt(k/m) cos(q a / 2) for q > 0; undefined at q = 0."""
+    k, m = 1.5, 2.0
+    qs = np.linspace(0, np.pi / A, 11)
+    v = group_velocities(monatomic(m), [(0, 0, 1, k)], qs)[:, 0, 0]
+    assert np.isnan(v[0])
+    np.testing.assert_allclose(v[1:], A * np.sqrt(k / m) * np.cos(qs[1:] * A / 2), atol=1e-12)
+
+
+def test_atom_weights_at_zone_edge():
+    """At q = pi/a only the heavy atom moves on the acoustic branch, only the light one on the optical."""
+    weights = atom_weights(diatomic(1.0, 3.0), DIATOMIC_BONDS, [np.pi / A, 0.7])
+    np.testing.assert_allclose(weights[0], [[0, 1], [1, 0]], atol=1e-12)
+    np.testing.assert_allclose(weights.sum(axis=2), 1)

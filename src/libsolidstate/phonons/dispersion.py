@@ -67,3 +67,39 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     cell_vectors = cell_offsets(cells, d) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
     return omega[branch], u0.ravel()
+
+
+def group_velocities(crystal, bonds, qs):
+    """Group velocities d omega / dq of all branches, shape (len(qs), B d, d), in Å per internal time unit.
+
+    From the eigenvectors (Hellmann-Feynman): d omega / dq_i = e^H (dD / dq_i) e / (2 omega).
+    The velocity is not defined for zero modes and for degenerate branches (it depends on
+    the chosen combination there), so these entries are nan.
+    """
+    d = crystal.dim
+    inv_sqrt_m = np.repeat(1 / np.sqrt(crystal.masses), d)
+    velocities = []
+    for q in qs:
+        q = np.atleast_1d(np.asarray(q, dtype=float))
+        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
+        gradient = inv_sqrt_m[:, None] * _fourier_force_constants(crystal, bonds, q, gradient=True) * inv_sqrt_m
+        slope = np.einsum("as,iab,bs->si", vectors.conj(), gradient, vectors).real
+
+        gap = np.abs(omega[:, None] - omega[None, :])
+        np.fill_diagonal(gap, np.inf)
+        undefined = (omega == 0) | (gap.min(axis=1) < 1e-6 * np.abs(omega).max())
+        with np.errstate(divide="ignore", invalid="ignore"):
+            velocity = slope / (2 * omega[:, None])
+        velocity[undefined] = np.nan
+        velocities.append(velocity)
+    return np.array(velocities)
+
+
+def atom_weights(crystal, bonds, qs):
+    """Weight |e_mu|^2 of each basis atom in each mode, shape (len(qs), B d, B); sums to 1 per mode."""
+    d, n_basis = crystal.dim, len(crystal.masses)
+    weights = []
+    for q in qs:
+        _, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
+        weights.append((np.abs(vectors) ** 2).reshape(n_basis, d, -1).sum(axis=1).T)
+    return np.array(weights)

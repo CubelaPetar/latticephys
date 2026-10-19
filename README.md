@@ -41,7 +41,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | Path | Content |
 |---|---|
 | `src/libsolidstate/lattice/` | Geometry, independent of the physics: Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, k-paths, bonds and supercells, plots |
-| `src/libsolidstate/phonons/` | Springs, dynamical matrix, normal modes, dispersions, sound velocities, thermal properties, time integration, pygame animation |
+| `src/libsolidstate/phonons/` | Springs (central or (k_L, k_T)), dynamical matrix, normal modes, dispersions, group and sound velocities, DOS, scattering intensity S(Q, ω), thermal properties, time integration, pygame animation |
 | `src/libsolidstate/units.py` | Unit system and conversions |
 | `src/libsolidstate/export.py` | JSON export, e.g. for web pages |
 | `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `export/`); planned ones in `IDEAS.md` |

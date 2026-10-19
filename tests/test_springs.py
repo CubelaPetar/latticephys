@@ -40,3 +40,18 @@ def test_tetrahedron_has_six_zero_modes():
 
     np.testing.assert_array_equal(omega[:6], 0)
     assert np.all(omega[6:] > 0.1)
+
+
+def test_central_spring_equals_pair_without_transverse_part():
+    pair = Crystal(UNUSED * np.eye(2), [[0.0, 0.0], [1.0, 2.0]], [1.0] * 2, ["A"] * 2)
+    np.testing.assert_array_equal(
+        force_constants(pair, [(0, 1, (0, 0), 3.0)]), force_constants(pair, [(0, 1, (0, 0), (3.0, 0.0))])
+    )
+
+
+def test_transverse_spring_breaks_rotational_invariance():
+    """With k_T a free pair keeps only the 2 translations at omega = 0: its rotation costs energy."""
+    pair = Crystal(UNUSED * np.eye(2), [[0.0, 0.0], [1.0, 0.0]], [1.0] * 2, ["A"] * 2)
+    omega, _ = normal_modes(force_constants(pair, [(0, 1, (0, 0), (2.0, 0.5))]), np.ones(4))
+    np.testing.assert_array_equal(omega[:2], 0)
+    np.testing.assert_allclose(omega[2:] ** 2, [2 * 0.5, 2 * 2.0])

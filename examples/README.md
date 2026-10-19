@@ -19,7 +19,8 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `finite_chain_modes.py` | Fixed-chain modes lie on ω(q) at q_j = jπ/((N+1)a) | `normal_modes`, `dispersion` |
 | `mass_defect.py` | Localized mode of a light impurity above the band | `normal_modes` |
 | `wave_packet.py` | Packet moving with the group velocity (space–time plot) | `simulate` |
-| `heat_capacity.py` | Density of states, C_V(T) vs. Debye and Einstein | `dispersion`, `units` |
+| `heat_capacity.py` | Density of states, C_V(T) vs. Debye and Einstein | `dispersion`, `density_of_states`, `heat_capacity` |
+| `structure_factor.py` | Scattering intensity S(Q, ω) over three zones; acoustic branch extinct near Q = 2π/a | `structure_factor`, `density_of_states` |
 
 ## 2D lattices (`lattices_2d/`)
 
@@ -30,9 +31,10 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `dispersion`, `k_path`, `plot_bands` |
 | `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
 | `wave_2d.py` | One displaced atom launches longitudinal and transverse waves, atoms coloured by displacement (pygame) | `periodic_supercell`, `force_constants`, `simulate`, `animate` |
-| `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `heat_capacity` |
+| `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `density_of_states`, `heat_capacity` |
+| `transverse_springs.py` | Square lattice: central springs leave Γ–X floppy, (k_L, k_T) springs give shear stiffness | `neighbour_bonds` with (k_L, k_T), `plot_bands` |
 | `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
-| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dynamical_matrix`, `diagonalize` |
+| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dispersion`, `atom_weights` |
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |
 

@@ -17,7 +17,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    - **Verify:** run `pytest`, `ruff check` and every example headless before committing.
    - Open cleanup items in `TODO.md` come before new features.
 
-
 ## Scope
 
 Lattice physics with single-particle or harmonic methods: phonons now; tight-binding electrons, classical spins / linear spin waves and electron–phonon models fit later. Dimensions: 1D and 2D done, 3D next.
@@ -32,7 +31,7 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 
 - Argument order model first: `(crystal, bonds, q or qs, ...)`.
 - `Crystal(vectors, positions, masses, names)`: vectors (d, d) as rows, positions (B, d) Cartesian. A molecule is a Crystal whose bonds all stay in cell 0.
-- Bond `(mu, nu, n, k)`: atom mu in cell 0 to atom nu in cell n (int in 1D, tuple otherwise), each bond listed once. The last entry is the model parameter (spring constant now, hopping or exchange later).
+- Bond `(mu, nu, n, k)`: atom mu in cell 0 to atom nu in cell n (int in 1D, tuple otherwise), each bond listed once. The last entry is the model parameter: a spring k or (k_L, k_T) now, hopping or exchange later.
 - Degrees of freedom atom by atom `[u_0x, u_0y, u_1x, ...]`; masses per degree of freedom `np.repeat(masses, d)`.
 - Units in: Å, amu, eV (k in eV/Å²); internal time unit ≈ 10.18 fs. Convert only at output with `libsolidstate.units`.
 - Frequencies are always ω, never ω²: negative = unstable, zero modes exactly 0. All eigenproblems of dynamical matrices go through `phonons.modes.diagonalize`.
@@ -41,10 +40,6 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 
 ## Verify
 
-```sh
-.venv/bin/pytest && .venv/bin/ruff check
-# every example headless (plots to Agg, animate() skipped, export into a temp dir):
-out=$(mktemp -d); for f in examples/*/*.py; do MPLBACKEND=Agg .venv/bin/python -c "import runpy, sys; import libsolidstate.phonons.display as d; d.animate = lambda *a, **k: None; sys.argv = sys.argv[1:]; runpy.run_path(sys.argv[0], run_name='__main__')" $f $out >/dev/null 2>&1 || echo "FAIL $f"; done
-```
+`.venv/bin/pytest && .venv/bin/ruff check`. `tests/test_examples.py` runs every example headless (Agg backend, `animate()` skipped, exports into a temp dir).
 
 Push to `origin` (Gitea); the GitHub repo `CubelaPetar/libsolidstate` (remote `public`) is public.

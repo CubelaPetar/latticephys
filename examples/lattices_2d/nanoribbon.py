@@ -13,8 +13,7 @@ import numpy as np
 from libsolidstate.lattice.bonds import neighbour_bonds
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.plot import plot_crystal
-from libsolidstate.phonons.dispersion import dynamical_matrix
-from libsolidstate.phonons.modes import diagonalize
+from libsolidstate.phonons.dispersion import atom_weights, dispersion
 from libsolidstate.units import OMEGA_TO_THZ
 
 A = 2.46  # Å, graphene lattice constant = period of the zigzag ribbon
@@ -43,12 +42,9 @@ def main():
     edge[: 2 * EDGE_ROWS] = edge[-2 * EDGE_ROWS :] = True
 
     qs = np.linspace(0, np.pi / A, 200)
-    frequencies, weights = [], []
-    for qx in qs:
-        omega, vectors = diagonalize(dynamical_matrix(ribbon, bonds, [qx, 0.0]))
-        frequencies.append(omega * OMEGA_TO_THZ)
-        weights.append((np.abs(vectors[np.repeat(edge, 2)]) ** 2).sum(axis=0))
-    frequencies, weights = np.array(frequencies), np.array(weights)
+    q_vectors = np.column_stack([qs, np.zeros_like(qs)])
+    frequencies = dispersion(ribbon, bonds, q_vectors) * OMEGA_TO_THZ
+    weights = atom_weights(ribbon, bonds, q_vectors)[:, :, edge].sum(axis=2)
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(13, 5), width_ratios=[2, 1])
     q_all = np.repeat(qs * A, frequencies.shape[1])

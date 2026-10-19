@@ -10,6 +10,7 @@ import numpy as np
 
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.phonons.dispersion import dispersion
+from libsolidstate.phonons.spectra import density_of_states
 from libsolidstate.phonons.thermal import heat_capacity
 from libsolidstate.units import OMEGA_TO_THZ
 
@@ -17,6 +18,7 @@ SPRING_CONSTANT = 10.0  # eV/Å²
 MASS = 12.011  # amu
 LATTICE_CONSTANT = 1.5  # Å
 Q_POINTS = 20000  # sampling of the Brillouin zone
+SMEARING = 0.1  # THz, Gaussian width of each mode in the DOS
 TEMPERATURES = np.linspace(1, 1500, 300)  # K
 
 
@@ -30,7 +32,8 @@ def main():
     einstein = np.full_like(omega, omega.mean())
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4))
-    left.hist(omega * OMEGA_TO_THZ, bins=100, density=True)
+    grid = np.linspace(0, 1.05 * omega.max() * OMEGA_TO_THZ, 500)
+    left.plot(grid, density_of_states(omega * OMEGA_TO_THZ, grid, sigma=SMEARING))
     left.set_xlabel(r"$\nu$ (THz)")
     left.set_ylabel("density of states (per THz)")
 

@@ -6,7 +6,7 @@ from libsolidstate.lattice.bravais2d import primitive_vectors
 from libsolidstate.lattice.crystal import Crystal
 from libsolidstate.lattice.reciprocal import k_path, reciprocal_vectors, special_points
 from libsolidstate.lattice.structures import honeycomb, kagome, lieb
-from libsolidstate.phonons.dispersion import bloch_mode, dispersion
+from libsolidstate.phonons.dispersion import bloch_mode, dispersion, group_velocities
 from libsolidstate.phonons.integrate import simulate
 from libsolidstate.phonons.modes import normal_modes
 from libsolidstate.phonons.springs import force_constants
@@ -156,3 +156,42 @@ def test_free_strip_bends_quadratically():
     np.testing.assert_allclose(omega[0, :2], 0, atol=1e-12)
     assert omega[0, 2] > 0.1
     assert omega[2, 0] / omega[1, 0] == pytest.approx(4.0, rel=0.01)
+
+
+def test_square_with_transverse_springs_analytic():
+    """Born-von Karman square lattice, nearest neighbours (k_L, k_T): D is diagonal with
+    D_xx = 2/m [k_L (1 - cos q_x a) + k_T (1 - cos q_y a)] and x <-> y for D_yy."""
+    a, m, k_l, k_t = 2.0, 3.0, 4.0, 1.5
+    crystal = Crystal(primitive_vectors("square", a), [[0, 0]], [m], ["A"])
+    qs = np.random.default_rng(1).uniform(-2, 2, size=(20, 2))
+
+    omega = dispersion(crystal, neighbour_bonds(crystal, [(k_l, k_t)]), qs)
+    cx, cy = 1 - np.cos(qs[:, 0] * a), 1 - np.cos(qs[:, 1] * a)
+    expected = np.sort([2 / m * (k_l * cx + k_t * cy), 2 / m * (k_t * cx + k_l * cy)], axis=0).T
+    np.testing.assert_allclose(omega**2, expected, atol=1e-12)
+
+
+def test_group_velocities_match_finite_differences():
+    crystal = graphene()
+    bonds = neighbour_bonds(crystal, [(10.0, 1.0), 2.0])
+    qs = np.random.default_rng(2).uniform(-1, 1, size=(5, 2))
+    h = 1e-6
+
+    velocities = group_velocities(crystal, bonds, qs)
+    for q, v in zip(qs, velocities):
+        slopes = [(dispersion(crystal, bonds, [q + h * e])[0] - dispersion(crystal, bonds, [q - h * e])[0]) / (2 * h)
+                  for e in np.eye(2)]
+        np.testing.assert_allclose(v, np.array(slopes).T, atol=1e-7)
+
+
+def test_group_velocities_undefined_at_degeneracies():
+    """At Gamma the acoustic branches are zero and the optical ones degenerate; at K some branches are degenerate."""
+    crystal = graphene()
+    bonds = neighbour_bonds(crystal, [10.0, 2.0])
+    points = special_points("hexagonal", crystal.vectors)
+    gamma, k = group_velocities(crystal, bonds, [points["Γ"], points["K"]])
+    assert np.all(np.isnan(gamma))
+    omega = dispersion(crystal, bonds, [points["K"]])[0]
+    degenerate = np.isclose(omega[:, None], omega[None, :]).sum(axis=1) > 1
+    assert degenerate.any()
+    assert np.all(np.isnan(k[degenerate])) and not np.any(np.isnan(k[~degenerate]))

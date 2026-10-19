@@ -14,8 +14,9 @@ from libsolidstate.lattice.reciprocal import reciprocal_vectors
 def neighbour_bonds(crystal, spring_constants, search=3):
     """Bonds of a crystal to its neighbour shells.
 
-    spring_constants: spring constant per shell, [k1] for nearest neighbours,
-                      [k1, k2] to add second neighbours, ...
+    spring_constants: bond parameter per shell, [k1] for nearest neighbours,
+                      [k1, k2] to add second neighbours, ...; each entry is used
+                      as given, e.g. a spring k or a pair (k_L, k_T)
     search:           cells searched in each direction
 
     Shells are the distinct atom distances in ascending order. Returns a list
