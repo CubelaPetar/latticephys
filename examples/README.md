@@ -1,15 +1,15 @@
 # Examples
 
-Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Parameters are constants at the top of each file; the docstring explains the physics. Animations (pygame) loop until the window is closed; `SECONDS_PER_PERIOD` (or `SECONDS` in `wave_2d.py`) sets the playback speed, `TIMESTEP` only the accuracy.
+Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. Parameters are constants at the top of each file; the docstring explains the physics. Planned examples are in [`IDEAS.md`](IDEAS.md). Animations (pygame) loop until the window is closed; `SECONDS_PER_PERIOD` (or `SECONDS` in `wave_2d.py`) sets the playback speed, `TIMESTEP` only the accuracy.
 
-## Molecules
+## Molecules (`molecules/`)
 
 | Example | Shows | Uses |
 |---|---|---|
 | `co2_modes.py` | CO₂ normal modes in cm⁻¹ | `normal_modes` |
 | `co2_animation.py` | CO₂ symmetric stretch (pygame) | `simulate`, `animate` |
 
-## 1D chains
+## 1D chains (`chains/`)
 
 | Example | Shows | Uses |
 |---|---|---|
@@ -21,7 +21,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 | `wave_packet.py` | Packet moving with the group velocity (space–time plot) | `simulate` |
 | `heat_capacity.py` | Density of states, C_V(T) vs. Debye and Einstein | `dispersion`, `units` |
 
-## 2D lattices
+## 2D lattices (`lattices_2d/`)
 
 | Example | Shows | Uses |
 |---|---|---|
@@ -36,7 +36,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. Paramet
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `neighbour_bonds`, `dispersion` |
 
-## Data export
+## Data export (`export/`)
 
 `export_for_site.py [directory]` writes `diatomic_chain.json` and `graphene.json` (default directory `site_data/`) with `save_json`:
 

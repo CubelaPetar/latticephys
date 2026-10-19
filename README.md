@@ -34,7 +34,7 @@ print(dispersion(chain, bonds, qs) * OMEGA_TO_THZ)  # acoustic and optical branc
 
 ## Examples
 
-Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. See [`examples/README.md`](examples/README.md) for the list.
+Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. See [`examples/README.md`](examples/README.md) for the list.
 
 ## Layout
 
@@ -45,5 +45,5 @@ Run from the repo root, e.g. `.venv/bin/python examples/wave_packet.py`. See [`e
 | `src/libsolidstate/dynamics/` | Time integration and pygame animation |
 | `src/libsolidstate/units.py` | Unit system and conversions |
 | `src/libsolidstate/export.py` | JSON export, e.g. for web pages |
-| `examples/` | Concrete systems (CO₂, chains, 2D crystals) |
+| `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `export/`); planned ones in `IDEAS.md` |
 | `tests/` | Checks against analytic results |
