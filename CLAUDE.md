@@ -43,3 +43,17 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 `.venv/bin/pytest && .venv/bin/ruff check`. `tests/test_examples.py` runs every example headless (Agg backend, `animate()` skipped, exports into a temp dir).
 
 Push to `origin` (Gitea); the GitHub repo `CubelaPetar/latticephys` (remote `public`) is public.
+
+## Agent skills
+
+### Issue tracker
+
+Local markdown under `.scratch/<feature>/`; `TODO.md` stays the overview. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) as a `Status:` line. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
