@@ -7,6 +7,7 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 ## Next
 
 - [ ] expand library to 3D physics
+- [ ] verify that rule 6 in CLAUDE.md is realistic physically (some things can't be computed analytically)
 - [ ] include electron physics
 - [ ] include magnon physics
 
