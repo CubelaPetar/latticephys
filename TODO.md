@@ -6,8 +6,10 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 
 ## Next
 
-- [ ] out-of-plane modes (3D displacements on a 2D lattice). With (k_L, k_T) springs the graphene ZA branch is linear; the flexural ω ∝ q² needs rotationally invariant bending terms (see angle-bending forces)
 - [ ] `animate()`: draw bonds; centre and scale to the window itself (now done in each example)
+- [ ] expand library to 3D physics
+- [ ] include electron physics
+- [ ] include magnon physics
 
 ## Later
 
