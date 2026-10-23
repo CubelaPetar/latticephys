@@ -4,9 +4,9 @@
 
 **Blocked by:** 05 (both change `special_points`)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test, all 14 lattices: primitive cell volume = conventional volume / lattice points per conventional cell; centring vectors are integer combinations of the primitive vectors
-- [ ] Test: a_i · b_j = 2π δ_ij; every special point except Γ lies on the Brillouin-zone boundary (|q| = |q − G| for some reciprocal G)
-- [ ] Test: fcc with nearest-neighbour central springs equals the eigenvalues of the analytic 3×3 dynamical matrix at random q
-- [ ] Cu example listed in `examples/README.md`; `pytest`, `ruff check` and all examples green
+- [x] Test, all 14 lattices: primitive cell volume = conventional volume / lattice points per conventional cell; centring vectors are integer combinations of the primitive vectors
+- [x] Test: a_i · b_j = 2π δ_ij; every special point except Γ lies on the Brillouin-zone boundary (|q| = |q − G| for some reciprocal G)
+- [x] Test: fcc with nearest-neighbour central springs equals the eigenvalues of the analytic 3×3 dynamical matrix at random q
+- [x] Cu example listed in `examples/README.md`; `pytest`, `ruff check` and all examples green

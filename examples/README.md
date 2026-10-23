@@ -45,6 +45,12 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `graphene_layer.py` | Graphene in 3D: ZA, TA, LA, ZO, TO, LO along Γ–M–K–Γ, coloured by out-of-plane weight; ZA linear without bending forces | `embed`, `neighbour_bonds` with (K_L, K_T), `special_points`, `k_path`, `dynamical_matrix`, `diagonalize` |
 | `bilayer_graphene.py` | AB bilayer: interlayer springs fitted to the Raman shear (31 cm⁻¹) and breathing (81 cm⁻¹) modes; published constants give ≈ 89 cm⁻¹ | `embed`, `honeycomb`, `bilayer`, `neighbour_bonds`, `special_points`, `k_path`, `dispersion` |
 
+## 3D crystals (`crystals_3d/`)
+
+| Example | Shows | Uses |
+|---|---|---|
+| `copper.py` | fcc Cu, nearest neighbours: ω(q) along Γ–X–W–K–Γ–L, DOS, C_V ∝ T³ | `primitive_vectors` (3D), `special_points`, `neighbour_bonds`, `dispersion`, `density_of_states`, `heat_capacity` |
+
 ## Data export (`export/`)
 
 `export_for_site.py [directory]` writes `diatomic_chain.json` and `graphene.json` (default directory `site_data/`) with `save_json`:

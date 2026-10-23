@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
+from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
 from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
@@ -152,3 +153,18 @@ def test_embedded_chain_keeps_its_frequencies():
 
     expected = np.sort(np.column_stack([omega_1d, np.zeros_like(omega_1d)]), axis=1)
     np.testing.assert_allclose(omega_2d, expected, atol=1e-12)
+
+
+def test_fcc_nearest_neighbours_match_the_analytic_dynamical_matrix():
+    """fcc, central springs K to the 12 neighbours delta = a/2 (+-1, +-1, 0) and permutations:
+    D(q) = K/m sum_delta delta delta^T / |delta|^2 (1 - cos q.delta); compare the eigenvalues at random q."""
+    a, K, m = 3.6, 2.0, 63.5
+    fcc = Crystal(primitive_vectors("fcc", a), [[0.0, 0.0, 0.0]], [m], ["Cu"])
+    bonds = neighbour_bonds(fcc, [K])
+    assert len(bonds) == 6  # 12 neighbours, each bond listed once
+
+    deltas = [a / 2 * np.roll([s1, s2, 0], shift) for s1 in (1, -1) for s2 in (1, -1) for shift in range(3)]
+    qs = np.random.default_rng(11).uniform(-2, 2, size=(20, 3))
+    for q, omega in zip(qs, dispersion(fcc, bonds, qs)):
+        D = sum(K / m * np.outer(d, d) / (d @ d) * (1 - np.cos(q @ d)) for d in deltas)
+        np.testing.assert_allclose(omega, np.sqrt(np.linalg.eigvalsh(D)), atol=1e-10)

@@ -78,26 +78,42 @@ def _clip(polygon, normal, offset):
     return result[distinct]
 
 
+# special points as fractions of the reciprocal vectors b_i, by number of lattice vectors and lattice;
+# 3D labels of Setyawan and Curtarolo, Comput. Mater. Sci. 49, 299 (2010), hexagonal with 60° between a1, a2
+SPECIAL_POINTS = {
+    2: {
+        "square": {"Γ": (0, 0), "X": (1 / 2, 0), "M": (1 / 2, 1 / 2)},
+        "rectangular": {"Γ": (0, 0), "X": (1 / 2, 0), "Y": (0, 1 / 2), "S": (1 / 2, 1 / 2)},
+        "hexagonal": {"Γ": (0, 0), "M": (1 / 2, 0), "K": (2 / 3, 1 / 3)},
+    },
+    3: {
+        "cubic": {"Γ": (0, 0, 0), "X": (0, 1 / 2, 0), "M": (1 / 2, 1 / 2, 0), "R": (1 / 2, 1 / 2, 1 / 2)},
+        "fcc": {"Γ": (0, 0, 0), "X": (1 / 2, 0, 1 / 2), "W": (1 / 2, 1 / 4, 3 / 4), "K": (3 / 8, 3 / 8, 3 / 4),
+                "L": (1 / 2, 1 / 2, 1 / 2), "U": (5 / 8, 1 / 4, 5 / 8)},
+        "bcc": {"Γ": (0, 0, 0), "H": (1 / 2, -1 / 2, 1 / 2), "N": (0, 0, 1 / 2), "P": (1 / 4, 1 / 4, 1 / 4)},
+        "tetragonal": {"Γ": (0, 0, 0), "X": (0, 1 / 2, 0), "M": (1 / 2, 1 / 2, 0), "Z": (0, 0, 1 / 2),
+                       "R": (0, 1 / 2, 1 / 2), "A": (1 / 2, 1 / 2, 1 / 2)},
+        "hexagonal": {"Γ": (0, 0, 0), "M": (1 / 2, 0, 0), "K": (2 / 3, 1 / 3, 0), "A": (0, 0, 1 / 2),
+                      "L": (1 / 2, 0, 1 / 2), "H": (2 / 3, 1 / 3, 1 / 2)},
+    },
+}
+
+
 def special_points(lattice, vectors):
     """High-symmetry points of the Brillouin zone (1/Å) for the lattices with standard labels.
 
-    "square":      Gamma, X (edge centre), M (corner)
-    "rectangular": Gamma, X, Y (edge centres along b1, b2), S (corner)
-    "hexagonal":   Gamma, M (edge centre), K (corner)
-    Assumes the vectors of primitive_vectors() (for hexagonal: 60° between a1, a2).
-    vectors: (2, d), e.g. a layer in 3D; the points lie in its plane.
+    2 lattice vectors (2D, or a layer in 3D; the points lie in its plane):
+    "square" Γ X M, "rectangular" Γ X Y S, "hexagonal" Γ M K.
+    3 lattice vectors: "cubic" Γ X M R, "fcc" Γ X W K L U, "bcc" Γ H N P,
+    "tetragonal" Γ X M Z R A, "hexagonal" Γ M K A L H.
+    Assumes the vectors of primitive_vectors(). Other lattices have parameter-dependent
+    labels and raise: give the k-points explicitly.
     """
-    if np.ndim(vectors) != 2 or len(vectors) != 2:
-        raise ValueError("special_points needs 2 lattice vectors")
-    b1, b2 = reciprocal_vectors(vectors)
-    gamma = np.zeros_like(b1)
-    if lattice == "square":
-        return {"Γ": gamma, "X": b1 / 2, "M": (b1 + b2) / 2}
-    if lattice == "rectangular":
-        return {"Γ": gamma, "X": b1 / 2, "Y": b2 / 2, "S": (b1 + b2) / 2}
-    if lattice == "hexagonal":
-        return {"Γ": gamma, "M": b1 / 2, "K": (2 * b1 + b2) / 3}
-    raise ValueError(f"no standard labels for {lattice} lattice, give the k-points explicitly")
+    p = len(vectors) if np.ndim(vectors) == 2 else 0
+    if lattice not in SPECIAL_POINTS.get(p, {}):
+        raise ValueError(f"no standard labels for {lattice} lattice with {p} lattice vectors, give the k-points")
+    b = reciprocal_vectors(vectors)
+    return {label: np.array(f, dtype=float) @ b for label, f in SPECIAL_POINTS[p][lattice].items()}
 
 
 def k_path(points, n=300):

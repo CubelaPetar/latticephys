@@ -107,7 +107,7 @@ def test_special_points_of_a_layer_are_the_2d_ones_in_its_plane(lattice, args):
 
 
 @pytest.mark.parametrize("vectors", [np.eye(3), [[2.0, 0.0, 0.0]], [2.0, 1.0]])
-def test_special_points_need_two_lattice_vectors(vectors):
-    """The 2D labels need exactly 2 lattice vectors (a bulk 3D lattice, a chain or a flat list raise)."""
-    with pytest.raises(ValueError, match="2 lattice vectors"):
+def test_square_labels_need_two_lattice_vectors(vectors):
+    """"square" has labels only for 2 lattice vectors; 3 vectors, a chain or a flat list raise."""
+    with pytest.raises(ValueError, match="no standard labels"):
         special_points("square", vectors)
