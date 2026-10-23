@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `screen_coordinates` tested: result centred in the window, all points inside, aspect ratio kept
 - [x] `animate` uses it when no scale is given; an explicit scale still works

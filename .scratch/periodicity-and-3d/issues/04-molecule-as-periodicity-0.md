@@ -4,7 +4,7 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `Crystal` accepts `vectors` (0, d); `force_constants` works for it
 - [x] Test: a molecule with p = 0 gives the same normal modes as the same molecule built the old way

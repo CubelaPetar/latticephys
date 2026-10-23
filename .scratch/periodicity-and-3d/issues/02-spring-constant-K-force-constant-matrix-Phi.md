@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (touches the same example files)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] No spring constant named k, k_l, k_t or C remains in docstrings, variables or examples
 - [x] No force-constant matrix named K remains; it is Φ / `Phi`

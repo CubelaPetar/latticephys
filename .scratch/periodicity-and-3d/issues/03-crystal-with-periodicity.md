@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `Crystal` validates p ≤ d and independent lattice vectors; p = d crystals behave exactly as before
 - [x] Test: reciprocal vectors of a (2, 3) lattice satisfy a_i · b_j = 2π δ_ij and lie in its plane

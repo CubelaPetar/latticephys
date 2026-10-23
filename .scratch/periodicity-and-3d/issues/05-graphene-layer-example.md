@@ -4,7 +4,7 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Test: special points of an embedded hexagonal lattice equal the 2D ones with a zero z component
 - [x] Example in its topic folder, constants at the top, physics docstring, `main()`, listed in `examples/README.md`
