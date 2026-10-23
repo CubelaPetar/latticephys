@@ -24,7 +24,7 @@ import numpy as np
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal
-from latticephys.lattice.plot import plot_bands, plot_crystal
+from latticephys.lattice.plot import plot_bands, plot_crystal, plot_points
 from latticephys.lattice.reciprocal import k_path, q_grid, special_points
 from latticephys.phonons.dispersion import dispersion
 from latticephys.phonons.spectra import density_of_states
@@ -33,7 +33,8 @@ from latticephys.units import OMEGA_TO_THZ
 
 A = 3.615  # Å, lattice constant of Cu
 MASS = 63.546  # amu
-MEASURED = {"X": (5.13, 7.25), "L": (3.42, 7.30)}  # THz, (TA, LA) at room temperature
+LA_X = 7.25  # THz, measured LA at X, sets K
+MEASURED = {"X": [5.13, LA_X], "L": [3.42, 7.30]}  # THz, measured TA and LA at room temperature
 LABELS = ["Γ", "X", "W", "K", "Γ", "L"]
 GRID = 24  # GRID^3 wave vectors in the Brillouin zone
 SMEARING = 0.1  # THz, Gaussian width of each mode in the DOS
@@ -43,25 +44,23 @@ T3_GUIDE = (8.0, 30.0)  # K, range of the T^3 guide line, through the first temp
 
 def main():
     copper = Crystal(primitive_vectors("fcc", A), [[0.0, 0.0, 0.0]], [MASS], ["Cu"])
-    K = MASS * (MEASURED["X"][1] / OMEGA_TO_THZ) ** 2 / 8
+    K = MASS * (LA_X / OMEGA_TO_THZ) ** 2 / 8
     bonds = neighbour_bonds(copper, [K])
     print(f"K = {K:.3f} eV/Å²")
 
     points = special_points("fcc", copper.vectors)
     qs, distance, corners = k_path([points[label] for label in LABELS])
     frequencies = dispersion(copper, bonds, qs) * OMEGA_TO_THZ
-    for label, (ta, la) in MEASURED.items():
+    for label, measured in MEASURED.items():
         model = dispersion(copper, bonds, [points[label]])[0] * OMEGA_TO_THZ
-        print(f"{label}: TA {model[0]:.2f} THz (measured {ta}), LA {model[2]:.2f} THz (measured {la})")
+        print(f"{label}: model {np.unique(model.round(3)).round(2).tolist()} THz, measured {measured} THz")
 
     omega = dispersion(copper, bonds, q_grid(copper.vectors, GRID)[1:])  # without the zero modes at Γ
     per_atom = copper.dim * heat_capacity(omega, TEMPERATURES)
 
     fig, (left, middle, right) = plt.subplots(1, 3, figsize=(16, 4.5), width_ratios=[2, 1, 1.3])
     plot_bands(distance, frequencies, corners, LABELS, ax=left)
-    for label, nus in MEASURED.items():
-        left.plot([corners[LABELS.index(label)]] * 2, nus, "o", color="tab:red", clip_on=False,
-                  label="measured" if label == "X" else None)
+    plot_points(left, corners, LABELS, MEASURED)
     left.legend(loc="lower right")
     left.set_ylabel(r"$\nu$ (THz)")
     left.set_title(f"fcc Cu, nearest neighbours, K = {K:.2f} eV/Å²")

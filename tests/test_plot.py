@@ -3,7 +3,7 @@ import pytest
 
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
-from latticephys.lattice.plot import plot_crystal
+from latticephys.lattice.plot import plot_bands, plot_crystal, plot_points
 from latticephys.lattice.structures import honeycomb
 
 
@@ -67,3 +67,15 @@ def test_plot_crystal_rejects_inconsistent_input(radii, colors, cells, ax_2d):
     layer = embed(honeycomb(2.46, [12.0] * 2, ["C"] * 2), 3)
     with pytest.raises(ValueError):
         plot_crystal(layer, radii=radii, colors=colors, cells=cells, ax=plt.subplots()[1] if ax_2d else None)
+
+
+def test_plot_points_marks_values_at_every_matching_corner():
+    """Values for Γ appear at both Γ corners of the path Γ-X-Γ-L, those for L at the last corner."""
+    corners, labels = np.array([0.0, 1.0, 2.0, 3.5]), ["Γ", "X", "Γ", "L"]
+    ax = plot_bands(np.array([0.0, 3.5]), np.zeros((2, 1)), corners, labels)
+    lines_before = len(ax.lines)
+    plot_points(ax, corners, labels, {"Γ": [5.0, 6.0], "L": [2.0]})
+
+    x = np.concatenate([line.get_xdata() for line in ax.lines[lines_before:]])
+    y = np.concatenate([line.get_ydata() for line in ax.lines[lines_before:]])
+    assert sorted(zip(x, y)) == [(0.0, 5.0), (0.0, 6.0), (2.0, 5.0), (2.0, 6.0), (3.5, 2.0)]

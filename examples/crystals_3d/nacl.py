@@ -2,9 +2,9 @@
 
 Two atoms per primitive cell give 3 acoustic (TA, TA, LA) and 3 optical (TO, TO, LO)
 branches. With nearest-neighbour springs only (Na-Cl along the cube axes), a shear along
-Γ-X stretches no spring to first order: a transverse acoustic branch is 0 there (and along
-X-W and Γ-K), as in the square lattice. Springs to the second neighbours (Na-Na, Cl-Cl along the face
-diagonals) give it a finite frequency.
+Γ-X stretches no spring to first order: both transverse acoustic branches are 0 there and
+along X-W (one of them also along Γ-K), as in the square lattice. Springs to the second neighbours (Na-Na, Cl-Cl
+along the face diagonals) give it a finite frequency.
 
 Missing here: in the real ionic crystal the long-range Coulomb forces split LO from TO at
 Γ (LO-TO splitting); central short-range springs give LO = TO at Γ. Spring constants are

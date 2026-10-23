@@ -152,3 +152,16 @@ def plot_bands(distance, frequencies, corners, labels, ax=None):
     ax.set_xticks(corners, labels)
     ax.set_xlim(corners[0], corners[-1])
     return ax
+
+
+def plot_points(ax, corners, labels, values, label="measured"):
+    """Mark values (e.g. measured frequencies) at the k-path corners, as drawn by plot_bands.
+
+    values: {point label: list of values}; drawn at every corner with that label (Γ may appear
+    twice), as red dots with one legend entry.
+    """
+    for point, ys in values.items():
+        for corner in np.asarray(corners)[[i for i, name in enumerate(labels) if name == point]]:
+            ax.plot([corner] * len(ys), ys, "o", color="tab:red", clip_on=False)
+    ax.plot([], [], "o", color="tab:red", label=label)
+    return ax

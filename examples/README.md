@@ -49,8 +49,9 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 
 | Example | Shows | Uses |
 |---|---|---|
-| `nacl.py` | Rocksalt NaCl: nearest neighbours leave TA = 0 along Γ–X, second neighbours fix it; no LO–TO splitting without Coulomb forces | `rocksalt`, `neighbour_bonds`, `plot_bands` |
-| `copper.py` | fcc Cu, nearest neighbours fitted to LA(X): ω(q) along Γ–X–W–K–Γ–L against neutron data at X and L, DOS, C_V ∝ T³; the crystal in 3D | `primitive_vectors` (3D), `special_points`, `neighbour_bonds`, `dispersion`, `density_of_states`, `heat_capacity`, `plot_crystal` |
+| `nacl.py` | Rocksalt NaCl: nearest neighbours leave TA = 0 along Γ–X, second neighbours fix it; no LO–TO splitting without Coulomb forces | `rocksalt`, `neighbour_bonds`, `special_points`, `k_path`, `plot_bands` |
+| `silicon.py` | Diamond Si: K1, K2 from Γ optical and TA(X) in closed form, against neutron data at Γ, X, L; central springs miss the falling optical branches | `diamond`, `neighbour_bonds`, `special_points`, `k_path`, `plot_bands`, `plot_points` |
+| `copper.py` | fcc Cu, nearest neighbours fitted to LA(X): ω(q) along Γ–X–W–K–Γ–L against neutron data at X and L, DOS, C_V ∝ T³; the crystal in 3D | `primitive_vectors` (3D), `special_points`, `neighbour_bonds`, `dispersion`, `density_of_states`, `heat_capacity`, `plot_crystal`, `plot_points` |
 
 ## Data export (`export/`)
 

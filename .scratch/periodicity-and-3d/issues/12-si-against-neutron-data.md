@@ -4,9 +4,9 @@
 
 **Blocked by:** 09
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: optical frequency at Γ equals √(8K₁/3M); no negative frequency on a q-grid
-- [ ] Example plots model against measured points at Γ, X, L
-- [ ] Docstring: data are secondary-source (Savrasov 1996 quoting Nilsson & Nelin 1972); short-range springs miss the flat TA branch
-- [ ] Listed in `examples/README.md`; `pytest`, `ruff check` and all examples green
+- [x] Test: optical frequency at Γ equals √(8K₁/3M); no negative frequency on a q-grid
+- [x] Example plots model against measured points at Γ, X, L
+- [x] Docstring: data are secondary-source (Savrasov 1996 quoting Nilsson & Nelin 1972); short-range springs miss the flat TA branch
+- [x] Listed in `examples/README.md`; `pytest`, `ruff check` and all examples green

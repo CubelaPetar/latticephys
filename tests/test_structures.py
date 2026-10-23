@@ -2,12 +2,13 @@ import numpy as np
 import pytest
 
 from latticephys.lattice.bonds import neighbour_bonds
-from latticephys.lattice.structures import honeycomb, kagome, lieb
+from latticephys.lattice.structures import diamond, honeycomb, kagome, lieb, rocksalt
 
 
 @pytest.mark.parametrize(
     "structure, atoms, nearest, bonds_per_cell",
-    [(honeycomb, 2, 1 / np.sqrt(3), 3), (kagome, 3, 1 / 2, 6), (lieb, 3, 1 / 2, 4)],
+    [(honeycomb, 2, 1 / np.sqrt(3), 3), (kagome, 3, 1 / 2, 6), (lieb, 3, 1 / 2, 4),
+     (rocksalt, 2, 1 / 2, 6), (diamond, 2, np.sqrt(3) / 4, 4)],
 )
 def test_nearest_neighbours(structure, atoms, nearest, bonds_per_cell):
     """Nearest-neighbour distance (in units of a) and number of nearest-neighbour bonds per cell."""

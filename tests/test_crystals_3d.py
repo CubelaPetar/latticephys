@@ -3,7 +3,8 @@
 import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
-from latticephys.lattice.structures import rocksalt
+from latticephys.lattice.reciprocal import q_grid, special_points
+from latticephys.lattice.structures import diamond, rocksalt
 from latticephys.phonons.dispersion import dispersion
 
 
@@ -30,3 +31,27 @@ def test_rocksalt_along_gamma_x():
         transverse = two_by_two(2 * K1 + 2 * K2 * (1 - c), -2 * K1, m1, m2)
         expected = np.sort(np.concatenate([longitudinal, transverse, transverse]))
         np.testing.assert_allclose(dispersion(crystal, bonds, [[q, 0.0, 0.0]])[0], expected, atol=1e-9)
+
+
+def test_diamond_optical_mode_at_gamma_and_stability():
+    """Diamond, central K1 to the 4 nearest neighbours along <111>, K2 to the 12 second ones (same sublattice).
+    At Γ the sublattices move rigidly against each other: sum e e^T = 4/3 over the 4 bonds, reduced mass M/2,
+    so omega^2 = 8 K1 / (3 M), triply degenerate; K2 does not enter. With K2 > 0 no mode is unstable."""
+    a, K1, K2, M = 5.431, 7.0, 1.0, 28.086
+    si = diamond(a, [M, M], ["Si", "Si"])
+    bonds = neighbour_bonds(si, [K1, K2])
+
+    omega = dispersion(si, bonds, [np.zeros(3)])[0]
+    np.testing.assert_allclose(omega, [0, 0, 0] + [np.sqrt(8 * K1 / (3 * M))] * 3, atol=1e-12)
+    assert np.all(dispersion(si, bonds, q_grid(si.vectors, 8)) >= 0)
+
+
+def test_diamond_ta_at_x_depends_only_on_second_neighbours():
+    """At X nearest-neighbour central springs exert no transverse force, so TA is the fcc sublattice
+    value omega^2 = 4 K2 / M (as for fcc with nearest neighbours), for any K1."""
+    a, K2, M = 5.431, 0.6, 28.086
+    si = diamond(a, [M, M], ["Si", "Si"])
+    x = special_points("fcc", si.vectors)["X"]
+    for K1 in (1.0, 10.0, 30.0):
+        omega = dispersion(si, neighbour_bonds(si, [K1, K2]), [x])[0]
+        np.testing.assert_allclose(omega[:2], np.sqrt(4 * K2 / M), rtol=1e-12)
