@@ -49,7 +49,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 
 | Example | Shows | Uses |
 |---|---|---|
-| `copper.py` | fcc Cu, nearest neighbours: ω(q) along Γ–X–W–K–Γ–L, DOS, C_V ∝ T³ | `primitive_vectors` (3D), `special_points`, `neighbour_bonds`, `dispersion`, `density_of_states`, `heat_capacity` |
+| `copper.py` | fcc Cu, nearest neighbours fitted to LA(X): ω(q) along Γ–X–W–K–Γ–L against neutron data at X and L, DOS, C_V ∝ T³ | `primitive_vectors` (3D), `special_points`, `neighbour_bonds`, `dispersion`, `density_of_states`, `heat_capacity` |
 
 ## Data export (`export/`)
 

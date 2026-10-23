@@ -2,10 +2,14 @@
 
 One atom per primitive cell, 12 nearest neighbours at a / sqrt(2), so 3 acoustic branches.
 At X = 2 pi/a (1, 0, 0) the model gives omega_L^2 = 8 K / m and omega_T^2 = 4 K / m, so
-nu_L / nu_T = sqrt(2) there. K is set from the longitudinal frequency at X,
-K = m omega_L(X)^2 / 8, with NU_L_X roughly the value seen for Cu by neutron scattering
-(illustrative here, not a fit). Along Γ-X and Γ-L the two transverse branches are
-degenerate by symmetry; along Γ-K they split.
+nu_L / nu_T = sqrt(2) there. K is fitted to the measured longitudinal frequency at X,
+K = m omega_L(X)^2 / 8. Then TA at X comes out as measured, LA at L within 1 %, but TA at L
+about 6 % too high: real Cu has weaker forces out to further neighbours. Along Γ-X and Γ-L
+the two transverse branches are degenerate by symmetry; along Γ-K they split.
+
+Measured values (red points): room-temperature neutron scattering, most likely Svensson,
+Brockhouse and Rowe, Phys. Rev. 155, 619 (1967), as quoted by Savrasov and Savrasov,
+Phys. Rev. B 54, 16487 (1996), Table I; secondary source, see docs/research/cu-phonon-frequencies.md.
 
 The DOS has van Hove peaks from flat parts of the branches near the zone boundary. The heat
 capacity grows as T^3 at low T (3D Debye law) and approaches 3 k_B per atom (Dulong-Petit).
@@ -29,7 +33,7 @@ from latticephys.units import OMEGA_TO_THZ
 
 A = 3.615  # Å, lattice constant of Cu
 MASS = 63.546  # amu
-NU_L_X = 7.3  # THz, longitudinal frequency at X that sets K
+MEASURED = {"X": (5.13, 7.25), "L": (3.42, 7.30)}  # THz, (TA, LA) at room temperature
 LABELS = ["Γ", "X", "W", "K", "Γ", "L"]
 GRID = 24  # GRID^3 wave vectors in the Brillouin zone
 SMEARING = 0.1  # THz, Gaussian width of each mode in the DOS
@@ -39,21 +43,26 @@ T3_GUIDE = (8.0, 30.0)  # K, range of the T^3 guide line, through the first temp
 
 def main():
     copper = Crystal(primitive_vectors("fcc", A), [[0.0, 0.0, 0.0]], [MASS], ["Cu"])
-    K = MASS * (NU_L_X / OMEGA_TO_THZ) ** 2 / 8
+    K = MASS * (MEASURED["X"][1] / OMEGA_TO_THZ) ** 2 / 8
     bonds = neighbour_bonds(copper, [K])
     print(f"K = {K:.3f} eV/Å²")
 
     points = special_points("fcc", copper.vectors)
     qs, distance, corners = k_path([points[label] for label in LABELS])
     frequencies = dispersion(copper, bonds, qs) * OMEGA_TO_THZ
-    at_x = dispersion(copper, bonds, [points["X"]])[0] * OMEGA_TO_THZ
-    print(f"at X: transverse {at_x[0]:.2f} THz, longitudinal {at_x[2]:.2f} THz, ratio {at_x[2] / at_x[0]:.3f}")
+    for label, (ta, la) in MEASURED.items():
+        model = dispersion(copper, bonds, [points[label]])[0] * OMEGA_TO_THZ
+        print(f"{label}: TA {model[0]:.2f} THz (measured {ta}), LA {model[2]:.2f} THz (measured {la})")
 
     omega = dispersion(copper, bonds, q_grid(copper.vectors, GRID)[1:])  # without the zero modes at Γ
     per_atom = copper.dim * heat_capacity(omega, TEMPERATURES)
 
     fig, (left, middle, right) = plt.subplots(1, 3, figsize=(16, 4.5), width_ratios=[2, 1, 1.3])
     plot_bands(distance, frequencies, corners, LABELS, ax=left)
+    for label, nus in MEASURED.items():
+        left.plot([corners[LABELS.index(label)]] * 2, nus, "o", color="tab:red", clip_on=False,
+                  label="measured" if label == "X" else None)
+    left.legend(loc="lower right")
     left.set_ylabel(r"$\nu$ (THz)")
     left.set_title(f"fcc Cu, nearest neighbours, K = {K:.2f} eV/Å²")
 
