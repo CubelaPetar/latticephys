@@ -10,3 +10,6 @@
 - [ ] Test: `sound_velocities` raises for an out-of-plane direction
 - [ ] Tests: 2D-only tools raise for p < d or d = 3
 - [ ] `pytest`, `ruff check` and all examples green
+
+## Comments
+- From the review of 03: `dynamical_matrix` raises for q outside the lattice span, but for a layer a scattering vector Q with a z part is meaningful (it shows the out-of-plane modes). `structure_factor` should give the phonon the in-plane part of Q and keep the full Q in the Q · e factor.

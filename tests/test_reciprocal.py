@@ -5,6 +5,7 @@ from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.reciprocal import (
     brillouin_zone,
     k_path,
+    q_grid,
     reciprocal_vectors,
     special_points,
     wigner_seitz_cell,
@@ -70,3 +71,23 @@ def test_k_path():
     np.testing.assert_allclose(qs[-1], points[-1])
     np.testing.assert_allclose(corners, [0, 1, 2])
     assert np.all(np.diff(distance) > 0)
+
+
+def test_reciprocal_vectors_of_a_tilted_layer():
+    """Layer (p = 2, d = 3): a_i . b_j = 2 pi delta_ij and every b_j lies in the plane, b_j . (a_1 x a_2) = 0."""
+    a = np.array([[1.0, 0.0, 1.0], [0.3, 2.0, 0.0]])
+    b = reciprocal_vectors(a)
+
+    np.testing.assert_allclose(a @ b.T, 2 * np.pi * np.eye(2), atol=1e-12)
+    np.testing.assert_allclose(b @ np.cross(*a), 0, atol=1e-12)
+
+
+def test_q_grid_of_a_layer():
+    """Layer (p = 2, d = 3): n^2 wave vectors, all in the plane (z = 0), distinct modulo the reciprocal lattice."""
+    a = np.array([[2.0, 0.0, 0.0], [1.0, np.sqrt(3), 0.0]])
+    qs = q_grid(a, 5)
+
+    assert qs.shape == (25, 3)
+    np.testing.assert_allclose(qs[:, 2], 0, atol=1e-12)
+    fractional = np.round(qs @ a.T / (2 * np.pi) * 5).astype(int) % 5
+    assert len({tuple(f) for f in fractional}) == 25

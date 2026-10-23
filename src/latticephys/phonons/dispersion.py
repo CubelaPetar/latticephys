@@ -3,6 +3,7 @@
 import numpy as np
 
 from latticephys.lattice.crystal import cell_offsets
+from latticephys.lattice.reciprocal import reciprocal_vectors
 from latticephys.phonons.modes import diagonalize
 from latticephys.phonons.springs import _fourier_force_constants
 
@@ -11,12 +12,15 @@ def dynamical_matrix(crystal, bonds, q):
     """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d).
 
     bonds: list of (mu, nu, n, K), e.g. from neighbour_bonds()
-    q:     wave vector (1/Å), length d (a number in 1D)
+    q:     wave vector (1/Å), length d (a number in 1D), in the span of the lattice vectors
     Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
     """
     q = np.atleast_1d(np.asarray(q, dtype=float))
     if q.shape != (crystal.dim,):
         raise ValueError(f"q must have {crystal.dim} components, got {q.shape}")
+    in_plane = crystal.vectors @ q / (2 * np.pi) @ reciprocal_vectors(crystal.vectors)
+    if np.linalg.norm(q - in_plane) > 1e-8 * np.linalg.norm(q):
+        raise ValueError(f"q = {q} leaves the span of the lattice vectors")
 
     inv_sqrt_m = np.repeat(1 / np.sqrt(crystal.masses), crystal.dim)
     return inv_sqrt_m[:, None] * _fourier_force_constants(crystal, bonds, q) * inv_sqrt_m[None, :]

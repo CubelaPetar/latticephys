@@ -3,8 +3,8 @@ import pytest
 
 from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais2d import primitive_vectors
-from latticephys.lattice.crystal import Crystal
-from latticephys.lattice.reciprocal import k_path, reciprocal_vectors, special_points
+from latticephys.lattice.crystal import Crystal, embed
+from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
 from latticephys.lattice.structures import honeycomb, kagome, lieb
 from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
@@ -195,3 +195,20 @@ def test_group_velocities_undefined_at_degeneracies():
     degenerate = np.isclose(omega[:, None], omega[None, :]).sum(axis=1) > 1
     assert degenerate.any()
     assert np.all(np.isnan(at_K[degenerate])) and not np.any(np.isnan(at_K[~degenerate]))
+
+
+def test_graphene_layer_with_central_springs():
+    """Graphene lifted into 3D (p = 2, d = 3) with in-plane central springs: the bonds are those
+    of 2D graphene, nothing resists out-of-plane motion, so at every q != 0 exactly B = 2 branches
+    are 0 and the other 4 are the in-plane 2D branches."""
+    flat = graphene()
+    layer = embed(flat, 3)
+    bonds = neighbour_bonds(layer, [10.0, 2.0])
+    assert bonds == neighbour_bonds(flat, [10.0, 2.0])
+
+    qs = q_grid(layer.vectors, 6)[1:]
+    omega = dispersion(layer, bonds, qs)
+    omega_2d = dispersion(flat, bonds, qs[:, :2])
+
+    assert np.all((omega == 0).sum(axis=1) == 2)
+    np.testing.assert_allclose(omega, np.sort(np.column_stack([omega_2d, np.zeros((len(qs), 2))]), axis=1), atol=1e-12)

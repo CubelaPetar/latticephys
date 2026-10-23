@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
-from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
 from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
 from latticephys.phonons.integrate import simulate
@@ -132,3 +132,23 @@ def test_atom_weights_at_zone_edge():
     weights = atom_weights(diatomic(1.0, 3.0), DIATOMIC_BONDS, [np.pi / A, 0.7])
     np.testing.assert_allclose(weights[0], [[0, 1], [1, 0]], atol=1e-12)
     np.testing.assert_allclose(weights.sum(axis=2), 1)
+
+
+def test_wave_vector_outside_the_lattice_plane_raises():
+    """A square layer in the xy plane of 3D space has no wave vector component along z."""
+    layer = Crystal([[A, 0.0, 0.0], [0.0, A, 0.0]], [[0.0, 0.0, 0.0]], [1.0], ["A"])
+    bonds = neighbour_bonds(layer, [1.0])
+    dynamical_matrix(layer, bonds, [0.3, -1.0, 0.0])
+    with pytest.raises(ValueError, match="plane|span"):
+        dynamical_matrix(layer, bonds, [0.3, -1.0, 1e-3])
+
+
+def test_embedded_chain_keeps_its_frequencies():
+    """Diatomic chain lifted into the plane, central springs along x: for q along x the
+    longitudinal branches are the 1D ones, the B transverse (y) branches are exactly 0."""
+    planar = embed(diatomic(1.0, 3.0), 2)
+    omega_1d = dispersion(diatomic(1.0, 3.0), DIATOMIC_BONDS, QS)
+    omega_2d = dispersion(planar, DIATOMIC_BONDS, np.column_stack([QS, np.zeros_like(QS)]))
+
+    expected = np.sort(np.column_stack([omega_1d, np.zeros_like(omega_1d)]), axis=1)
+    np.testing.assert_allclose(omega_2d, expected, atol=1e-12)

@@ -6,14 +6,19 @@ from latticephys.lattice.crystal import cell_offsets
 
 
 def reciprocal_vectors(vectors):
-    """Reciprocal vectors b_j as rows, with a_i . b_j = 2 pi delta_ij (1/Å), any dimension."""
-    return 2 * np.pi * np.linalg.inv(vectors).T
+    """Reciprocal vectors b_j as rows, with a_i . b_j = 2 pi delta_ij (1/Å).
+
+    vectors: (p, d) lattice vectors as rows, p <= d. b = 2 pi (A A^T)^-1 A lies in
+    the span of the a_i; for p = d this is 2 pi A^-T.
+    """
+    vectors = np.atleast_2d(np.asarray(vectors, dtype=float))
+    return 2 * np.pi * np.linalg.solve(vectors @ vectors.T, vectors)
 
 
 def q_grid(vectors, n):
-    """The n^d wave vectors q = (i_1 b_1 + ... + i_d b_d) / n, 0 <= i_j < n (1/Å), any dimension.
+    """The n^p wave vectors q = (i_1 b_1 + ... + i_p b_p) / n, 0 <= i_j < n (1/Å), for p lattice vectors.
 
-    These are exactly the wave vectors of a periodic supercell of n^d cells,
+    These are exactly the wave vectors of a periodic supercell of n^p cells,
     so sums over them are Brillouin-zone averages for a crystal of that size.
     """
     vectors = np.atleast_2d(vectors)

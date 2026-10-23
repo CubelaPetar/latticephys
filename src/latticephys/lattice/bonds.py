@@ -1,7 +1,7 @@
 """Bonds between atoms of a Crystal: neighbour shells and periodic supercells.
 
-A bond (mu, nu, n, K) couples atom mu in cell 0 to atom nu in cell n (integer
-tuple, or int in 1D) with a parameter K, e.g. a spring constant. Its direction
+A bond (mu, nu, n, K) couples atom mu in cell 0 to atom nu in cell n (p integers,
+or an int for p = 1) with a parameter K, e.g. a spring constant. Its direction
 comes from the crystal.
 """
 
@@ -17,17 +17,17 @@ def neighbour_bonds(crystal, spring_constants, search=3):
     spring_constants: bond parameter per shell, [K1] for nearest neighbours,
                       [K1, K2] to add second neighbours, ...; each entry is used
                       as given, e.g. a spring K or a pair (K_L, K_T)
-    search:           cells searched in each direction
+    search:           cells searched along each lattice vector
 
     Shells are the distinct atom distances in ascending order. Returns a list
     of bonds (mu, nu, n, K), each bond once. Raises if search is too small to
     find all requested shells completely.
     """
-    origin = (0,) * crystal.dim
+    origin = (0,) * crystal.periodicity
     candidates = []
     for mu in range(len(crystal.masses)):
         for nu in range(len(crystal.masses)):
-            for n in map(tuple, cell_offsets(2 * search + 1, crystal.dim) - search):
+            for n in map(tuple, cell_offsets(2 * search + 1, crystal.periodicity) - search):
                 # count each bond only from one end: (mu, 0) -- (nu, n) equals (nu, 0) -- (mu, -n)
                 if nu < mu or (nu == mu and n <= origin):
                     continue

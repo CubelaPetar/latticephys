@@ -42,7 +42,7 @@ def _fourier_force_constants(crystal, bonds, q, gradient=False):
     Phi = np.zeros((d, size, size) if gradient else (size, size), dtype=complex)
     for mu, nu, n, K in bonds:
         block = _spring_block(crystal.bond_vector(mu, nu, n), K)
-        cell = np.atleast_1d(n) @ crystal.vectors
+        cell = crystal.cell_index(n) @ crystal.vectors
         phase = np.exp(1j * q @ cell)
 
         smu = slice(mu * d, (mu + 1) * d)
