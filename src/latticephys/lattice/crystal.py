@@ -16,8 +16,7 @@ class Crystal:
     masses:    (B,) amu
     names:     B labels
 
-    A finite system (molecule) is a crystal whose bonds all stay in cell 0;
-    its vectors are then not used.
+    A molecule has no lattice vectors: vectors np.zeros((0, d)), bonds with cell index ().
     """
 
     vectors: np.ndarray

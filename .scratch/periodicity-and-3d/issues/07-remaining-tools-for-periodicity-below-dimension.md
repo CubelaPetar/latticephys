@@ -13,3 +13,4 @@
 
 ## Comments
 - From the review of 03: `dynamical_matrix` raises for q outside the lattice span, but for a layer a scattering vector Q with a z part is meaningful (it shows the out-of-plane modes). `structure_factor` should give the phonon the in-plane part of Q and keep the full Q in the Q · e factor.
+- From the review of 04: `cell_offsets(n, 0)` fails (`reshape(-1, 0)`), so `neighbour_bonds`, `q_grid`, `atom_positions`, `periodic_supercell` and `bloch_mode` raise an unclear numpy error for a molecule (p = 0). It should return one empty offset, shape (1, 0); then `q_grid` gives q = 0 and `neighbour_bonds` gives bonds with `()`.

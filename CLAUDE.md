@@ -30,7 +30,7 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 ## Conventions
 
 - Argument order model first: `(crystal, bonds, q or qs, ...)`.
-- `Crystal(vectors, positions, masses, names)`: vectors (p, d) as rows, positions (B, d) Cartesian; dimension d, periodicity p ≤ d (a layer: p = 2, d = 3; `embed` lifts a crystal into higher d). q is a Cartesian d-vector in the span of the lattice vectors. A molecule is a Crystal whose bonds all stay in cell 0.
+- `Crystal(vectors, positions, masses, names)`: vectors (p, d) as rows, positions (B, d) Cartesian; dimension d, periodicity p ≤ d (a layer: p = 2, d = 3; `embed` lifts a crystal into higher d). q is a Cartesian d-vector in the span of the lattice vectors. A molecule is a Crystal with p = 0: vectors `np.zeros((0, d))`, cell index `()`.
 - Bond `(mu, nu, n, K)`: atom mu in cell 0 to atom nu in cell n (p entries; an int for p = 1), each bond listed once. The last entry is the model parameter: a spring K or (K_L, K_T) now, hopping or exchange later.
 - Symbols: spring constant K, force-constant matrix Φ (`Phi`), dynamical matrix D; k and q only mean wave vectors.
 - Degrees of freedom atom by atom `[u_0x, u_0y, u_1x, ...]`; masses per degree of freedom `np.repeat(masses, d)`.

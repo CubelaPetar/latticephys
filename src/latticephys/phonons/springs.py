@@ -18,7 +18,7 @@ def force_constants(crystal, bonds):
 
     Bonds to other cells (n != 0) couple to the periodic images, so for a
     periodic_supercell() this is the finite periodic system; for a molecule
-    all bonds have n = 0. Shape (B d, B d), degrees of freedom ordered atom
+    all bonds have n = (). Shape (B d, B d), degrees of freedom ordered atom
     by atom: [u_0x, u_0y, u_1x, u_1y, ...]. Use np.repeat(masses, d) as masses.
     """
     return _fourier_force_constants(crystal, bonds, np.zeros(crystal.dim)).real
