@@ -1,0 +1,3 @@
+# Periodicity separate from dimension
+
+A crystal has dimension d (components of positions, displacements and q) and periodicity p ≤ d (number of lattice vectors, `vectors` shape (p, d)). Molecules (p = 0), chains moving in a plane, ribbons and nanotubes (p = 1), layers and bilayers (p = 2) are then crystals of their own kind instead of bulk crystals padded with vacuum. We considered the usual alternative (always p = d, as in phonopy or ASE, with a long empty lattice vector), but it needs an arbitrary vacuum length, gives a meaningless q component and wasted q-grid points, and makes every tool guess whether a crystal is really a layer. q stays a Cartesian d-vector; a q outside the span of the lattice vectors raises an error.
