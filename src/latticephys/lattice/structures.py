@@ -1,4 +1,4 @@
-"""Common 2D crystal structures with several basis atoms."""
+"""Common crystal structures with several basis atoms; bilayers of any crystal."""
 
 import numpy as np
 
@@ -20,3 +20,21 @@ def kagome(a, masses, names):
 def lieb(a, masses, names):
     """Lieb lattice (CuO2 plane): square lattice constant a, atoms at 0 and the two edge centres."""
     return Crystal(primitive_vectors("square", a), [[0.0, 0.0], [a / 2, 0.0], [0.0, a / 2]], masses, names)
+
+
+def bilayer(crystal, bonds, shift):
+    """Two sheets of a crystal as one crystal, the second shifted by shift (Cartesian, d components), with bonds.
+
+    The atoms of the second sheet come after the first (index mu + B), and each sheet keeps the
+    given bonds; springs between the sheets are added by the caller. E.g. embed(honeycomb(...), 3)
+    with shift (0, 0, c) is AA bilayer graphene, with the B - A offset added in the plane AB.
+    """
+    n_basis = len(crystal.masses)
+    second = [(mu + n_basis, nu + n_basis, n, K) for mu, nu, n, K in bonds]
+    stacked = Crystal(
+        crystal.vectors,
+        np.vstack([crystal.positions, crystal.positions + np.asarray(shift, dtype=float)]),
+        np.tile(crystal.masses, 2),
+        list(crystal.names) * 2,
+    )
+    return stacked, list(bonds) + second

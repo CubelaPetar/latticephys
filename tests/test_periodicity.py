@@ -8,7 +8,7 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.plot import plot_brillouin_zone
 from latticephys.lattice.reciprocal import brillouin_zone, q_grid, special_points, wigner_seitz_cell
-from latticephys.lattice.structures import honeycomb
+from latticephys.lattice.structures import bilayer, honeycomb
 from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, sound_velocities
 from latticephys.phonons.display import animate
 from latticephys.phonons.modes import normal_modes
@@ -169,3 +169,34 @@ def test_animate_raises_for_3d_motion():
     positions = layer().positions
     with pytest.raises(ValueError, match="1D or 2D"):
         animate(positions, np.zeros((2, positions.size)), 0.1, 1.0, radii=[5, 5], colors=[(0, 0, 0)] * 2)
+
+
+def test_bilayer_stacks_two_copies():
+    """bilayer: the copy is shifted, its atoms come after the originals, and each sheet keeps its own bonds."""
+    sheet = layer()
+    bonds = neighbour_bonds(sheet, [(10.0, 2.0)])
+    crystal, both = bilayer(sheet, bonds, [0.5, 0.0, 3.0])
+
+    np.testing.assert_array_equal(crystal.vectors, sheet.vectors)
+    np.testing.assert_allclose(crystal.positions, np.vstack([sheet.positions, sheet.positions + [0.5, 0.0, 3.0]]))
+    assert both == bonds + [(mu + 2, nu + 2, n, K) for mu, nu, n, K in bonds]
+
+
+def test_aa_bilayer_breathing_mode_and_its_scattering():
+    """AA bilayer, in-plane (K_L, K_T) springs and one vertical spring K_perp per stacked pair: the breathing mode
+    (rigid sheets against each other along z, no in-plane spring stretched) has omega^2 = 2 K_perp / M; K_T
+    separates it from A and B breathing on their own. At Q = (0, 0, Q_z) its eigenvector e_z = (1, 1, -1, -1) / 2
+    gives I = |sum_mu Q_z e_z,mu e^(-i Q_z z_mu)|^2 / (M omega) = 4 Q_z^2 sin^2(Q_z c / 2) / (M omega),
+    which vanishes at Q_z c = 2 pi: the phase between the sheets matters."""
+    K_perp, c = 0.3, 3.356
+    aa, bonds = bilayer(layer(), neighbour_bonds(layer(), [(10.0, 2.0)]), [0.0, 0.0, c])
+    bonds += [(mu, mu + 2, (0, 0), K_perp) for mu in (0, 1)]
+
+    breathing = np.sqrt(2 * K_perp / M)
+    omega = dispersion(aa, bonds, [np.zeros(3)])[0]
+    assert np.sum(np.isclose(omega, breathing, rtol=1e-12)) == 1
+
+    Qz = np.array([0.5, 1.0, 2 * np.pi / c])
+    omega, intensity = structure_factor(aa, bonds, np.column_stack([np.zeros((3, 2)), Qz]))
+    branch = np.argmin(np.abs(omega[0] - breathing))
+    np.testing.assert_allclose(intensity[:, branch], 4 * Qz**2 * np.sin(Qz * c / 2) ** 2 / (M * breathing), atol=1e-12)
