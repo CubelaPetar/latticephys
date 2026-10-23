@@ -23,9 +23,9 @@ ANGLES = np.linspace(0, 2 * np.pi, 361)
 def main():
     a = 2.46
     cases = [
-        ("Triangular, k = [10]", Crystal(primitive_vectors("hexagonal", a), [[0.0, 0.0]], [MASS], ["C"]), [10.0]),
-        ("Square, k = [10, 3]", Crystal(primitive_vectors("square", 2.5), [[0.0, 0.0]], [MASS], ["C"]), [10.0, 3.0]),
-        ("Graphene, k = [25, 5]", honeycomb(a, [MASS] * 2, ["C"] * 2),
+        ("Triangular, K = [10]", Crystal(primitive_vectors("hexagonal", a), [[0.0, 0.0]], [MASS], ["C"]), [10.0]),
+        ("Square, K = [10, 3]", Crystal(primitive_vectors("square", 2.5), [[0.0, 0.0]], [MASS], ["C"]), [10.0, 3.0]),
+        ("Graphene, K = [25, 5]", honeycomb(a, [MASS] * 2, ["C"] * 2),
          [25.0, 5.0]),
     ]
     directions = np.column_stack([np.cos(ANGLES), np.sin(ANGLES)])

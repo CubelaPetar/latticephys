@@ -22,10 +22,10 @@ RED = (188, 39, 50)
 
 
 def main():
-    K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="periodic")
+    Phi = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="periodic")
     masses = np.full(N_ATOMS, MASS)
 
-    omega, _ = normal_modes(K, masses)
+    omega, _ = normal_modes(Phi, masses)
     slowest = omega[omega > 0].min()
     period = 2 * np.pi / slowest
     print(f"slowest mode period: {period * TIME_FS:.1f} fs")
@@ -34,7 +34,7 @@ def main():
     u0 = np.zeros(N_ATOMS)
     u0[0] = AMPLITUDE
     p0 = np.zeros(N_ATOMS)
-    u, _ = simulate(K, masses, u0, p0, TIMESTEP, steps)
+    u, _ = simulate(Phi, masses, u0, p0, TIMESTEP, steps)
 
     x0 = LATTICE_CONSTANT * np.arange(N_ATOMS)
     animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[15] * N_ATOMS, colors=[RED] * N_ATOMS)

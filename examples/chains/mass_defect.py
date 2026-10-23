@@ -23,8 +23,8 @@ def main():
     centre = N_ATOMS // 2
     masses[centre] = IMPURITY_MASS
 
-    K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
-    omega, vectors = normal_modes(K, masses)
+    Phi = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
+    omega, vectors = normal_modes(Phi, masses)
 
     omega_max = 2 * np.sqrt(SPRING_CONSTANT / MASS)
     eps = 1 - IMPURITY_MASS / MASS

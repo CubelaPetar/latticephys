@@ -1,7 +1,7 @@
 """A Gaussian wave packet in a monatomic chain moves with the group velocity d omega / dq.
 
 Space-time plot of the displacements for two carrier wave vectors q0. The dashed
-line is the analytic group velocity v_g = a sqrt(k/m) cos(q0 a / 2): the packet is
+line is the analytic group velocity v_g = a sqrt(K/m) cos(q0 a / 2): the packet is
 fast at small q0 and nearly stops at the zone edge, and it spreads due to dispersion.
 """
 
@@ -25,8 +25,8 @@ DURATION = 150.0  # internal units (≈ 1.5 ps)
 
 
 def main():
-    a, k, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
-    K = chain_force_constants(N_ATOMS, k, boundary="periodic")
+    a, K, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
+    Phi = chain_force_constants(N_ATOMS, K, boundary="periodic")
     masses = np.full(N_ATOMS, m)
     steps = round(DURATION / TIMESTEP)
 
@@ -38,14 +38,14 @@ def main():
 
     fig, axes = plt.subplots(1, len(CARRIERS), figsize=(12, 5), sharey=True)
     for axis, q0a in zip(axes, CARRIERS):
-        omega0 = 2 * np.sqrt(k / m) * np.sin(q0a / 2)
+        omega0 = 2 * np.sqrt(K / m) * np.sin(q0a / 2)
         # right-moving wave u = envelope cos(q0 x - omega0 t) at t = 0
         u0 = envelope * np.cos(q0a * sites)
         p0 = m * omega0 * envelope * np.sin(q0a * sites)
-        u, _ = simulate(K, masses, u0, p0, TIMESTEP, steps)
+        u, _ = simulate(Phi, masses, u0, p0, TIMESTEP, steps)
 
         axis.imshow(u, origin="lower", aspect="auto", cmap="RdBu", extent=[0, length, 0, time_fs])
-        group_velocity = a * np.sqrt(k / m) * np.cos(q0a / 2)  # Å per internal time unit
+        group_velocity = a * np.sqrt(K / m) * np.cos(q0a / 2)  # Å per internal time unit
         axis.plot([start * a, start * a + group_velocity * DURATION], [0, time_fs], "k--")
         axis.set_xlim(0, length)
         axis.set_title(rf"$q_0 a = {q0a / np.pi:.1f}\,\pi$")

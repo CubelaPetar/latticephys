@@ -37,7 +37,7 @@ def main():
     crystal = honeycomb(A, [MASS, MASS], ["C", "C"])
     bonds = neighbour_bonds(crystal, SPRING_CONSTANTS)
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
-    K = force_constants(supercell, supercell_bonds)
+    Phi = force_constants(supercell, supercell_bonds)
     positions, masses = supercell.positions, supercell.masses
 
     q = special_points("hexagonal", crystal.vectors)[POINT]
@@ -49,7 +49,7 @@ def main():
     u0 *= AMPLITUDE / np.abs(u0).max()
     period = 2 * np.pi / omega
     steps = round(PERIODS * period / TIMESTEP)
-    u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
+    u, _ = simulate(Phi, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
 
     animate(positions, u, TIMESTEP, period / SECONDS_PER_PERIOD,
             radii=[6] * len(positions), colors=[RED, BLUE] * (len(positions) // 2), bonds=supercell_bonds)

@@ -1,11 +1,11 @@
 """Force constants of springs between atoms of a Crystal.
 
-A bond (mu, nu, n, k) is a spring between atom mu in cell 0 and atom nu in
-cell n (see lattice.bonds). Its direction e comes from the crystal. k is either
-a number (central spring, force only along e) or a pair (k_L, k_T) with an
-additional transverse stiffness k_T against displacements perpendicular to e.
+A bond (mu, nu, n, K) is a spring between atom mu in cell 0 and atom nu in
+cell n (see lattice.bonds). Its direction e comes from the crystal. K is either
+a number (central spring, force only along e) or a pair (K_L, K_T) with an
+additional transverse stiffness K_T against displacements perpendicular to e.
 
-Transverse springs (k_T != 0) are the Born-von Karman model of textbooks. They are
+Transverse springs (K_T != 0) are the Born-von Karman model of textbooks. They are
 not rotationally invariant: a rigid rotation of a molecule or a ribbon costs
 energy, so free systems get no zero rotation modes.
 """
@@ -14,7 +14,7 @@ import numpy as np
 
 
 def force_constants(crystal, bonds):
-    """Force-constant matrix K of the atoms of one cell, V = 1/2 u^T K u.
+    """Force-constant matrix Phi of the atoms of one cell, V = 1/2 u^T Phi u.
 
     Bonds to other cells (n != 0) couple to the periodic images, so for a
     periodic_supercell() this is the finite periodic system; for a molecule
@@ -24,12 +24,12 @@ def force_constants(crystal, bonds):
     return _fourier_force_constants(crystal, bonds, np.zeros(crystal.dim)).real
 
 
-def _spring_block(r, k):
-    """d x d force constants k_L e e^T + k_T (1 - e e^T) of a spring along r, k = k_L or (k_L, k_T)."""
-    k_l, k_t = (k, 0.0) if np.ndim(k) == 0 else k
+def _spring_block(r, K):
+    """d x d force constants K_L e e^T + K_T (1 - e e^T) of a spring along r, K = K_L or (K_L, K_T)."""
+    K_L, K_T = (K, 0.0) if np.ndim(K) == 0 else K
     e = r / np.linalg.norm(r)
     longitudinal = np.outer(e, e)
-    return k_l * longitudinal + k_t * (np.eye(len(r)) - longitudinal)
+    return K_L * longitudinal + K_T * (np.eye(len(r)) - longitudinal)
 
 
 def _fourier_force_constants(crystal, bonds, q, gradient=False):
@@ -39,9 +39,9 @@ def _fourier_force_constants(crystal, bonds, q, gradient=False):
     """
     d = crystal.dim
     size = len(crystal.masses) * d
-    phi = np.zeros((d, size, size) if gradient else (size, size), dtype=complex)
-    for mu, nu, n, k in bonds:
-        block = _spring_block(crystal.bond_vector(mu, nu, n), k)
+    Phi = np.zeros((d, size, size) if gradient else (size, size), dtype=complex)
+    for mu, nu, n, K in bonds:
+        block = _spring_block(crystal.bond_vector(mu, nu, n), K)
         cell = np.atleast_1d(n) @ crystal.vectors
         phase = np.exp(1j * q @ cell)
 
@@ -49,11 +49,11 @@ def _fourier_force_constants(crystal, bonds, q, gradient=False):
         snu = slice(nu * d, (nu + 1) * d)
         if gradient:
             # only the off-diagonal blocks depend on q
-            phi[:, smu, snu] -= 1j * cell[:, None, None] * block * phase
-            phi[:, snu, smu] += 1j * cell[:, None, None] * block * np.conj(phase)
+            Phi[:, smu, snu] -= 1j * cell[:, None, None] * block * phase
+            Phi[:, snu, smu] += 1j * cell[:, None, None] * block * np.conj(phase)
         else:
-            phi[smu, smu] += block
-            phi[snu, snu] += block
-            phi[smu, snu] -= block * phase
-            phi[snu, smu] -= block * np.conj(phase)
-    return phi
+            Phi[smu, smu] += block
+            Phi[snu, snu] += block
+            Phi[smu, snu] -= block * phase
+            Phi[snu, smu] -= block * np.conj(phase)
+    return Phi

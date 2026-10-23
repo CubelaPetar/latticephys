@@ -9,8 +9,8 @@ Sorted by folder. **Needs** names the library feature from `TODO.md` that must c
 
 ## 1D chains
 
-- **Spring-dimerized chain** (equal masses, k1 ≠ k2): gap at the zone edge, phonon analogue of the SSH model. Test: analytic two-branch ω(q).
-- **Second-neighbour springs** `(0, 0, 2, k2)`: the dispersion changes shape; negative k2 makes the chain unstable.
+- **Spring-dimerized chain** (equal masses, K1 ≠ K2): gap at the zone edge, phonon analogue of the SSH model. Test: analytic two-branch ω(q).
+- **Second-neighbour springs** `(0, 0, 2, K2)`: the dispersion changes shape; negative K2 makes the chain unstable.
 - **Backward waves:** a wave packet on the optical branch, where ω falls with q, so crests and packet move in opposite directions. Test: group velocity dω/dq < 0.
 - **Integrator accuracy:** energy error against time step, velocity Verlet vs. explicit Euler.
 - **Fermi–Pasta–Ulam–Tsingou chain:** energy returns to the first mode instead of spreading. Needs: `simulate()` with a force function.

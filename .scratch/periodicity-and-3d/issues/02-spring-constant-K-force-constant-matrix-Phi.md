@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-- [ ] No spring constant named k, k_l, k_t or C remains in docstrings, variables or examples
-- [ ] No force-constant matrix named K remains; it is Φ / `Phi`
-- [ ] `CLAUDE.md` conventions use K, (K_L, K_T) and Φ
-- [ ] Behaviour unchanged: existing tests pass unmodified apart from names; all examples green
+- [x] No spring constant named k, k_l, k_t or C remains in docstrings, variables or examples
+- [x] No force-constant matrix named K remains; it is Φ / `Phi`
+- [x] `CLAUDE.md` conventions use K, (K_L, K_T) and Φ
+- [x] Behaviour unchanged: existing tests pass unmodified apart from names; all examples green

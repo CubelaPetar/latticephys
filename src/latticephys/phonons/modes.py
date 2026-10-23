@@ -16,9 +16,9 @@ def diagonalize(dynamical):
 
 
 def normal_modes(force_constants, masses):
-    """Normal modes of the dynamical matrix D = M^-1/2 K M^-1/2.
+    """Normal modes of the dynamical matrix D = M^-1/2 Phi M^-1/2.
 
-    force_constants: symmetric (N, N) matrix K of the potential V = 1/2 u^T K u
+    force_constants: symmetric (N, N) matrix Phi of the potential V = 1/2 u^T Phi u
     masses:          (N,) masses
 
     Returns omega (ascending, see diagonalize()) and the eigenvectors of D as

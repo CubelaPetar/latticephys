@@ -25,8 +25,8 @@ def main():
     chain = Crystal([[a]], [0.0], [MASS], ["C"])
     curve = dispersion(chain, [(0, 0, 1, SPRING_CONSTANT)], qs)[:, 0] * OMEGA_TO_THZ
 
-    K = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
-    omega, vectors = normal_modes(K, np.full(N_ATOMS, MASS))
+    Phi = chain_force_constants(N_ATOMS, SPRING_CONSTANT, boundary="fixed")
+    omega, vectors = normal_modes(Phi, np.full(N_ATOMS, MASS))
     q_finite = np.arange(1, N_ATOMS + 1) * np.pi / ((N_ATOMS + 1) * a)
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4))

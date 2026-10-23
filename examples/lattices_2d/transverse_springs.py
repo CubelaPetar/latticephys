@@ -1,9 +1,9 @@
-"""Square lattice with nearest neighbours: central springs vs. springs with a transverse part (k_L, k_T).
+"""Square lattice with nearest neighbours: central springs vs. springs with a transverse part (K_L, K_T).
 
 Central springs only resist stretching, so a row of atoms sliding along itself costs no
-energy: the transverse branch vanishes along Gamma-X. A transverse stiffness k_T (the
+energy: the transverse branch vanishes along Gamma-X. A transverse stiffness K_T (the
 Born-von Karman model) gives shear stiffness without second neighbours. Along Gamma-X
-then omega_T = 2 sqrt(k_T / m) sin(q a / 2). Transverse springs are not rotationally
+then omega_T = 2 sqrt(K_T / m) sin(q a / 2). Transverse springs are not rotationally
 invariant, so they are a model for bulk crystals, not for free molecules or ribbons.
 """
 
@@ -30,10 +30,10 @@ def main():
     qs, distance, corners = k_path([points[label] for label in LABELS])
 
     fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
-    for axis, k in zip(axes, (K_L, (K_L, K_T))):
-        frequencies = dispersion(crystal, neighbour_bonds(crystal, [k]), qs) * OMEGA_TO_THZ
+    for axis, K in zip(axes, (K_L, (K_L, K_T))):
+        frequencies = dispersion(crystal, neighbour_bonds(crystal, [K]), qs) * OMEGA_TO_THZ
         plot_bands(distance, frequencies, corners, LABELS, ax=axis)
-        axis.set_title(f"k = {k} eV/Å²")
+        axis.set_title(f"K = {K} eV/Å²")
     axes[0].set_ylabel(r"$\nu$ (THz)")
 
     fig.tight_layout()

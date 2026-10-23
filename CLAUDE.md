@@ -31,9 +31,10 @@ Lattice physics with single-particle or harmonic methods: phonons now; tight-bin
 
 - Argument order model first: `(crystal, bonds, q or qs, ...)`.
 - `Crystal(vectors, positions, masses, names)`: vectors (d, d) as rows, positions (B, d) Cartesian. A molecule is a Crystal whose bonds all stay in cell 0.
-- Bond `(mu, nu, n, k)`: atom mu in cell 0 to atom nu in cell n (int in 1D, tuple otherwise), each bond listed once. The last entry is the model parameter: a spring k or (k_L, k_T) now, hopping or exchange later.
+- Bond `(mu, nu, n, K)`: atom mu in cell 0 to atom nu in cell n (int in 1D, tuple otherwise), each bond listed once. The last entry is the model parameter: a spring K or (K_L, K_T) now, hopping or exchange later.
+- Symbols: spring constant K, force-constant matrix Φ (`Phi`), dynamical matrix D; k and q only mean wave vectors.
 - Degrees of freedom atom by atom `[u_0x, u_0y, u_1x, ...]`; masses per degree of freedom `np.repeat(masses, d)`.
-- Units in: Å, amu, eV (k in eV/Å²); internal time unit ≈ 10.18 fs. Convert only at output with `latticephys.units`.
+- Units in: Å, amu, eV (K in eV/Å²); internal time unit ≈ 10.18 fs. Convert only at output with `latticephys.units`.
 - Frequencies are always ω, never ω²: negative = unstable, zero modes exactly 0. All eigenproblems of dynamical matrices go through `phonons.modes.diagonalize`.
 - Tests: the docstring states the analytic formula or independent calculation being checked.
 - Examples: topic folders in `examples/`, parameters as constants at the top, docstring explains the physics, `main()`. Each is listed in `examples/README.md`. Planned examples go to `examples/IDEAS.md`, the library features they need to `TODO.md`.

@@ -24,9 +24,9 @@ SMEARING = 0.4  # THz, energy resolution
 
 
 def main():
-    a, k = LATTICE_CONSTANT, SPRING_CONSTANT
+    a, K = LATTICE_CONSTANT, SPRING_CONSTANT
     crystal = Crystal([[a]], [0.0, a / 2], [MASS_1, MASS_2], ["C", "O"])
-    bonds = [(0, 1, 0, k), (1, 0, 1, k)]
+    bonds = [(0, 1, 0, K), (1, 0, 1, K)]
 
     Qs = np.linspace(0.01, ZONES * 2 * np.pi / a, 600)
     omega, intensity = structure_factor(crystal, bonds, Qs, SCATTERING_LENGTHS)

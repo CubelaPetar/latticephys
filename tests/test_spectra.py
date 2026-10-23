@@ -22,9 +22,9 @@ def chain_modes(crystal, bonds, n=40_000):
 
 def test_dos_monatomic_chain():
     """g(omega) = 2 / (pi sqrt(omega_max^2 - omega^2)), normalized to 1."""
-    k, m = 1.5, 2.0
-    omega = chain_modes(Crystal([[A]], [0.0], [m], ["A"]), [(0, 0, 1, k)])
-    omega_max = 2 * np.sqrt(k / m)
+    K, m = 1.5, 2.0
+    omega = chain_modes(Crystal([[A]], [0.0], [m], ["A"]), [(0, 0, 1, K)])
+    omega_max = 2 * np.sqrt(K / m)
     grid = np.linspace(0.1, 0.8, 8) * omega_max
 
     dos = density_of_states(omega, grid, sigma=1e-3 * omega_max)
@@ -35,7 +35,7 @@ def test_dos_monatomic_chain():
 
 
 def test_projected_dos_adds_up_and_has_the_gap():
-    """Per-atom DOS sums to the total; no modes between the acoustic top sqrt(2k/m2) and optical bottom sqrt(2k/m1)."""
+    """Per-atom DOS sums to the total; no modes between the acoustic top sqrt(2K/m2) and optical bottom sqrt(2K/m1)."""
     crystal = Crystal([[A]], [0.0, A / 2], [1.0, 3.0], ["A", "B"])
     qs = ((np.arange(4000) + 0.5) / 4000 - 0.5) * 2 * np.pi / A
     omega = dispersion(crystal, DIATOMIC_BONDS, qs)

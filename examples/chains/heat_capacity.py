@@ -23,12 +23,12 @@ TEMPERATURES = np.linspace(1, 1500, 300)  # K
 
 
 def main():
-    a, k, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
+    a, K, m = LATTICE_CONSTANT, SPRING_CONSTANT, MASS
     # midpoints of the Brillouin zone, avoiding q = 0 where omega = 0
     qs = (np.arange(Q_POINTS) + 0.5) / Q_POINTS * 2 * np.pi / a - np.pi / a
-    omega = dispersion(Crystal([[a]], [0.0], [m], ["C"]), [(0, 0, 1, k)], qs)[:, 0]
+    omega = dispersion(Crystal([[a]], [0.0], [m], ["C"]), [(0, 0, 1, K)], qs)[:, 0]
 
-    debye = a * np.sqrt(k / m) * np.abs(qs)  # linear dispersion with the same sound velocity
+    debye = a * np.sqrt(K / m) * np.abs(qs)  # linear dispersion with the same sound velocity
     einstein = np.full_like(omega, omega.mean())
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4))

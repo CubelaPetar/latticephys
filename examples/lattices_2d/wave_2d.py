@@ -32,7 +32,7 @@ def main():
     crystal = Crystal(primitive_vectors("hexagonal", A), [[0.0, 0.0]], [MASS], ["C"])
     bonds = neighbour_bonds(crystal, [SPRING_CONSTANT])
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
-    K = force_constants(supercell, supercell_bonds)
+    Phi = force_constants(supercell, supercell_bonds)
     positions, masses = supercell.positions, supercell.masses
 
     centre = np.argmin(np.linalg.norm(positions - positions.mean(axis=0), axis=1))
@@ -41,7 +41,7 @@ def main():
 
     print(f"simulating {DURATION * TIME_FS:.0f} fs")
     steps = round(DURATION / TIMESTEP)
-    u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
+    u, _ = simulate(Phi, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
 
     animate(positions, EXAGGERATION * u, TIMESTEP, DURATION / SECONDS,
             radii=[4] * len(positions), colors=None, color_scale=COLOR_SCALE, bonds=supercell_bonds)

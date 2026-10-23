@@ -10,7 +10,7 @@ from latticephys.phonons.springs import _fourier_force_constants
 def dynamical_matrix(crystal, bonds, q):
     """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d).
 
-    bonds: list of (mu, nu, n, k), e.g. from neighbour_bonds()
+    bonds: list of (mu, nu, n, K), e.g. from neighbour_bonds()
     q:     wave vector (1/Å), length d (a number in 1D)
     Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
     """

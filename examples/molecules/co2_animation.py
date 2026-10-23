@@ -22,7 +22,7 @@ RED = (188, 39, 50)
 
 
 def main():
-    K = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
+    Phi = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
     masses = np.array([MASS_O, MASS_C, MASS_O])
 
     period = 2 * np.pi / np.sqrt(SPRING_CONSTANT / MASS_O)
@@ -31,7 +31,7 @@ def main():
 
     u0 = AMPLITUDE * np.array([-1.0, 0.0, 1.0])
     p0 = np.zeros(3)
-    u, _ = simulate(K, masses, u0, p0, TIMESTEP, steps)
+    u, _ = simulate(Phi, masses, u0, p0, TIMESTEP, steps)
 
     x0 = BOND_LENGTH * np.array([-1.0, 0.0, 1.0])
     animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[20, 15, 20], colors=[RED, BLUE, RED])

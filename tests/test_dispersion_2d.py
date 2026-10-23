@@ -23,16 +23,16 @@ def triangular(m=2.0):
 
 
 def test_triangular_analytic():
-    """Bravais lattice: D(q) = sum over bonds of k/m e e^T 2 (1 - cos q.R)."""
-    k, m = 3.0, 2.0
+    """Bravais lattice: D(q) = sum over bonds of K/m e e^T 2 (1 - cos q.R)."""
+    K, m = 3.0, 2.0
     crystal = triangular(m)
-    bonds = neighbour_bonds(crystal, [k])
+    bonds = neighbour_bonds(crystal, [K])
     qs = np.random.default_rng(0).uniform(-2, 2, size=(20, 2))
 
     omega = dispersion(crystal, bonds, qs)
     vectors = [crystal.bond_vector(mu, nu, n) for mu, nu, n, _ in bonds]
     for q, w in zip(qs, omega):
-        D = sum(k / m * np.outer(r, r) / (r @ r) * 2 * (1 - np.cos(q @ r)) for r in vectors)
+        D = sum(K / m * np.outer(r, r) / (r @ r) * 2 * (1 - np.cos(q @ r)) for r in vectors)
         np.testing.assert_allclose(w**2, np.linalg.eigvalsh(D), atol=1e-12)
 
 
@@ -65,13 +65,13 @@ def test_bloch_mode_oscillates_in_supercell():
     crystal, cells = graphene(), 4
     bonds = neighbour_bonds(crystal, [10.0, 2.0])
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, cells)
-    K = force_constants(supercell, supercell_bonds)
+    Phi = force_constants(supercell, supercell_bonds)
 
     q = reciprocal_vectors(crystal.vectors)[0] / 2
     omega, u0 = bloch_mode(crystal, bonds, q, branch=3, cells=cells)
 
     dt, steps = 0.001, 3000
-    u, _ = simulate(K, np.repeat(supercell.masses, 2), u0, np.zeros_like(u0), dt, steps)
+    u, _ = simulate(Phi, np.repeat(supercell.masses, 2), u0, np.zeros_like(u0), dt, steps)
     t = dt * np.arange(steps + 1)
     np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)
 
@@ -100,17 +100,17 @@ def test_bloch_mode_acoustic_at_gamma_is_exactly_zero(branch):
 
 
 @pytest.mark.parametrize(
-    "vectors, ks",
+    "vectors, spring_constants",
     [
         (primitive_vectors("square", 2.5), [10.0, 3.0]),
         (primitive_vectors("oblique", 2.5, 3.1, 73.0), [10.0, 3.0]),
         (primitive_vectors("hexagonal", 2.46), [10.0, 4.0, 1.0]),
     ],
 )
-def test_acoustic_modes_at_gamma_alone_are_exactly_zero(vectors, ks):
+def test_acoustic_modes_at_gamma_alone_are_exactly_zero(vectors, spring_constants):
     """Round-off at Gamma is judged against the spring scale, also when Gamma is the only q-point."""
     crystal = Crystal(vectors, [[0.0, 0.0]], [12.011], ["C"])
-    bonds = neighbour_bonds(crystal, ks)
+    bonds = neighbour_bonds(crystal, spring_constants)
     np.testing.assert_array_equal(dispersion(crystal, bonds, [[0.0, 0.0]]), 0.0)
     assert bloch_mode(crystal, bonds, [0.0, 0.0], branch=0, cells=2)[0] == 0.0
 
@@ -159,15 +159,15 @@ def test_free_strip_bends_quadratically():
 
 
 def test_square_with_transverse_springs_analytic():
-    """Born-von Karman square lattice, nearest neighbours (k_L, k_T): D is diagonal with
-    D_xx = 2/m [k_L (1 - cos q_x a) + k_T (1 - cos q_y a)] and x <-> y for D_yy."""
-    a, m, k_l, k_t = 2.0, 3.0, 4.0, 1.5
+    """Born-von Karman square lattice, nearest neighbours (K_L, K_T): D is diagonal with
+    D_xx = 2/m [K_L (1 - cos q_x a) + K_T (1 - cos q_y a)] and x <-> y for D_yy."""
+    a, m, K_L, K_T = 2.0, 3.0, 4.0, 1.5
     crystal = Crystal(primitive_vectors("square", a), [[0, 0]], [m], ["A"])
     qs = np.random.default_rng(1).uniform(-2, 2, size=(20, 2))
 
-    omega = dispersion(crystal, neighbour_bonds(crystal, [(k_l, k_t)]), qs)
+    omega = dispersion(crystal, neighbour_bonds(crystal, [(K_L, K_T)]), qs)
     cx, cy = 1 - np.cos(qs[:, 0] * a), 1 - np.cos(qs[:, 1] * a)
-    expected = np.sort([2 / m * (k_l * cx + k_t * cy), 2 / m * (k_t * cx + k_l * cy)], axis=0).T
+    expected = np.sort([2 / m * (K_L * cx + K_T * cy), 2 / m * (K_T * cx + K_L * cy)], axis=0).T
     np.testing.assert_allclose(omega**2, expected, atol=1e-12)
 
 
@@ -189,9 +189,9 @@ def test_group_velocities_undefined_at_degeneracies():
     crystal = graphene()
     bonds = neighbour_bonds(crystal, [10.0, 2.0])
     points = special_points("hexagonal", crystal.vectors)
-    gamma, k = group_velocities(crystal, bonds, [points["Γ"], points["K"]])
-    assert np.all(np.isnan(gamma))
+    at_gamma, at_K = group_velocities(crystal, bonds, [points["Γ"], points["K"]])
+    assert np.all(np.isnan(at_gamma))
     omega = dispersion(crystal, bonds, [points["K"]])[0]
     degenerate = np.isclose(omega[:, None], omega[None, :]).sum(axis=1) > 1
     assert degenerate.any()
-    assert np.all(np.isnan(k[degenerate])) and not np.any(np.isnan(k[~degenerate]))
+    assert np.all(np.isnan(at_K[degenerate])) and not np.any(np.isnan(at_K[~degenerate]))

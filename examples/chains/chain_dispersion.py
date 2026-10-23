@@ -15,15 +15,15 @@ LATTICE_CONSTANT = 2.5  # Å
 
 def main():
     a = LATTICE_CONSTANT
-    k = SPRING_CONSTANT
+    K = SPRING_CONSTANT
     qs = np.linspace(-np.pi / a, np.pi / a, 401)
 
     monatomic_chain = Crystal([[a]], [0.0], [MASS_1], ["C"])
     diatomic_chain = Crystal([[a]], [0.0, a / 2], [MASS_1, MASS_2], ["C", "O"])
 
-    # bonds (mu, nu, n, k): atom mu in cell 0 -- atom nu in cell n
-    monatomic = dispersion(monatomic_chain, [(0, 0, 1, k)], qs) * OMEGA_TO_THZ
-    diatomic = dispersion(diatomic_chain, [(0, 1, 0, k), (1, 0, 1, k)], qs) * OMEGA_TO_THZ
+    # bonds (mu, nu, n, K): atom mu in cell 0 -- atom nu in cell n
+    monatomic = dispersion(monatomic_chain, [(0, 0, 1, K)], qs) * OMEGA_TO_THZ
+    diatomic = dispersion(diatomic_chain, [(0, 1, 0, K), (1, 0, 1, K)], qs) * OMEGA_TO_THZ
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
     left.plot(qs * a, monatomic)
@@ -40,7 +40,7 @@ def main():
         axis.set_xlim(-np.pi, np.pi)
         axis.grid(alpha=0.3)
 
-    fig.suptitle(f"k = {k} eV/Å², a = {a} Å")
+    fig.suptitle(f"K = {K} eV/Å², a = {a} Å")
     fig.tight_layout()
     plt.show()
 

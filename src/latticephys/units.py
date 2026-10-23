@@ -1,4 +1,4 @@
-"""Unit system: lengths in Å, masses in amu, energies in eV (k in eV/Å²).
+"""Unit system: lengths in Å, masses in amu, energies in eV (K in eV/Å²).
 
 With these inputs time comes out in units of sqrt(amu Å² / eV) ≈ 10.18 fs
 and angular frequencies omega in the inverse of that.

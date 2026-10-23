@@ -18,15 +18,15 @@ def triangular(m=2.0):
 
 
 @pytest.mark.parametrize(
-    "crystal, ks, count, length",
+    "crystal, spring_constants, count, length",
     [
         (triangular(), [1.0], 3, A),
         (graphene(), [1.0], 3, A / np.sqrt(3)),
         (graphene(), [1.0, 1.0], 3 + 6, None),
     ],
 )
-def test_neighbour_bonds(crystal, ks, count, length):
-    bonds = neighbour_bonds(crystal, ks)
+def test_neighbour_bonds(crystal, spring_constants, count, length):
+    bonds = neighbour_bonds(crystal, spring_constants)
     assert len(bonds) == count
     if length is not None:
         lengths = [np.linalg.norm(crystal.bond_vector(mu, nu, n)) for mu, nu, n, _ in bonds]
@@ -38,7 +38,7 @@ def test_square_shells():
     bonds = neighbour_bonds(square, [1.0, 0.5])
     lengths = sorted(np.linalg.norm(square.bond_vector(mu, nu, n)) for mu, nu, n, _ in bonds)
     np.testing.assert_allclose(lengths, [1, 1, np.sqrt(2), np.sqrt(2)])
-    assert sorted(k for *_, k in bonds) == [0.5, 0.5, 1.0, 1.0]
+    assert sorted(K for *_, K in bonds) == [0.5, 0.5, 1.0, 1.0]
 
 
 def test_neighbour_bonds_raise_when_search_too_small():
@@ -60,8 +60,9 @@ def test_neighbour_bonds_raise_for_missing_shells():
 
 def test_neighbour_bonds_do_not_depend_on_search():
     crystal = Crystal(primitive_vectors("oblique", 2.5, 3.1, 73.0), [[0.0, 0.0], [0.9, 1.3]], [1.0] * 2, ["A"] * 2)
-    ks = [3.0, 2.0, 1.0]
-    assert sorted(neighbour_bonds(crystal, ks)) == sorted(neighbour_bonds(crystal, ks, search=6))
+    spring_constants = [3.0, 2.0, 1.0]
+    wider = neighbour_bonds(crystal, spring_constants, search=6)
+    assert sorted(neighbour_bonds(crystal, spring_constants)) == sorted(wider)
 
 
 def test_supercell_layout():

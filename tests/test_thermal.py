@@ -56,7 +56,7 @@ def test_triangular_cauchy_relation():
 
     np.testing.assert_allclose(v[:, 1] / v[:, 0], np.sqrt(3), rtol=1e-6)
     np.testing.assert_allclose(v, np.tile(v[0], (len(v), 1)), rtol=1e-6)  # same in every direction
-    # long-wavelength limit of D(q) for the three bond directions: c_T = a sqrt(3 k / (8 m))
+    # long-wavelength limit of D(q) for the three bond directions: c_T = a sqrt(3 K / (8 m))
     assert v[0, 0] == pytest.approx(A * np.sqrt(3 * K / (8 * M)), rel=1e-6)
 
 
@@ -79,7 +79,7 @@ def test_mean_square_displacement_rejects_floppy_lattice():
 
 
 def test_mean_square_displacement_1d_exact():
-    """Chain of N atoms: <u^2> = k_B T (N^2 - 1) / (12 N k), linear in N."""
+    """Chain of N atoms: <u^2> = k_B T (N^2 - 1) / (12 N K), linear in N."""
     chain, temperature, n = Crystal([[1.5]], [0.0], [M], ["C"]), 300.0, 64
     u2 = mean_square_displacement(chain, [(0, 0, 1, K)], n, temperature)[0]
     assert u2 == pytest.approx(K_B * temperature * (n**2 - 1) / (12 * n * K), rel=1e-12)

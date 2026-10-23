@@ -27,7 +27,7 @@ from latticephys.units import OMEGA_TO_THZ
 
 a = 2.5                                                              # Å
 chain = Crystal([[a]], [0.0, a / 2], [12.011, 15.999], ["C", "O"])   # vectors, positions, masses (amu), names
-bonds = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom mu, atom nu, cell of nu, k in eV/Å²)
+bonds = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom mu, atom nu, cell of nu, K in eV/Å²)
 qs = np.linspace(0, np.pi / a, 5)
 print(dispersion(chain, bonds, qs) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
 ```
@@ -41,7 +41,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | Path | Content |
 |---|---|
 | `src/latticephys/lattice/` | Geometry, independent of the physics: Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, k-paths, bonds and supercells, plots |
-| `src/latticephys/phonons/` | Springs (central or (k_L, k_T)), dynamical matrix, normal modes, dispersions, group and sound velocities, DOS, scattering intensity S(Q, ω), thermal properties, time integration, pygame animation |
+| `src/latticephys/phonons/` | Springs (central or (K_L, K_T)), dynamical matrix, normal modes, dispersions, group and sound velocities, DOS, scattering intensity S(Q, ω), thermal properties, time integration, pygame animation |
 | `src/latticephys/units.py` | Unit system and conversions |
 | `src/latticephys/export.py` | JSON export, e.g. for web pages |
 | `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `export/`); planned ones in `IDEAS.md` |

@@ -39,7 +39,7 @@ def main():
     crystal = Crystal([[a]], [0.0, a / 2], [MASS_1, MASS_2], ["C", "O"])
     bonds = [(0, 1, 0, SPRING_CONSTANT), (1, 0, 1, SPRING_CONSTANT)]
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, CELLS)
-    K = force_constants(supercell, supercell_bonds)
+    Phi = force_constants(supercell, supercell_bonds)
     positions, masses = supercell.positions, supercell.masses
 
     branch = {"acoustic": 0, "optical": 1}[BRANCH]
@@ -51,7 +51,7 @@ def main():
     u0 *= AMPLITUDE / np.abs(u0).max()
     period = 2 * np.pi / omega
     steps = round(PERIODS * period / TIMESTEP)
-    u, _ = simulate(K, np.repeat(masses, crystal.dim), u0, np.zeros_like(u0), TIMESTEP, steps)
+    u, _ = simulate(Phi, np.repeat(masses, crystal.dim), u0, np.zeros_like(u0), TIMESTEP, steps)
 
     animate(positions, u, TIMESTEP, period / SECONDS_PER_PERIOD,
             radii=[12, 15] * CELLS, colors=[RED, BLUE] * CELLS)

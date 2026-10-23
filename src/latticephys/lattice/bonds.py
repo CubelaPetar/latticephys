@@ -1,7 +1,7 @@
 """Bonds between atoms of a Crystal: neighbour shells and periodic supercells.
 
-A bond (mu, nu, n, k) couples atom mu in cell 0 to atom nu in cell n (integer
-tuple, or int in 1D) with a parameter k, e.g. a spring constant. Its direction
+A bond (mu, nu, n, K) couples atom mu in cell 0 to atom nu in cell n (integer
+tuple, or int in 1D) with a parameter K, e.g. a spring constant. Its direction
 comes from the crystal.
 """
 
@@ -14,13 +14,13 @@ from latticephys.lattice.reciprocal import reciprocal_vectors
 def neighbour_bonds(crystal, spring_constants, search=3):
     """Bonds of a crystal to its neighbour shells.
 
-    spring_constants: bond parameter per shell, [k1] for nearest neighbours,
-                      [k1, k2] to add second neighbours, ...; each entry is used
-                      as given, e.g. a spring k or a pair (k_L, k_T)
+    spring_constants: bond parameter per shell, [K1] for nearest neighbours,
+                      [K1, K2] to add second neighbours, ...; each entry is used
+                      as given, e.g. a spring K or a pair (K_L, K_T)
     search:           cells searched in each direction
 
     Shells are the distinct atom distances in ascending order. Returns a list
-    of bonds (mu, nu, n, k), each bond once. Raises if search is too small to
+    of bonds (mu, nu, n, K), each bond once. Raises if search is too small to
     find all requested shells completely.
     """
     origin = (0,) * crystal.dim
@@ -77,9 +77,9 @@ def periodic_supercell(crystal, bonds, cells):
 
     supercell_bonds = []
     for c in offsets:
-        for mu, nu, n, k in bonds:
+        for mu, nu, n, K in bonds:
             target = c + np.atleast_1d(n)
             i = np.ravel_multi_index(c, shape) * n_basis + mu
             j = np.ravel_multi_index(target % cells, shape) * n_basis + nu
-            supercell_bonds.append((i, j, tuple(target // cells), k))
+            supercell_bonds.append((i, j, tuple(target // cells), K))
     return supercell, supercell_bonds

@@ -16,10 +16,10 @@ MASS_C = 12.011  # amu
 
 
 def main():
-    K = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
+    Phi = chain_force_constants(3, SPRING_CONSTANT, boundary="free")
     masses = np.array([MASS_O, MASS_C, MASS_O])
 
-    omega, vectors = normal_modes(K, masses)
+    omega, vectors = normal_modes(Phi, masses)
     displacements = vectors / np.sqrt(masses)[:, None]
 
     for j in range(len(masses)):
