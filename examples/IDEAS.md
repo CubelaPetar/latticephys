@@ -29,3 +29,11 @@ Animations here should colour atoms by displacement: `animate(..., color_scale=.
 - **Topological edge modes (twisted kagome):** zero modes on one edge of a strip only (Kane & Lubensky). Geometry still to look up.
 - **Strained lattices:** pre-tension gives transverse stiffness to otherwise floppy lattices. Needs: extended spring model.
 - **Anderson localization with mass disorder:** high-frequency waves stay near the source. Needs: sparse matrices (2D localization lengths need large systems).
+
+## Textbook exercises
+
+From G. Czycholl, *Theoretische Festkörperphysik* (2016), copy in `references/` (not in git). The library features they need are still to be checked against the exercise texts.
+
+- **Chapter 2 exercises**, especially 2.4.
+- **Chapter 4 exercises**, especially 4.8 and 4.9.
+- **NaCl dispersion against Abb. 4.6:** compare `crystals_3d/nacl.py` with the book's curves.
