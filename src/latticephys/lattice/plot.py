@@ -1,4 +1,4 @@
-"""Plot 2D crystal structures, Brillouin zones and band structures with matplotlib."""
+"""Plot crystal structures (2D and 3D), 2D Brillouin zones and band structures with matplotlib."""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,13 +9,28 @@ from latticephys.lattice.reciprocal import brillouin_zone, reciprocal_vectors
 
 
 def plot_crystal(crystal, radii, colors, cells=3, ax=None):
-    """Draw a crystal of dimension 2: atoms as circles with radius in Å, primitive cell outlined.
+    """Draw a crystal of dimension 2 or 3: atoms coloured per basis atom, primitive cell outlined.
 
-    For periodicity 1 (e.g. a ribbon) the outline runs along a1 from the origin to a1 and
-    across the whole basis, plus one atom radius on each side. A molecule (p = 0) has no outline.
+    radii, colors: one per basis atom
+    cells:         the view reaches cells / 2 lattice extents from the origin
+
+    2D: atoms are circles with radius in Å. For periodicity 1 (e.g. a ribbon) the outline
+    runs along a1 from the origin to a1 and across the whole basis, plus one atom radius on
+    each side. A molecule (p = 0) has no outline.
+    3D: ax must be a 3D axis (projection="3d") or None. Atoms in an axis-aligned box are
+    scatter markers about 2 radii across (approximate, for the default 7 inch figure); the
+    cell is drawn by its edges (12 for p = 3, 4 for a layer, 1 for a chain).
     """
+    if len(radii) != len(crystal.masses) or len(colors) != len(crystal.masses):
+        raise ValueError(f"need one radius and one colour per basis atom ({len(crystal.masses)})")
+    if cells < 1:
+        raise ValueError("cells must be at least 1")
+    if crystal.dim == 3:
+        if ax is not None and ax.name != "3d":
+            raise ValueError("a 3D crystal needs a 3D axis, e.g. add_subplot(projection=\"3d\")")
+        return _plot_crystal_3d(crystal, radii, colors, cells, ax)
     if crystal.dim != 2:
-        raise ValueError("plot_crystal needs dimension 2")
+        raise ValueError("plot_crystal needs dimension 2 or 3")
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 6))
 
@@ -54,6 +69,48 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
     ax.set_aspect("equal")
     ax.set_xlabel("x (Å)")
     ax.set_ylabel("y (Å)")
+    return ax
+
+
+def _plot_crystal_3d(crystal, radii, colors, cells, ax):
+    """plot_crystal for d = 3: the box reaches cells / 2 lattice extents from the origin along the
+    axes the lattice vectors span and covers the basis plus one atom radius along the others."""
+    if ax is None:
+        ax = plt.figure(figsize=(7, 7)).add_subplot(projection="3d")
+    margin = max(radii)
+    low, high = crystal.positions.min(axis=0) - margin, crystal.positions.max(axis=0) + margin
+    if crystal.periodicity:
+        spanned = np.abs(crystal.vectors).sum(axis=0) > 1e-12
+        extent = cells / 2 * np.abs(crystal.vectors).sum(axis=0).max()
+        low[spanned], high[spanned] = -extent, extent
+
+    # enough cells to fill the box: the largest lattice coordinate of a box corner
+    corners = np.array([np.where(bits, high, low) for bits in np.ndindex(2, 2, 2)])
+    reach = np.abs(corners @ reciprocal_vectors(crystal.vectors).T / (2 * np.pi)).max(initial=0)
+    positions, basis_index = atom_positions(crystal, int(np.ceil(reach)) + 1)
+    inside = np.all((positions >= low - 1e-9) & (positions <= high + 1e-9), axis=1)
+
+    points_per_angstrom = 150 / (high - low).max()  # about the box width in points on a 7 inch figure
+    for mu, (name, color) in enumerate(zip(crystal.names, colors)):
+        x, y, z = positions[inside & (basis_index == mu)].T
+        ax.scatter(x, y, z, s=(2 * radii[mu] * points_per_angstrom) ** 2, color=color, alpha=0.8, label=name)
+
+    vertices = {bits: np.array(bits) @ crystal.vectors for bits in np.ndindex((2,) * crystal.periodicity)}
+    for bits, start in vertices.items():
+        for i in np.flatnonzero(np.array(bits) == 0):
+            end = vertices[bits[:i] + (1,) + bits[i + 1:]]
+            ax.plot(*np.transpose([start, end]), color="orange", ls="-.")
+
+    legend = ax.legend(loc="upper right")
+    for handle in legend.legend_handles:
+        handle.set_sizes([40])
+    ax.set_xlim(low[0], high[0])
+    ax.set_ylim(low[1], high[1])
+    ax.set_zlim(low[2], high[2])
+    ax.set_box_aspect(high - low)
+    ax.set_xlabel("x (Å)")
+    ax.set_ylabel("y (Å)")
+    ax.set_zlabel("z (Å)")
     return ax
 
 

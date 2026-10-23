@@ -24,7 +24,7 @@ import numpy as np
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal
-from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.plot import plot_bands, plot_crystal
 from latticephys.lattice.reciprocal import k_path, q_grid, special_points
 from latticephys.phonons.dispersion import dispersion
 from latticephys.phonons.spectra import density_of_states
@@ -83,6 +83,9 @@ def main():
     for axis in (middle, right):
         axis.grid(alpha=0.3)
     fig.tight_layout()
+
+    ax = plot_crystal(copper, radii=[0.4], colors=["tab:brown"], cells=2)
+    ax.set_title("fcc Cu (atoms not to scale) and its primitive cell")
     plt.show()
 
 

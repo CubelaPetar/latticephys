@@ -4,8 +4,8 @@
 
 **Blocked by:** 09
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `plot_crystal` dispatches on d (2 or 3) and raises otherwise
-- [ ] Cu example draws the fcc crystal
-- [ ] `pytest`, `ruff check` and all examples green
+- [x] `plot_crystal` dispatches on d (2 or 3) and raises otherwise
+- [x] Cu example draws the fcc crystal
+- [x] `pytest`, `ruff check` and all examples green
