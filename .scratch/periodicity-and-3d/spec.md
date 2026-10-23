@@ -81,7 +81,7 @@ Four steps, in this order:
 ## Implementation Decisions
 
 - **Order**: animate cleanup, symbol rename, periodicity, 3D. Each step leaves `pytest`, `ruff check` and all examples green and is committed separately.
-- **animate**: a new pure function `screen_coordinates(positions, size)` in the display module centres positions on the window and scales them to fit with a margin, keeping the aspect ratio. `animate` uses it unless an explicit scale is given. `animate` takes an optional list of atom-index pairs to draw as bonds (lines between current positions). Examples drop their own centring and scaling.
+- **animate**: a pure function `screen_coordinates(positions, size, scale=None)` in the display module centres positions on the window and, without a scale, scales them to fit with a margin, keeping the aspect ratio. `animate` takes optional bonds in the standard `(i, j, n, K)` format and draws those with n = 0 as lines between current positions. Examples drop their own centring and scaling.
 - **Symbols**: bond tuple `(mu, nu, n, K)`; transverse pair `(K_L, K_T)`; force-constant matrix Φ in docstrings and as variable name `Phi`; dynamical matrix D. Function names (`force_constants`, `dynamical_matrix`, `neighbour_bonds(crystal, spring_constants, ...)`) stay. `CLAUDE.md` conventions are updated to match.
 - **Crystal**: `vectors` shape (p, d), `positions` (B, d); `dim` is d, a new property `periodicity` is p. Validation: p ≤ d, lattice vectors linearly independent. A molecule has `vectors` of shape (0, d).
 - **Cell index**: p entries; int allowed for p = 1; `()` for p = 0. Wrong length raises.
