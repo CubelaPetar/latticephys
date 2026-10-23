@@ -14,7 +14,7 @@ illustrative.
 import matplotlib.pyplot as plt
 
 from latticephys.lattice.bonds import neighbour_bonds
-from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.plot import plot_bands, plot_crystal
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import rocksalt
 from latticephys.phonons.dispersion import dispersion
@@ -39,6 +39,9 @@ def main():
     axes[0].set_ylabel(r"$\nu$ (THz)")
 
     fig.tight_layout()
+
+    ax = plot_crystal(nacl, radii=[0.4, 0.6], colors=["tab:purple", "tab:green"], cells=2)
+    ax.set_title("NaCl (atoms not to scale) and its primitive cell")
     plt.show()
 
 

@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
-from latticephys.lattice.plot import plot_bands, plot_points
+from latticephys.lattice.plot import plot_bands, plot_crystal, plot_points
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import diamond
 from latticephys.phonons.dispersion import dispersion
@@ -45,7 +45,7 @@ def main():
     K2 = MASS * (TA_X / OMEGA_TO_THZ) ** 2 / 4
     print(f"K1 = {K1:.3f} eV/Å² (from Γ), K2 = {K2:.3f} eV/Å² (from TA at X)")
 
-    si = diamond(A, [MASS, MASS], ["Si", "Si"])
+    si = diamond(A, [MASS, MASS], ["Si (A)", "Si (B)"])
     bonds = neighbour_bonds(si, [K1, K2])
     points = special_points("fcc", si.vectors)
     for label, measured in MEASURED.items():
@@ -62,6 +62,9 @@ def main():
     ax.set_title(f"Si, central springs K1 = {K1:.2f}, K2 = {K2:.2f} eV/Å²")
 
     plt.tight_layout()
+
+    ax = plot_crystal(si, radii=[0.4, 0.4], colors=["tab:blue", "tab:cyan"], cells=2)
+    ax.set_title("Si: two fcc sublattices A, B shifted by a/4 (1, 1, 1); primitive cell")
     plt.show()
 
 
