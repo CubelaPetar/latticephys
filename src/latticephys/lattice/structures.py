@@ -2,6 +2,7 @@
 
 import numpy as np
 
+from latticephys.lattice import bravais3d
 from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal
 
@@ -20,6 +21,16 @@ def kagome(a, masses, names):
 def lieb(a, masses, names):
     """Lieb lattice (CuO2 plane): square lattice constant a, atoms at 0 and the two edge centres."""
     return Crystal(primitive_vectors("square", a), [[0.0, 0.0], [a / 2, 0.0], [0.0, a / 2]], masses, names)
+
+
+def rocksalt(a, masses, names):
+    """Rocksalt (NaCl): fcc lattice with cubic lattice constant a, atoms at 0 and (a/2, 0, 0)."""
+    return Crystal(bravais3d.primitive_vectors("fcc", a), [[0.0, 0.0, 0.0], [a / 2, 0.0, 0.0]], masses, names)
+
+
+def diamond(a, masses, names):
+    """Diamond (Si, Ge, C) or zincblende with two species: fcc lattice, atoms at 0 and a/4 (1, 1, 1)."""
+    return Crystal(bravais3d.primitive_vectors("fcc", a), [[0.0, 0.0, 0.0], [a / 4, a / 4, a / 4]], masses, names)
 
 
 def bilayer(crystal, bonds, shift):

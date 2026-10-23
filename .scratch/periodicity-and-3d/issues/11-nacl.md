@@ -4,7 +4,7 @@
 
 **Blocked by:** 09
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: along Γ–X the frequencies equal the closed-form 2×2 blocks per polarization
-- [ ] Example listed in `examples/README.md`; `pytest`, `ruff check` and all examples green
+- [x] Test: along Γ–X the frequencies equal the closed-form 2×2 blocks per polarization
+- [x] Example listed in `examples/README.md`; `pytest`, `ruff check` and all examples green
