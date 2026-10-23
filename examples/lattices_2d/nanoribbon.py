@@ -1,7 +1,7 @@
 """In-plane phonons of a zigzag graphene nanoribbon, a strip periodic along x with free edges.
 
-The ribbon is a 2D Crystal whose second lattice vector spans the strip plus vacuum,
-so no bonds cross the gap. Its bands are plotted against q_x and coloured by the
+The ribbon is a crystal with one lattice vector in 2D (periodicity p = 1, dimension
+d = 2): periodic along x, free across. Its bands are plotted against q_x and coloured by the
 weight of each mode on the edge atoms. The lowest branch rises as q_x^2 (in-plane
 bending of the strip). Some modes carry most of their weight on the edges: with
 8 rows, up to about 70 % on the outer 25 % of the atoms.
@@ -20,7 +20,6 @@ A = 2.46  # Å, graphene lattice constant = period of the zigzag ribbon
 MASS = 12.011  # amu
 SPRING_CONSTANTS = [25.0, 5.0]  # eV/Å², first and second neighbours
 ROWS = 8  # zigzag chains across the ribbon
-VACUUM = 10.0  # Å between the ribbon and its periodic image
 EDGE_ROWS = 1  # zigzag chains counted as edge on each side
 
 
@@ -31,8 +30,7 @@ def zigzag_ribbon():
     for j in range(ROWS):
         x = (j * A / 2) % A
         positions += [[x, j * height], [(x + A / 2) % A, j * height + A / (2 * np.sqrt(3))]]
-    width = (ROWS - 1) * height + A / np.sqrt(3)
-    return Crystal([[A, 0.0], [0.0, width + VACUUM]], positions, [MASS] * 2 * ROWS, ["C"] * 2 * ROWS)
+    return Crystal([[A, 0.0]], positions, [MASS] * 2 * ROWS, ["C"] * 2 * ROWS)
 
 
 def main():

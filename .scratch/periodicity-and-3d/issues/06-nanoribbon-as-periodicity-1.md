@@ -4,9 +4,9 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Nanoribbon example has no `VACUUM` constant and uses `vectors` of shape (1, 2)
-- [ ] Bands and edge weights unchanged (compare before/after numbers in the ticket's commit message)
-- [ ] `plot_crystal` draws a p = 1, d = 2 crystal
-- [ ] `pytest`, `ruff check` and all examples green
+- [x] Nanoribbon example has no `VACUUM` constant and uses `vectors` of shape (1, 2)
+- [x] Bands and edge weights unchanged (compare before/after numbers in the ticket's commit message)
+- [x] `plot_crystal` draws a p = 1, d = 2 crystal
+- [x] `pytest`, `ruff check` and all examples green

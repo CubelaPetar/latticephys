@@ -34,7 +34,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `density_of_states`, `heat_capacity` |
 | `transverse_springs.py` | Square lattice: central springs leave Γ–X floppy, (K_L, K_T) springs give shear stiffness | `neighbour_bonds` with (K_L, K_T), `plot_bands` |
 | `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
-| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with vacuum, `dispersion`, `atom_weights` |
+| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with one lattice vector (p = 1), `dispersion`, `atom_weights` |
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |
 

@@ -145,12 +145,11 @@ def test_lieb_zero_modes():
 
 
 def test_free_strip_bends_quadratically():
-    """A strip periodic in x with free edges (vacuum in y): two zero modes at q = 0, lowest branch ~ q^2."""
+    """A strip periodic in x (p = 1) with free edges in y: two zero modes at q = 0, lowest branch ~ q^2."""
     a, rows = 2.46, 6
     positions = [[(j * a / 2) % a, j * a * np.sqrt(3) / 2] for j in range(rows)]
-    strip = Crystal([[a, 0.0], [0.0, rows * a + 10.0]], positions, [12.0] * rows, ["C"] * rows)
+    strip = Crystal([[a, 0.0]], positions, [12.0] * rows, ["C"] * rows)
     bonds = neighbour_bonds(strip, [10.0])
-    assert all(n[1] == 0 for _, _, n, _ in bonds)  # no bonds across the vacuum
 
     omega = dispersion(strip, bonds, [[0.0, 0.0], [0.01, 0.0], [0.02, 0.0]])
     np.testing.assert_allclose(omega[0, :2], 0, atol=1e-12)
