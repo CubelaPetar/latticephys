@@ -53,9 +53,8 @@ def main():
     steps = round(PERIODS * period / TIMESTEP)
     u, _ = simulate(K, np.repeat(masses, crystal.dim), u0, np.zeros_like(u0), TIMESTEP, steps)
 
-    centred = positions - positions.mean(axis=0)
-    animate(centred, u, TIMESTEP, period / SECONDS_PER_PERIOD,
-            radii=[12, 15] * CELLS, colors=[RED, BLUE] * CELLS, scale=30)
+    animate(positions, u, TIMESTEP, period / SECONDS_PER_PERIOD,
+            radii=[12, 15] * CELLS, colors=[RED, BLUE] * CELLS)
 
 
 if __name__ == "__main__":

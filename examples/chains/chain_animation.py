@@ -36,8 +36,8 @@ def main():
     p0 = np.zeros(N_ATOMS)
     u, _ = simulate(K, masses, u0, p0, TIMESTEP, steps)
 
-    x0 = LATTICE_CONSTANT * (np.arange(N_ATOMS) - (N_ATOMS - 1) / 2)
-    animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[15] * N_ATOMS, colors=[RED] * N_ATOMS, scale=40)
+    x0 = LATTICE_CONSTANT * np.arange(N_ATOMS)
+    animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[15] * N_ATOMS, colors=[RED] * N_ATOMS)
 
 
 if __name__ == "__main__":

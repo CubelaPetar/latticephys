@@ -34,7 +34,7 @@ def main():
     u, _ = simulate(K, masses, u0, p0, TIMESTEP, steps)
 
     x0 = BOND_LENGTH * np.array([-1.0, 0.0, 1.0])
-    animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[20, 15, 20], colors=[RED, BLUE, RED], scale=200)
+    animate(x0, u, TIMESTEP, period / SECONDS_PER_PERIOD, radii=[20, 15, 20], colors=[RED, BLUE, RED])
 
 
 if __name__ == "__main__":

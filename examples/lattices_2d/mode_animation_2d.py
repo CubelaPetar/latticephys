@@ -51,10 +51,8 @@ def main():
     steps = round(PERIODS * period / TIMESTEP)
     u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
 
-    centred = positions - positions.mean(axis=0)
-    scale = 350 / np.abs(centred).max()
-    animate(centred, u, TIMESTEP, period / SECONDS_PER_PERIOD,
-            radii=[6] * len(positions), colors=[RED, BLUE] * (len(positions) // 2), scale=scale)
+    animate(positions, u, TIMESTEP, period / SECONDS_PER_PERIOD,
+            radii=[6] * len(positions), colors=[RED, BLUE] * (len(positions) // 2), bonds=supercell_bonds)
 
 
 if __name__ == "__main__":

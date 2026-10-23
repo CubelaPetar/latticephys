@@ -35,8 +35,7 @@ def main():
     K = force_constants(supercell, supercell_bonds)
     positions, masses = supercell.positions, supercell.masses
 
-    centred = positions - positions.mean(axis=0)
-    centre = np.argmin(np.linalg.norm(centred, axis=1))
+    centre = np.argmin(np.linalg.norm(positions - positions.mean(axis=0), axis=1))
     u0 = np.zeros(2 * len(positions))
     u0[2 * centre] = KICK
 
@@ -44,9 +43,8 @@ def main():
     steps = round(DURATION / TIMESTEP)
     u, _ = simulate(K, np.repeat(masses, 2), u0, np.zeros_like(u0), TIMESTEP, steps)
 
-    scale = 350 / np.abs(centred).max()
-    animate(centred, EXAGGERATION * u, TIMESTEP, DURATION / SECONDS,
-            radii=[4] * len(positions), colors=None, scale=scale, color_scale=COLOR_SCALE)
+    animate(positions, EXAGGERATION * u, TIMESTEP, DURATION / SECONDS,
+            radii=[4] * len(positions), colors=None, color_scale=COLOR_SCALE, bonds=supercell_bonds)
 
 
 if __name__ == "__main__":
