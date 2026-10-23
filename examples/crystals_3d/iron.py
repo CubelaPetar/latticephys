@@ -5,8 +5,9 @@ and 6 second neighbours at a along the cube axes. With nearest-neighbour central
 only, bcc is floppy: some shears stretch no diagonal spring to first order, and a branch
 is omega = 0 along the whole line Γ-N. Springs to the second neighbours make it stable.
 
-Path through the bcc zone: Γ-H-N-Γ-P-H (H at the cube face of the zone, N at an edge
-centre, P at the corner where three faces meet). Spring constants are illustrative.
+Path through the bcc zone, a rhombic dodecahedron: Γ-H-N-Γ-P-H (H a corner where four faces
+meet, along a cube axis; N a face centre; P a corner where three faces meet). Spring
+constants are illustrative.
 """
 
 import matplotlib.pyplot as plt
