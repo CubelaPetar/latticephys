@@ -4,7 +4,7 @@ import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.reciprocal import q_grid, special_points
-from latticephys.lattice.structures import diamond, rocksalt
+from latticephys.lattice.structures import diamond, hcp, rocksalt
 from latticephys.phonons.dispersion import dispersion
 
 
@@ -55,3 +55,17 @@ def test_diamond_ta_at_x_depends_only_on_second_neighbours():
     for K1 in (1.0, 10.0, 30.0):
         omega = dispersion(si, neighbour_bonds(si, [K1, K2]), [x])[0]
         np.testing.assert_allclose(omega[:2], np.sqrt(4 * K2 / M), rtol=1e-12)
+
+
+def test_hcp_optical_modes_at_gamma():
+    """hcp, central springs K to the 6 neighbours in the other sublattice (distance d^2 = a^2/3 + c^2/4) and K2 in
+    the plane. At Γ the sublattices move rigidly against each other, only the 6 interlayer springs act (reduced
+    mass M/2): in plane omega^2 = 2 K a^2 / (M d^2) (twice), out of plane omega^2 = 3 K c^2 / (M d^2); K2 drops out."""
+    a, c, K, K2, M = 3.209, 5.211, 1.2, 0.7, 24.305
+    mg = hcp(a, c, [M, M], ["Mg", "Mg"])
+    bonds = neighbour_bonds(mg, [K, K2])  # out-of-plane neighbours (3.198 Å) come before in-plane (3.209 Å)
+    d2 = a**2 / 3 + c**2 / 4
+
+    omega = dispersion(mg, bonds, [np.zeros(3)])[0]
+    expected = np.sqrt([0, 0, 0, 2 * K * a**2 / (M * d2), 2 * K * a**2 / (M * d2), 3 * K * c**2 / (M * d2)])
+    np.testing.assert_allclose(omega, np.sort(expected), atol=1e-12)

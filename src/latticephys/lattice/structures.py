@@ -33,6 +33,15 @@ def diamond(a, masses, names):
     return Crystal(bravais3d.primitive_vectors("fcc", a), [[0.0, 0.0, 0.0], [a / 4, a / 4, a / 4]], masses, names)
 
 
+def hcp(a, c, masses, names):
+    """Hexagonal close-packed (Mg, Zn, Ti): hexagonal lattice a, c, atoms at 0 and (a/2, a / (2 sqrt 3), c/2).
+
+    For the ideal c/a = sqrt(8/3) all 12 neighbours are at distance a.
+    """
+    positions = [[0.0, 0.0, 0.0], [a / 2, a / (2 * np.sqrt(3)), c / 2]]
+    return Crystal(bravais3d.primitive_vectors("hexagonal", a, c=c), positions, masses, names)
+
+
 def bilayer(crystal, bonds, shift):
     """Two sheets of a crystal as one crystal, the second shifted by shift (Cartesian, d components), with bonds.
 

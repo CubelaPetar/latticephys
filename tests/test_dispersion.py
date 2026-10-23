@@ -168,3 +168,20 @@ def test_fcc_nearest_neighbours_match_the_analytic_dynamical_matrix():
     for q, omega in zip(qs, dispersion(fcc, bonds, qs)):
         D = sum(K / m * np.outer(d, d) / (d @ d) * (1 - np.cos(q @ d)) for d in deltas)
         np.testing.assert_allclose(omega, np.sqrt(np.linalg.eigvalsh(D)), atol=1e-10)
+
+
+def test_bcc_first_and_second_neighbours_match_the_analytic_dynamical_matrix():
+    """bcc, central K1 to the 8 neighbours a/2 (+-1, +-1, +-1) and K2 to the 6 at a (+-1, 0, 0) and permutations:
+    D(q) = sum_delta K/m delta delta^T / |delta|^2 (1 - cos q.delta); compare the eigenvalues at random q."""
+    a, K1, K2, m = 2.87, 2.0, 0.8, 55.8
+    bcc = Crystal(primitive_vectors("bcc", a), [[0.0, 0.0, 0.0]], [m], ["Fe"])
+    bonds = neighbour_bonds(bcc, [K1, K2])
+    assert len(bonds) == 4 + 3  # 8 and 6 neighbours, each bond listed once
+
+    first = [a / 2 * np.array([s1, s2, s3]) for s1 in (1, -1) for s2 in (1, -1) for s3 in (1, -1)]
+    second = [a * s * np.eye(3)[i] for s in (1, -1) for i in range(3)]
+    qs = np.random.default_rng(13).uniform(-2, 2, size=(20, 3))
+    for q, omega in zip(qs, dispersion(bcc, bonds, qs)):
+        D = sum(K / m * np.outer(d, d) / (d @ d) * (1 - np.cos(q @ d)) for K, ds in ((K1, first), (K2, second))
+                for d in ds)
+        np.testing.assert_allclose(omega, np.sqrt(np.clip(np.linalg.eigvalsh(D), 0, None)), atol=1e-10)
