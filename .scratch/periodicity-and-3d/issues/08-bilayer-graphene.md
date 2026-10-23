@@ -10,3 +10,6 @@
 - [ ] Example: shear and breathing modes at Γ match 31 and 81 cm⁻¹ after the fit; plot of low-frequency branches near Γ
 - [ ] Docstring: sources, that the published α⊥ would give ≈ 89 cm⁻¹, that 3.356 Å is the graphite value
 - [ ] Listed in `examples/README.md`; `pytest`, `ruff check` and all examples green
+
+## Comments
+- From the review of 07: a flat layer cannot test the interlayer phase exp(-i Q_z z_mu) in `structure_factor`; the bilayer test should (e.g. the breathing mode visible only for Q_z != 0).

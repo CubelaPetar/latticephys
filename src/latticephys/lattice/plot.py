@@ -12,10 +12,10 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
     """Draw a crystal of dimension 2: atoms as circles with radius in Å, primitive cell outlined.
 
     For periodicity 1 (e.g. a ribbon) the outline runs along a1 from the origin to a1 and
-    across the whole basis, plus one atom radius on each side.
+    across the whole basis, plus one atom radius on each side. A molecule (p = 0) has no outline.
     """
-    if crystal.dim != 2 or crystal.periodicity == 0:
-        raise ValueError("plot_crystal needs dimension 2 and periodicity 1 or 2")
+    if crystal.dim != 2:
+        raise ValueError("plot_crystal needs dimension 2")
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 6))
 
@@ -23,23 +23,27 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
     for (x, y), mu in zip(positions, basis_index):
         ax.add_patch(Circle((x, y), radii[mu], color=colors[mu], alpha=0.6))
 
+    margin = max(radii)
     if crystal.periodicity == 2:
         a1, a2 = crystal.vectors
         outline = np.array([(0, 0), a1, a1 + a2, a2])
         # the central region, where the cells cover the plot completely
         extent = cells / 2 * np.max(np.abs(crystal.vectors).sum(axis=0))
         view = extent * np.array([[-1, -1], [1, 1]])
-    else:
+    elif crystal.periodicity == 1:
         a1 = crystal.vectors[0]
         normal = np.array([-a1[1], a1[0]]) / np.linalg.norm(a1)
-        margin = max(radii)
         across = crystal.positions @ normal
         low, high = across.min() - margin, across.max() + margin
         outline = np.array([low * normal, low * normal + a1, high * normal + a1, high * normal])
         # the strip along a1 within cells / 2 cells of the origin, the outline just inside
         view = np.array([along * cells / 2 * a1 + offset * normal
                          for along in (-1, 1) for offset in (low - margin, high + margin)])
-    ax.add_patch(Polygon(outline, fill=False, color="orange", ls="-."))
+    else:
+        outline = np.empty((0, 2))  # a molecule has no cell
+        view = np.array([crystal.positions.min(axis=0) - margin, crystal.positions.max(axis=0) + margin])
+    if len(outline):
+        ax.add_patch(Polygon(outline, fill=False, color="orange", ls="-."))
 
     for name, color in zip(crystal.names, colors):
         ax.scatter([], [], color=color, alpha=0.6, label=name)
@@ -54,7 +58,8 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
 
 
 def plot_brillouin_zone(vectors, ax=None):
-    """Draw the first Brillouin zone, reciprocal lattice points and b1, b2."""
+    """Draw the first Brillouin zone, reciprocal lattice points and b1, b2 (p = d = 2 only)."""
+    zone = brillouin_zone(vectors)
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 6))
 
@@ -63,7 +68,7 @@ def plot_brillouin_zone(vectors, ax=None):
     points = np.array([i * b1 + j * b2 for i in n for j in n])
     ax.scatter(points[:, 0], points[:, 1], color="black", s=10)
 
-    ax.add_patch(Polygon(brillouin_zone(vectors), alpha=0.3, color="tab:blue"))
+    ax.add_patch(Polygon(zone, alpha=0.3, color="tab:blue"))
     for b, label in ((b1, "$b_1$"), (b2, "$b_2$")):
         ax.annotate("", xy=b, xytext=(0, 0), arrowprops=dict(arrowstyle="->", color="tab:red"))
         ax.annotate(label, xy=b, color="tab:red")

@@ -2,6 +2,7 @@
 
 import numpy as np
 
+from latticephys.lattice.reciprocal import lattice_projection
 from latticephys.phonons.dispersion import dynamical_matrix
 from latticephys.phonons.modes import diagonalize
 
@@ -37,6 +38,8 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
     intensity tells in which Brillouin zone a branch is seen. Zero-temperature phonon
     creation in arbitrary units; multiply by n(omega) + 1 for temperature T. The Debye-Waller
     factor is left out. Zero modes (elastic, Bragg) get intensity 0; unstable modes raise.
+    For p < d (e.g. a layer) Q may leave the lattice plane: the phonon has the in-plane part
+    of Q, Q . e and the phases use the full Q.
     """
     d, n_basis = crystal.dim, len(crystal.masses)
     b = np.ones(n_basis) if scattering_lengths is None else np.asarray(scattering_lengths, dtype=float)
@@ -44,7 +47,7 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
     frequencies, intensities = [], []
     for Q in Qs:
         Q = np.atleast_1d(np.asarray(Q, dtype=float))
-        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, Q))
+        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, lattice_projection(crystal.vectors, Q)))
         if np.any(omega < 0):
             raise ValueError(f"unstable mode at Q = {Q}, no structure factor")
 

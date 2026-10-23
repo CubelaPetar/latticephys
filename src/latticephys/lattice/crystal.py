@@ -76,9 +76,10 @@ def embed(crystal, d):
     )
 
 
-def cell_offsets(cells, dim):
-    """All integer cell tuples with entries 0 .. cells - 1, last index fastest."""
-    return np.array(list(product(range(cells), repeat=dim)), dtype=int).reshape(-1, dim)
+def cell_offsets(cells, p):
+    """All integer cell tuples (p entries 0 .. cells - 1), last index fastest; one empty tuple for p = 0."""
+    offsets = list(product(range(cells), repeat=p))
+    return np.array(offsets, dtype=int).reshape(len(offsets), p)
 
 
 def atom_positions(crystal, cells):

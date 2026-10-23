@@ -15,6 +15,15 @@ def reciprocal_vectors(vectors):
     return 2 * np.pi * np.linalg.solve(vectors @ vectors.T, vectors)
 
 
+def lattice_projection(vectors, q):
+    """Part of the wave vector q (1/Å, d components) in the span of the p lattice vectors.
+
+    q = sum_j (a_j . q / 2 pi) b_j; equal to q for p = d, the in-plane part for a layer.
+    """
+    vectors = np.atleast_2d(np.asarray(vectors, dtype=float))
+    return vectors @ np.asarray(q, dtype=float) / (2 * np.pi) @ reciprocal_vectors(vectors)
+
+
 def q_grid(vectors, n):
     """The n^p wave vectors q = (i_1 b_1 + ... + i_p b_p) / n, 0 <= i_j < n (1/Å), for p lattice vectors.
 
@@ -34,7 +43,7 @@ def wigner_seitz_cell(vectors):
     """
     vectors = np.asarray(vectors, dtype=float)
     if vectors.shape != (2, 2):
-        raise ValueError("wigner_seitz_cell needs 2D lattice vectors")
+        raise ValueError("the Wigner-Seitz cell and Brillouin zone need 2 lattice vectors in 2D (p = d = 2)")
     n = range(-2, 3)
     points = [i * vectors[0] + j * vectors[1] for i in n for j in n if (i, j) != (0, 0)]
 

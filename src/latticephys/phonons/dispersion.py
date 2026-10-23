@@ -3,7 +3,7 @@
 import numpy as np
 
 from latticephys.lattice.crystal import cell_offsets
-from latticephys.lattice.reciprocal import reciprocal_vectors
+from latticephys.lattice.reciprocal import lattice_projection
 from latticephys.phonons.modes import diagonalize
 from latticephys.phonons.springs import _fourier_force_constants
 
@@ -18,8 +18,7 @@ def dynamical_matrix(crystal, bonds, q):
     q = np.atleast_1d(np.asarray(q, dtype=float))
     if q.shape != (crystal.dim,):
         raise ValueError(f"q must have {crystal.dim} components, got {q.shape}")
-    in_plane = crystal.vectors @ q / (2 * np.pi) @ reciprocal_vectors(crystal.vectors)
-    if np.linalg.norm(q - in_plane) > 1e-8 * np.linalg.norm(q):
+    if np.linalg.norm(q - lattice_projection(crystal.vectors, q)) > 1e-8 * np.linalg.norm(q):
         raise ValueError(f"q = {q} leaves the span of the lattice vectors")
 
     inv_sqrt_m = np.repeat(1 / np.sqrt(crystal.masses), crystal.dim)
@@ -37,22 +36,24 @@ def dispersion(crystal, bonds, qs):
 def sound_velocities(crystal, bonds, directions, dq=1e-4):
     """Velocities omega / q of the d acoustic branches for small q along each direction.
 
-    directions: (M, d) directions (normalized here)
+    directions: (M, d) directions (normalized here) in the span of the lattice vectors
     dq:         |q| used for the slope (1/Å); relative error ~ (dq a)^2
     Returns (M, d) velocities in Å per internal time unit, ascending per direction
     (transverse before longitudinal); see units.VELOCITY_TO_KM_S.
     """
+    if crystal.periodicity == 0:
+        raise ValueError("a molecule (no lattice vectors) has no sound velocities")
     directions = np.atleast_2d(np.asarray(directions, dtype=float))
     directions = directions / np.linalg.norm(directions, axis=1, keepdims=True)
     return dispersion(crystal, bonds, dq * directions)[:, : crystal.dim] / dq
 
 
 def bloch_mode(crystal, bonds, q, branch, cells):
-    """Frequency and displacements of one Bloch mode in a supercell of cells^d cells.
+    """Frequency and displacements of one Bloch mode in a supercell of cells^p cells.
 
     q must fit the supercell, q = (i b1 + j b2 + ...) / cells. For degenerate
     branches the returned mode is one arbitrary combination. Displacements
-    (B d cells^d,) start the standing wave Re[e_mu exp(i q.R)] / sqrt(m_mu) for
+    (B d cells^p,) start the standing wave Re[e_mu exp(i q.R)] / sqrt(m_mu) for
     simulate(), in the atom order of periodic_supercell().
     """
     q = np.atleast_1d(np.asarray(q, dtype=float))
@@ -68,7 +69,7 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     e = e * np.exp(-1j * np.angle(e[np.argmax(np.abs(e))]))
     polarization = (e / np.repeat(np.sqrt(crystal.masses), d)).reshape(-1, d)
 
-    cell_vectors = cell_offsets(cells, d) @ crystal.vectors
+    cell_vectors = cell_offsets(cells, crystal.periodicity) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
     return omega[branch], u0.ravel()
 

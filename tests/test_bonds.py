@@ -4,6 +4,7 @@ import pytest
 from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import q_grid
 from latticephys.lattice.structures import honeycomb
 
 A = 2.46
@@ -84,3 +85,23 @@ def test_supercell_keeps_bond_vectors():
     original = [crystal.bond_vector(mu, nu, n) for mu, nu, n, _ in bonds] * 9
     wrapped = [supercell.bond_vector(i, j, n) for i, j, n, _ in supercell_bonds]
     np.testing.assert_allclose(wrapped, original, atol=1e-12)
+
+
+def molecule():
+    """Isosceles triangle without lattice vectors (p = 0): two sides 1.0, base 1.5."""
+    return Crystal(np.zeros((0, 2)), [[0.0, 0.0], [1.5, 0.0], [0.75, np.sqrt(1 - 0.75**2)]], [1.0] * 3, ["A"] * 3)
+
+
+def test_neighbour_bonds_of_a_molecule():
+    """Shells of a molecule are its atom distances: 2 bonds of length 1.0, then the base of 1.5; cell index ()."""
+    assert sorted(neighbour_bonds(molecule(), [1.0])) == [(0, 2, (), 1.0), (1, 2, (), 1.0)]
+    assert sorted(neighbour_bonds(molecule(), [1.0, 2.0])) == [(0, 1, (), 2.0), (0, 2, (), 1.0), (1, 2, (), 1.0)]
+
+
+def test_molecule_has_one_q_and_is_its_own_supercell():
+    """p = 0: q_grid has the single point q = 0 (n^0 = 1), and a supercell of 1 cell is the molecule."""
+    np.testing.assert_array_equal(q_grid(molecule().vectors, 5), [[0.0, 0.0]])
+    bonds = neighbour_bonds(molecule(), [1.0, 2.0])
+    supercell, supercell_bonds = periodic_supercell(molecule(), bonds, 3)
+    np.testing.assert_array_equal(supercell.positions, molecule().positions)
+    assert supercell_bonds == bonds

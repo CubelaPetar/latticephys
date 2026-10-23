@@ -72,6 +72,16 @@ def test_mean_square_displacement_grows_logarithmically():
     assert (u2[1] - u2[0]) / np.log(2) == pytest.approx(expected, rel=0.02)
 
 
+def test_mean_square_displacement_rejects_a_free_rotation():
+    """A free triangle with central springs: at q = 0 the 2 translations are left out, but its
+    rotation is a third zero mode, where classical <u^2> diverges; with K_T it is stiff."""
+    triangle = Crystal(np.zeros((0, 2)), [[0.0, 0.0], [1.0, 0.0], [0.5, 0.9]], [1.0] * 3, ["A"] * 3)
+    sides = [(0, 1), (1, 2), (0, 2)]
+    with pytest.raises(ValueError, match="floppy"):
+        mean_square_displacement(triangle, [(i, j, (), 1.0) for i, j in sides], 1, 300.0)
+    assert np.all(mean_square_displacement(triangle, [(i, j, (), (1.0, 0.2)) for i, j in sides], 1, 300.0) > 0)
+
+
 def test_mean_square_displacement_rejects_floppy_lattice():
     square = Crystal(np.eye(2), [[0.0, 0.0]], [1.0], ["A"])
     with pytest.raises(ValueError):

@@ -27,10 +27,11 @@ def heat_capacity(omega, temperatures):
 
 
 def mean_square_displacement(crystal, bonds, cells, temperature):
-    """Classical thermal <|u_mu|^2> (Å²) of each basis atom in a periodic crystal of cells^d cells.
+    """Classical thermal <|u_mu|^2> (Å²) of each basis atom in a periodic crystal of cells^p cells.
 
     <|u_mu|^2> = k_B T / N sum over q != rigid translation, branches s of |e_mu,s(q)|^2 / (m_mu omega_s^2),
-    from equipartition. Raises for floppy or unstable modes, where it diverges.
+    from equipartition. The d translations at q = 0 are left out; any other zero mode (floppy, or the
+    free rotation of a molecule) or unstable mode raises, since <u^2> diverges there.
     """
     d, n_basis = crystal.dim, len(crystal.masses)
     qs = q_grid(crystal.vectors, cells)
@@ -38,7 +39,8 @@ def mean_square_displacement(crystal, bonds, cells, temperature):
     for q in qs:
         omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
         zero = omega == 0
-        if np.any(omega < 0) or (np.any(zero) and np.any(q != 0)):
+        translations = 0 if np.any(q != 0) else d
+        if np.any(omega < 0) or zero.sum() > translations:
             raise ValueError(f"floppy or unstable mode at q = {q}, <u^2> diverges")
 
         weight = np.abs(vectors[:, ~zero]) ** 2 / omega[~zero] ** 2

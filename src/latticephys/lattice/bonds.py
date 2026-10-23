@@ -54,19 +54,19 @@ def _search_radius(crystal, search):
     b = reciprocal_vectors(crystal.vectors)
     b_norm = np.linalg.norm(b, axis=1)
     spread = np.abs((crystal.positions[:, None, :] - crystal.positions[None, :, :]) @ b.T).max(axis=(0, 1))
-    return np.min((2 * np.pi * (search + 1) - spread) / b_norm)
+    return np.min((2 * np.pi * (search + 1) - spread) / b_norm, initial=np.inf)  # no bound for a molecule
 
 
 def periodic_supercell(crystal, bonds, cells):
-    """Supercell of cells^d unit cells as a Crystal, with its bonds.
+    """Supercell of cells^p unit cells (cells along each lattice vector) as a Crystal, with its bonds.
 
     force_constants() of the result is the finite system with periodic
     boundaries. Atom mu of cell c (integer tuple, 0 <= c_i < cells) gets
     index ravel(c) * B + mu, with the last entry of c running fastest.
     """
-    d, n_basis = crystal.dim, len(crystal.masses)
-    shape = (cells,) * d
-    offsets = cell_offsets(cells, d)
+    p, n_basis = crystal.periodicity, len(crystal.masses)
+    shape = (cells,) * p
+    offsets = cell_offsets(cells, p)
 
     supercell = Crystal(
         cells * crystal.vectors,
@@ -78,7 +78,7 @@ def periodic_supercell(crystal, bonds, cells):
     supercell_bonds = []
     for c in offsets:
         for mu, nu, n, K in bonds:
-            target = c + np.atleast_1d(n)
+            target = c + crystal.cell_index(n)
             i = np.ravel_multi_index(c, shape) * n_basis + mu
             j = np.ravel_multi_index(target % cells, shape) * n_basis + nu
             supercell_bonds.append((i, j, tuple(target // cells), K))
