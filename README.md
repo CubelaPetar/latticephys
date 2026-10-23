@@ -44,5 +44,5 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `src/latticephys/phonons/` | Springs (central or (K_L, K_T)), dynamical matrix, normal modes, dispersions, group and sound velocities, DOS, scattering intensity S(Q, ω), thermal properties, time integration, pygame animation |
 | `src/latticephys/units.py` | Unit system and conversions |
 | `src/latticephys/export.py` | JSON export, e.g. for web pages |
-| `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `export/`); planned ones in `IDEAS.md` |
+| `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `layers/`, `export/`); planned ones in `IDEAS.md` |
 | `tests/` | Checks against analytic results |

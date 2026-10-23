@@ -4,7 +4,7 @@ Central springs to nearest neighbours only leave the square lattice without shea
 stiffness (transverse branch at omega = 0 along Gamma-X) and graphene with a whole
 zero-frequency branch. Second-neighbour springs stabilize both.
 Spring constants are illustrative, not fitted to experiment; out-of-plane
-modes need 3D displacements and are not included.
+modes need 3D displacements, see layers/graphene_layer.py.
 """
 
 import matplotlib.pyplot as plt

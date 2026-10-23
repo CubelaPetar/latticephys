@@ -1,4 +1,4 @@
-"""Reciprocal lattice (any dimension); Brillouin zone, special points and k-paths of 2D lattices."""
+"""Reciprocal lattice (any dimension); 2D Brillouin zone; special points and k-paths of 2D lattices and layers."""
 
 import numpy as np
 
@@ -76,11 +76,12 @@ def special_points(lattice, vectors):
     "rectangular": Gamma, X, Y (edge centres along b1, b2), S (corner)
     "hexagonal":   Gamma, M (edge centre), K (corner)
     Assumes the vectors of primitive_vectors() (for hexagonal: 60° between a1, a2).
+    vectors: (2, d), e.g. a layer in 3D; the points lie in its plane.
     """
-    if np.shape(vectors) != (2, 2):
-        raise ValueError("special_points needs 2D lattice vectors")
+    if np.ndim(vectors) != 2 or len(vectors) != 2:
+        raise ValueError("special_points needs 2 lattice vectors")
     b1, b2 = reciprocal_vectors(vectors)
-    gamma = np.zeros(2)
+    gamma = np.zeros_like(b1)
     if lattice == "square":
         return {"Γ": gamma, "X": b1 / 2, "M": (b1 + b2) / 2}
     if lattice == "rectangular":
@@ -93,7 +94,7 @@ def special_points(lattice, vectors):
 def k_path(points, n=300):
     """About n wave vectors on straight segments through the given k-points.
 
-    Returns qs (M, 2), the distance along the path (M,) and the distance of
+    Returns qs (M, d), the distance along the path (M,) and the distance of
     each given point (len(points),), e.g. for tick positions.
     """
     points = np.asarray(points, dtype=float)

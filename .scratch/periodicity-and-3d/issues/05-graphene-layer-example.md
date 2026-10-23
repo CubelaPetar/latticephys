@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-- [ ] Test: special points of an embedded hexagonal lattice equal the 2D ones with a zero z component
-- [ ] Example in its topic folder, constants at the top, physics docstring, `main()`, listed in `examples/README.md`
-- [ ] ZA is linear near Γ with (K_L, K_T); docstring says why and what is missing
-- [ ] `pytest`, `ruff check` and all examples green
+- [x] Test: special points of an embedded hexagonal lattice equal the 2D ones with a zero z component
+- [x] Example in its topic folder, constants at the top, physics docstring, `main()`, listed in `examples/README.md`
+- [x] ZA is linear near Γ with (K_L, K_T); docstring says why and what is missing
+- [x] `pytest`, `ruff check` and all examples green

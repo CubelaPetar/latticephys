@@ -212,3 +212,22 @@ def test_graphene_layer_with_central_springs():
 
     assert np.all((omega == 0).sum(axis=1) == 2)
     np.testing.assert_allclose(omega, np.sort(np.column_stack([omega_2d, np.zeros((len(qs), 2))]), axis=1), atol=1e-12)
+
+
+def test_graphene_layer_with_transverse_springs():
+    """Nearest-neighbour (K_L, K_T) springs in the plane of a graphene layer: z decouples, and
+    every bond resists z motion with K_T, so ZA, ZO: omega^2 = K_T (3 -/+ |1 + e^(i q.a1) + e^(i q.a2)|) / m
+    (ZA linear near Gamma, omega = a/2 sqrt(K_T/m) q); the other 4 branches are the 2D in-plane ones."""
+    K_L, K_T, m = 10.0, 2.0, 12.0
+    flat = graphene()
+    layer = embed(flat, 3)
+    bonds = neighbour_bonds(layer, [(K_L, K_T)])
+    qs = q_grid(layer.vectors, 6)
+
+    a1, a2 = layer.vectors
+    f = np.abs(1 + np.exp(1j * qs @ a1) + np.exp(1j * qs @ a2))
+    out_of_plane = np.sqrt(np.clip(K_T / m * np.column_stack([3 - f, 3 + f]), 0, None))
+    in_plane = dispersion(flat, bonds, qs[:, :2])
+
+    expected = np.sort(np.column_stack([in_plane, out_of_plane]), axis=1)
+    np.testing.assert_allclose(dispersion(layer, bonds, qs), expected, atol=1e-7)

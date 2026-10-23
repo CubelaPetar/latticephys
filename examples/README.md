@@ -38,6 +38,12 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |
 
+## Layers (`layers/`)
+
+| Example | Shows | Uses |
+|---|---|---|
+| `graphene_layer.py` | Graphene in 3D: ZA, TA, LA, ZO, TO, LO along Γ–M–K–Γ, coloured by out-of-plane weight; ZA linear without bending forces | `embed`, `neighbour_bonds` with (K_L, K_T), `special_points`, `k_path`, `dynamical_matrix`, `diagonalize` |
+
 ## Data export (`export/`)
 
 `export_for_site.py [directory]` writes `diatomic_chain.json` and `graphene.json` (default directory `site_data/`) with `save_json`:
