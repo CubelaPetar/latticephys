@@ -4,8 +4,8 @@
 
 **Blocked by:** 01–12
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `TODO.md`, `CLAUDE.md` scope and `examples/README.md` updated as above
-- [ ] `examples/IDEAS.md` entries now possible lose their *Needs*
-- [ ] `pytest`, `ruff check` and all examples green
+- [x] `TODO.md`, `CLAUDE.md` scope and `examples/README.md` updated as above
+- [x] `examples/IDEAS.md` entries now possible lose their *Needs*
+- [x] `pytest`, `ruff check` and all examples green
