@@ -7,6 +7,11 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 ## Next
 
 - [ ] verify that rule 6 in CLAUDE.md is realistic physically (some things can't be computed analytically)
+- [ ] re-evaluate the README.md to properly reflect the library to make it users able to use the library efficiently. Emphasize is less on the examples than on the power of the lib
+- [ ] check if the library captures all physical concepts described in chapters 1-4 of the book '2016 TheoretischeFestkörperphysik - Czycholl.pdf' in references/ (as far as possible).
+- [ ] if possible, use our library to solve the exercises in chapter 2 of the book '2016 TheoretischeFestkörperphysik - Czycholl.pdf' and place them as examples (especially exe 2.4 is interesting)
+- [ ] if possible, use our library to solve the exercises in chapter 4 of the book '2016 TheoretischeFestkörperphysik - Czycholl.pdf' and place them as examples (especially exe 4.8 and 4.9 are interesting)
+- [ ] compare the calculated dispersion relation of this lib for NaCl with the graphs shown in 'Abb. 4.6' of '2016 TheoretischeFestkörperphysik - Czycholl.pdf'
 - [ ] include electron physics
 - [ ] include magnon physics
 
