@@ -50,7 +50,7 @@ def main():
         frequencies = dispersion(crystal, bonds, qs) * OMEGA_TO_THZ
 
         plot_bands(distance, frequencies, corners, labels, ax=axis)
-        axis.set_title(f"{title}\nk = {spring_constants} eV/Å²")
+        axis.set_title(f"{title}\nK = {spring_constants} eV/Å²")
     for axis in axes[:, 0]:
         axis.set_ylabel(r"$\nu$ (THz)")
 
