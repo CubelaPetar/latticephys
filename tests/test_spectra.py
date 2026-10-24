@@ -7,7 +7,7 @@ from latticephys.lattice.reciprocal import reciprocal_vectors
 from latticephys.lattice.structures import honeycomb
 from latticephys.phonons.dispersion import atom_weights, dispersion
 from latticephys.phonons.modes import normal_modes
-from latticephys.phonons.spectra import density_of_states, structure_factor
+from latticephys.phonons.spectra import density_of_states, intensity_map, structure_factor
 from latticephys.phonons.springs import force_constants
 
 A = 1.0
@@ -101,3 +101,39 @@ def test_structure_factor_rejects_unstable_modes():
     crystal = Crystal([[A]], [0.0], [1.0], ["A"])
     with pytest.raises(ValueError):
         structure_factor(crystal, [(0, 0, 1, -1.0)], [1.0])
+
+
+def test_honeycomb_optical_intensity_at_reciprocal_vectors():
+    """Honeycomb, central K1 to the first and K2 to the second neighbours, atoms at 0 and delta = (a1 + a2) / 3.
+    At Q = G the acoustic modes are zero modes (intensity 0). The optical modes at Γ move the sublattices rigidly
+    against each other, e_0 = sqrt(m_1 / M) eps, e_1 = -sqrt(m_0 / M) eps with M = m_0 + m_1, omega^2 = 3/2 K1 (1/m_0
+    + 1/m_1) (K2 drops out); summed over both polarizations
+    I = |G|^2 / omega |b_0 sqrt(m_1 / (m_0 M)) - b_1 sqrt(m_0 / (m_1 M)) exp(-i G . delta)|^2.
+    G . delta = 2 pi (m + n) / 3 for G = m b1 + n b2: graphene (equal atoms) is extinct at G = 3 b1, hBN is not."""
+    a, K1, K2 = 2.46, 25.0, 5.0
+    cases = [(honeycomb(a, [12.011, 12.011], ["C", "C"]), [6.646, 6.646]),
+             (honeycomb(a, [10.81, 14.007], ["B", "N"]), [6.65, 9.36])]
+    for crystal, b in cases:
+        b1 = reciprocal_vectors(crystal.vectors)[0]
+        delta = crystal.positions[1]
+        m0, m1 = crystal.masses
+        M = m0 + m1
+        omega_optical = np.sqrt(1.5 * K1 * (1 / m0 + 1 / m1))
+        Gs = [b1, 2 * b1, 3 * b1]
+        omega, intensity = structure_factor(crystal, neighbour_bonds(crystal, [K1, K2]), Gs, b)
+        for G, w, i in zip(Gs, omega, intensity):
+            amplitude = b[0] * np.sqrt(m1 / (m0 * M)) - b[1] * np.sqrt(m0 / (m1 * M)) * np.exp(-1j * G @ delta)
+            np.testing.assert_allclose(w, [0, 0, omega_optical, omega_optical], atol=1e-9)
+            np.testing.assert_allclose(i[:2], 0, atol=1e-12)
+            assert i[2:].sum() == pytest.approx(G @ G / omega_optical * abs(amplitude) ** 2, rel=1e-9, abs=1e-9)
+    assert intensity[2, 2:].sum() > 0.1  # hBN at 3 b1; graphene there checked against 0 above
+
+
+def test_intensity_map_integrates_to_the_intensities():
+    """Each column is a sum of normalized Gaussians: its integral over frequency is sum_s I_s / (B d)."""
+    crystal = Crystal([[A]], [0.0, A / 2], [1.0, 3.0], ["A", "B"])
+    omega, intensity = structure_factor(crystal, DIATOMIC_BONDS, np.linspace(0.1, 10, 7))
+    grid = np.linspace(-1, 3, 4001)
+    spectrum = intensity_map(omega, intensity, grid, 0.05)
+    assert spectrum.shape == (len(grid), 7)
+    np.testing.assert_allclose(spectrum.sum(axis=0) * (grid[1] - grid[0]), intensity.sum(axis=1) / 2, rtol=1e-6)

@@ -59,3 +59,13 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
         frequencies.append(omega)
         intensities.append(intensity)
     return np.array(frequencies), np.array(intensities)
+
+
+def intensity_map(frequencies, intensities, grid, sigma):
+    """S(Q, omega) on a frequency grid: per Q the intensities broadened by Gaussians of width sigma.
+
+    frequencies, intensities: the output of structure_factor(), shape (len(Qs), B d)
+    Returns shape (len(grid), len(Qs)), for imshow with origin="lower"; each column is
+    density_of_states() of that Q with the intensities as weights.
+    """
+    return np.array([density_of_states(w, grid, sigma, weights=i) for w, i in zip(frequencies, intensities)]).T

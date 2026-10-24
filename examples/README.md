@@ -20,7 +20,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `mass_defect.py` | Localized mode of a light impurity above the band | `normal_modes` |
 | `wave_packet.py` | Packet moving with the group velocity (space–time plot) | `simulate` |
 | `heat_capacity.py` | Density of states, C_V(T) vs. Debye and Einstein | `dispersion`, `density_of_states`, `heat_capacity` |
-| `structure_factor.py` | Scattering intensity S(Q, ω) over three zones; acoustic branch extinct near Q = 2π/a | `structure_factor`, `density_of_states` |
+| `structure_factor.py` | Scattering intensity S(Q, ω) over three zones; acoustic branch extinct near Q = 2π/a | `structure_factor`, `intensity_map` |
 
 ## 2D lattices (`lattices_2d/`)
 
@@ -34,6 +34,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `density_of_states`, `heat_capacity` |
 | `transverse_springs.py` | Square lattice: central springs leave Γ–X floppy, (K_L, K_T) springs give shear stiffness | `neighbour_bonds` with (K_L, K_T), `plot_bands` |
 | `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
+| `structure_factor_2d.py` | Graphene S(Q, ω) along Γ–M over three zones: optical branches extinct at 3 b1, transverse ones invisible | `structure_factor`, `intensity_map` |
 | `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with one lattice vector (p = 1), `dispersion`, `atom_weights` |
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from latticephys.lattice.crystal import Crystal
-from latticephys.phonons.spectra import density_of_states, structure_factor
+from latticephys.phonons.spectra import intensity_map, structure_factor
 from latticephys.units import OMEGA_TO_THZ
 
 SPRING_CONSTANT = 10.0  # eV/Å²
@@ -32,7 +32,7 @@ def main():
     omega, intensity = structure_factor(crystal, bonds, Qs, SCATTERING_LENGTHS)
     nu = omega * OMEGA_TO_THZ
     grid = np.linspace(0, 1.1 * nu.max(), 300)
-    spectrum = np.array([density_of_states(w, grid, SMEARING, weights=i) for w, i in zip(nu, intensity)]).T
+    spectrum = intensity_map(nu, intensity, grid, SMEARING)
 
     fig, axis = plt.subplots(figsize=(10, 5))
     axis.imshow(spectrum, origin="lower", aspect="auto", cmap="magma", vmax=np.percentile(spectrum, 99),
