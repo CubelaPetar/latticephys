@@ -2,10 +2,12 @@
 
 latticephys computes and visualizes the vibrations of lattices (phonons) — molecules, chains, ribbons, layers and 3D crystals — with spring models checked against analytic results and experiment. The aim is a general library for the physics of lattices: phonons first, with more models, quasi-particles and dynamics to follow (see [`TODO.md`](TODO.md)).
 
-| | |
-|---|---|
-| ![NaCl crystal in 3D with its primitive cell](docs/images/nacl_crystal.png) | ![Graphene layer bands coloured by out-of-plane weight](docs/images/graphene_layer.png) |
-| ![Scattering intensity S(Q, ω) of graphene over three zones](docs/images/graphene_structure_factor.png) | ![Cu bands against neutron data, DOS and heat capacity](docs/images/copper.png) |
+<p align="center">
+  <img src="docs/images/nacl_crystal.png" width="40%" alt="NaCl crystal in 3D with its primitive cell">
+  <img src="docs/images/graphene_layer.png" width="57%" alt="Graphene layer bands coloured by out-of-plane weight">
+  <img src="docs/images/graphene_structure_factor.png" width="35%" alt="Scattering intensity S(Q, ω) of graphene over three zones">
+  <img src="docs/images/copper.png" width="62%" alt="Cu bands against neutron data, DOS and heat capacity">
+</p>
 
 ## Install
 

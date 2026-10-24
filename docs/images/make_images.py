@@ -24,7 +24,7 @@ def main():
     plt.show = lambda: None
     for name, (example, figure) in IMAGES.items():
         runpy.run_path(str(ROOT / "examples" / example), run_name="__main__")
-        plt.figure(figure).savefig(Path(__file__).parent / name, dpi=100)
+        plt.figure(figure).savefig(Path(__file__).parent / name, dpi=100, bbox_inches="tight")
         plt.close("all")
 
 
