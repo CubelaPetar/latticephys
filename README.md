@@ -1,48 +1,84 @@
 # latticephys
 
-Python library for lattice systems: crystal structures, phonon spectra (band structures along symmetry paths) and time-domain simulation of lattice oscillations.
+latticephys computes and visualizes the vibrations of lattices (phonons) — molecules, chains, ribbons, layers and 3D crystals — with spring models checked against analytic results and experiment. The aim is a general library for the physics of lattices: phonons first, with more models, quasi-particles and dynamics to follow (see [`TODO.md`](TODO.md)).
 
-## Setup
+| | |
+|---|---|
+| ![NaCl crystal in 3D with its primitive cell](docs/images/nacl_crystal.png) | ![Graphene layer bands coloured by out-of-plane weight](docs/images/graphene_layer.png) |
+| ![Scattering intensity S(Q, ω) of graphene over three zones](docs/images/graphene_structure_factor.png) | ![Cu bands against neutron data, DOS and heat capacity](docs/images/copper.png) |
+
+## Install
+
+Python ≥ 3.12:
+
+```sh
+pip install "latticephys @ git+https://github.com/CubelaPetar/latticephys"
+```
+
+## Quickstart
+
+Phonon bands of graphene with springs to the first and second neighbours:
+
+```python
+import matplotlib.pyplot as plt
+
+from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.plot import plot_bands
+from latticephys.lattice.reciprocal import k_path, special_points
+from latticephys.lattice.structures import honeycomb
+from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
+
+graphene = honeycomb(2.46, [12.011] * 2, ["C"] * 2)        # lattice constant (Å), masses (amu), names
+bonds = neighbour_bonds(graphene, [25.0, 5.0])             # spring constant (eV/Å²) per neighbour shell
+points = special_points("hexagonal", graphene.vectors)
+qs, distance, corners = k_path([points[p] for p in "ΓMKΓ"])
+plot_bands(distance, dispersion(graphene, bonds, qs) * OMEGA_TO_THZ, corners, list("ΓMKΓ"))
+plt.show()
+```
+
+## What you can compute
+
+| | Functions |
+|---|---|
+| Structures: 5 + 14 Bravais lattices, honeycomb, kagome, Lieb, rocksalt, diamond, hcp, bilayers, layers in 3D | `Crystal`, `bravais2d/3d.primitive_vectors`, `lattice.structures`, `embed`, `plot_crystal` |
+| Bonds to neighbour shells, central or (K_L, K_T) springs; supercells | `neighbour_bonds`, `periodic_supercell`, `force_constants` |
+| Brillouin zone, special points, paths, grids | `special_points`, `k_path`, `q_grid`, `plot_brillouin_zone` |
+| Band structures, mode character, group and sound velocities | `dispersion`, `atom_weights`, `group_velocities`, `sound_velocities`, `plot_bands` |
+| Density of states, heat capacity, ⟨u²⟩ | `density_of_states`, `heat_capacity`, `mean_square_displacement` |
+| Neutron/X-ray scattering intensity S(Q, ω) | `structure_factor`, `intensity_map` |
+| Normal modes of molecules and finite systems, time evolution, animation | `normal_modes`, `bloch_mode`, `simulate`, `animate` |
+| JSON export, e.g. for web pages | `save_json` |
+
+Inputs are in Å, amu and eV; `latticephys.units` converts frequencies to THz, meV or cm⁻¹. More in the guide: [concepts](docs/guide/concepts.md), [models](docs/guide/models.md), [units](docs/guide/units.md), and the terms in [`GLOSSARY.md`](GLOSSARY.md).
+
+## Limits
+
+Harmonic springs only: no bending forces (the graphene ZA branch is linear, not ∝ q²), no long-range Coulomb forces (no LO–TO splitting in ionic crystals), no anharmonic effects. See [models](docs/guide/models.md).
+
+## Examples
+
+30 runnable scripts, each explaining its physics in the docstring; the list is in [`examples/README.md`](examples/README.md).
+
+| Folder | Content |
+|---|---|
+| `molecules/` | CO₂ normal modes and animation |
+| `chains/` | dispersion, wave packets, impurity modes, heat capacity, S(Q, ω) |
+| `lattices_2d/` | 2D structures, Brillouin zones, bands, waves, DOS, nanoribbon edge modes, Mermin–Wagner |
+| `layers/` | graphene layer and AB bilayer with out-of-plane modes |
+| `crystals_3d/` | NaCl, Si, Cu, Fe and Mg; Si and Cu against neutron data |
+| `export/` | JSON for web pages |
+
+## Development
 
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/pytest
-.venv/bin/ruff check
+.venv/bin/pytest && .venv/bin/ruff check
 ```
 
-Uses `pygame-ce` (drop-in fork of pygame, `import pygame`), since pygame has no wheels for recent Python versions.
+Every physical result is checked in a test against an analytic formula, an experimental value or an independent calculation; `tests/test_examples.py` runs every example headless. `docs/images/make_images.py` regenerates the images above. Animations use `pygame-ce`, a drop-in fork of pygame (`import pygame`).
 
-## Units
+## License
 
-Inputs in Å, amu and eV (spring constants in eV/Å²). Time is then in units of √(amu·Å²/eV) ≈ 10.18 fs. `latticephys.units` has the factors to convert ω to THz, meV and cm⁻¹.
-
-## Quickstart
-
-```python
-import numpy as np
-from latticephys.lattice.crystal import Crystal
-from latticephys.phonons.dispersion import dispersion
-from latticephys.units import OMEGA_TO_THZ
-
-a = 2.5                                                              # Å
-chain = Crystal([[a]], [0.0, a / 2], [12.011, 15.999], ["C", "O"])   # vectors, positions, masses (amu), names
-bonds = [(0, 1, 0, 10.0), (1, 0, 1, 10.0)]   # (atom mu, atom nu, cell of nu, K in eV/Å²)
-qs = np.linspace(0, np.pi / a, 5)
-print(dispersion(chain, bonds, qs) * OMEGA_TO_THZ)  # acoustic and optical branch in THz
-```
-
-## Examples
-
-Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. See [`examples/README.md`](examples/README.md) for the list.
-
-## Layout
-
-| Path | Content |
-|---|---|
-| `src/latticephys/lattice/` | Geometry, independent of the physics: Bravais lattices, crystal structures, reciprocal lattice, Brillouin zone, k-paths, bonds and supercells, plots |
-| `src/latticephys/phonons/` | Springs (central or (K_L, K_T)), dynamical matrix, normal modes, dispersions, group and sound velocities, DOS, scattering intensity S(Q, ω), thermal properties, time integration, pygame animation |
-| `src/latticephys/units.py` | Unit system and conversions |
-| `src/latticephys/export.py` | JSON export, e.g. for web pages |
-| `examples/` | Concrete systems by topic (`molecules/`, `chains/`, `lattices_2d/`, `layers/`, `crystals_3d/`, `export/`); planned ones in `IDEAS.md` |
-| `tests/` | Checks against analytic results |
+MIT, see [`LICENSE`](LICENSE).
