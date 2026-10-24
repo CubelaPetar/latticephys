@@ -18,6 +18,7 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 - [ ] `thermal_state()`: random mode amplitudes and phases for temperature T
 - [ ] `simulate()` with a force function instead of only Φ (anharmonic chains)
 - [ ] angle-bending forces: molecule bending modes, ZA ∝ q² of graphene, flat TA and optical branches of Si
+- [ ] long-range Coulomb forces (Ewald sum): LO–TO splitting in ionic crystals such as NaCl
 - [ ] 3D Brillouin-zone geometry and plot
 - [ ] XYZ trajectory export (3D animation outside pygame)
 - [ ] extended spring model with pre-tension (strained lattices)
