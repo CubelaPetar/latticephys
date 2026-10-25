@@ -45,11 +45,20 @@ def test_1d_crystal_accepts_flat_positions():
         ([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0]], [[0.0, 0.0, 0.0]], [1.0], ["A"]),  # dependent vectors
         (np.eye(2), [[0.0, 0.0, 0.0]], [1.0], ["A"]),  # positions in 3D, lattice in 2D
         (np.eye(2), [[0.0, 0.0]], [1.0], ["A", "B"]),  # names do not match atoms
+        (np.eye(2), [[0.0, 0.0], [0.5, 0.5]], [1.0], ["A", "B"]),  # masses do not match atoms
+        (np.eye(2), np.zeros((2, 2, 2)), [1.0, 1.0], ["A", "B"]),  # positions not (B, d)
+        (np.eye(2), [0.0, 0.0], [1.0], ["A"]),  # flat positions outside 1D
     ],
 )
 def test_invalid_crystal(vectors, positions, masses, names):
     with pytest.raises(ValueError):
         Crystal(vectors, positions, masses, names)
+
+
+def test_atom_count_comes_from_positions():
+    """Two atoms in 2D with one mass: the positions say B = 2, so the mass count is the error."""
+    with pytest.raises(ValueError, match="mass"):
+        Crystal(np.eye(2), [[0.0, 0.0], [0.5, 0.5]], [1.0], ["A", "B"])
 
 
 @pytest.mark.parametrize("n", [(1, 0, 0), 1, (1,)])

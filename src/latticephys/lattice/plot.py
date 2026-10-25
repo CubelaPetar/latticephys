@@ -21,8 +21,8 @@ def plot_crystal(crystal, radii, colors, cells=3, ax=None):
     scatter markers about 2 radii across (approximate, for the default 7 inch figure); the
     cell is drawn by its edges (12 for p = 3, 4 for a layer, 1 for a chain).
     """
-    if len(radii) != len(crystal.masses) or len(colors) != len(crystal.masses):
-        raise ValueError(f"need one radius and one colour per basis atom ({len(crystal.masses)})")
+    if len(radii) != len(crystal.positions) or len(colors) != len(crystal.positions):
+        raise ValueError(f"need one radius and one colour per basis atom ({len(crystal.positions)})")
     if cells < 1:
         raise ValueError("cells must be at least 1")
     if crystal.dim == 3:

@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] No atom count from masses left in the geometry package
-- [ ] Test: a Crystal with irrelevant masses gives the right bonds and supercell size
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] No atom count from masses left in the geometry package
+- [x] Test: a Crystal with irrelevant masses gives the right bonds and supercell size
+- [x] `pytest`, `ruff check`, all examples headless

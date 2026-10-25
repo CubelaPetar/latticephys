@@ -25,8 +25,8 @@ def neighbour_bonds(crystal, spring_constants, search=3):
     """
     origin = (0,) * crystal.periodicity
     candidates = []
-    for mu in range(len(crystal.masses)):
-        for nu in range(len(crystal.masses)):
+    for mu in range(len(crystal.positions)):
+        for nu in range(len(crystal.positions)):
             for n in map(tuple, cell_offsets(2 * search + 1, crystal.periodicity) - search):
                 # count each bond only from one end: (mu, 0) -- (nu, n) equals (nu, 0) -- (mu, -n)
                 if nu < mu or (nu == mu and n <= origin):
@@ -64,13 +64,13 @@ def periodic_supercell(crystal, bonds, cells):
     boundaries. Atom mu of cell c (integer tuple, 0 <= c_i < cells) gets
     index ravel(c) * B + mu, with the last entry of c running fastest.
     """
-    p, n_basis = crystal.periodicity, len(crystal.masses)
+    p, n_basis = crystal.periodicity, len(crystal.positions)
     shape = (cells,) * p
     offsets = cell_offsets(cells, p)
 
     supercell = Crystal(
         cells * crystal.vectors,
-        (offsets @ crystal.vectors)[:, None, :] + crystal.positions[None, :, :],
+        ((offsets @ crystal.vectors)[:, None, :] + crystal.positions[None, :, :]).reshape(-1, crystal.dim),
         np.tile(crystal.masses, len(offsets)),
         list(crystal.names) * len(offsets),
     )

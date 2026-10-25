@@ -105,3 +105,15 @@ def test_molecule_has_one_q_and_is_its_own_supercell():
     supercell, supercell_bonds = periodic_supercell(molecule(), bonds, 3)
     np.testing.assert_array_equal(supercell.positions, molecule().positions)
     assert supercell_bonds == bonds
+
+
+def test_geometry_does_not_depend_on_masses():
+    """Bonds and supercells follow from vectors and positions alone: graphene with
+    arbitrary masses has the same bonds, and its 3 x 3 supercell has B cells^2 = 18 atoms."""
+    odd = honeycomb(A, [1e-3, 7e5], ["C", "C"])
+    bonds = neighbour_bonds(odd, [1.0, 0.5])
+    assert bonds == neighbour_bonds(graphene(), [1.0, 0.5])
+
+    supercell, supercell_bonds = periodic_supercell(odd, bonds, 3)
+    assert len(supercell.positions) == 18
+    assert supercell_bonds == periodic_supercell(graphene(), bonds, 3)[1]

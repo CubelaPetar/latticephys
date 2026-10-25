@@ -49,7 +49,7 @@ def bilayer(crystal, bonds, shift):
     given bonds; springs between the sheets are added by the caller. E.g. embed(honeycomb(...), 3)
     with shift (0, 0, c) is AA bilayer graphene, with the B - A offset added in the plane AB.
     """
-    n_basis = len(crystal.masses)
+    n_basis = len(crystal.positions)
     second = [(mu + n_basis, nu + n_basis, n, K) for mu, nu, n, K in bonds]
     stacked = Crystal(
         crystal.vectors,

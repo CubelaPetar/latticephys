@@ -12,7 +12,7 @@ class Crystal:
 
     vectors:   (p, d) primitive vectors as rows, linearly independent, Å; p < d for
                e.g. a layer (p = 2, d = 3) or a chain moving in a plane (p = 1, d = 2)
-    positions: (B, d) Cartesian positions of the basis atoms, Å
+    positions: (B, d) Cartesian positions of the basis atoms, Å; in 1D also a flat list (B,)
     masses:    (B,) amu
     names:     B labels
 
@@ -27,14 +27,22 @@ class Crystal:
     def __post_init__(self):
         self.vectors = np.atleast_2d(np.asarray(self.vectors, dtype=float))
         self.masses = np.atleast_1d(np.asarray(self.masses, dtype=float))
-        self.positions = np.asarray(self.positions, dtype=float).reshape(len(self.masses), -1)
+        self.positions = np.asarray(self.positions, dtype=float)
+        if self.positions.ndim == 1:  # a flat list in 1D: one coordinate per atom
+            if self.vectors.shape[1] != 1:
+                raise ValueError(f"flat positions only in 1D; give (B, {self.vectors.shape[1]}) positions")
+            self.positions = self.positions[:, None]
+        if self.positions.ndim != 2:
+            raise ValueError(f"positions must be (B, d), got shape {self.positions.shape}")
 
         p, d = len(self.vectors), self.positions.shape[1]
         if self.vectors.shape != (p, d) or p > d:
             raise ValueError(f"vectors must be (p, {d}) with p <= {d} for positions in {d}D, got {self.vectors.shape}")
         if np.linalg.matrix_rank(self.vectors) < p:
             raise ValueError("lattice vectors must be linearly independent")
-        if len(self.names) != len(self.masses):
+        if self.masses.shape != (len(self.positions),):
+            raise ValueError(f"need one mass per atom ({len(self.positions)} positions), got {self.masses.shape}")
+        if len(self.names) != len(self.positions):
             raise ValueError("need one name per atom")
 
     @property
