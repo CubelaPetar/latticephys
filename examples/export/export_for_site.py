@@ -27,7 +27,8 @@ def system_data(name, crystal, bonds, points, path, mode_points, cells):
     modes = []
     for label in mode_points:
         for branch in range(len(crystal.masses) * crystal.dim):
-            omega, u0 = bloch_mode(crystal, bonds, points[label], branch, cells)
+            omega, U = bloch_mode(crystal, bonds, points[label], branch, cells)
+            u0 = U.real  # the standing wave the page animates
             modes.append({
                 "point": label,
                 "branch": branch,

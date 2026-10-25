@@ -57,9 +57,9 @@ def test_bloch_mode_is_a_supercell_eigenvector():
 
     q = special_points("hexagonal", crystal.vectors)["M"]
     for branch in range(6):
-        omega, u0 = bloch_mode(crystal, bonds, q, branch, cells)
-        np.testing.assert_allclose(Phi @ u0, omega**2 * masses * u0, atol=1e-9)
-        assert np.linalg.norm(u0) > 0.1
+        omega, U = bloch_mode(crystal, bonds, q, branch, cells)
+        np.testing.assert_allclose(Phi @ U, omega**2 * masses * U, atol=1e-9)
+        assert np.linalg.norm(U.real) > 0.1
 
 
 def test_dos_and_heat_capacity_with_central_springs():

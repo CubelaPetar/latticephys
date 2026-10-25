@@ -4,9 +4,9 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: `simulate` on the supercell equals `mode_motion` of a Bloch mode (replaces the periodic-chain test)
-- [ ] Zone-edge, misfit-q and zero-mode tests pass with the real part
-- [ ] Both mode animations and the export example updated; examples README lists `mode_motion`
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] Test: `simulate` on the supercell equals `mode_motion` of a Bloch mode (replaces the periodic-chain test)
+- [x] Zone-edge, misfit-q and zero-mode tests pass with the real part
+- [x] Both mode animations and the export example updated; examples README lists `mode_motion`
+- [x] `pytest`, `ruff check`, all examples headless

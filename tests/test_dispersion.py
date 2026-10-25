@@ -5,7 +5,7 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
+from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, mode_motion
 from latticephys.phonons.integrate import simulate
 from latticephys.phonons.modes import atom_weights, phonon_modes
 from latticephys.phonons.springs import force_constants
@@ -83,23 +83,25 @@ def test_simple_cubic():
     np.testing.assert_allclose(omega**2, expected, atol=1e-12)
 
 
-def test_bloch_mode_oscillates_in_periodic_chain():
-    """Optical Bloch mode at q a = pi / 2, set up in a periodic chain, evolves as u0 cos(omega t)."""
+def test_simulate_reproduces_mode_motion_in_periodic_chain():
+    """Optical Bloch mode at q a = pi / 2 in a periodic chain: the integrator started at
+    u = Re U, p = m omega Im U follows the travelling wave Re[U exp(-i omega t)] of mode_motion()."""
     crystal, cells = diatomic(1.0, 3.0), 8
     supercell, supercell_bonds = periodic_supercell(crystal, DIATOMIC_BONDS, cells)
-    omega, u0 = bloch_mode(crystal, DIATOMIC_BONDS, np.pi / (2 * A), branch=1, cells=cells)
+    omega, U = bloch_mode(crystal, DIATOMIC_BONDS, np.pi / (2 * A), branch=1, cells=cells)
+    assert np.abs(U.imag).max() > 0.1  # a travelling wave, not a standing one
 
     dt, steps = 0.001, 5000
-    u, _ = simulate(force_constants(supercell, supercell_bonds), supercell.masses, u0, np.zeros_like(u0), dt, steps)
-    t = dt * np.arange(steps + 1)
-    np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)
+    p0 = supercell.masses * omega * U.imag
+    u, _ = simulate(force_constants(supercell, supercell_bonds), supercell.masses, U.real, p0, dt, steps)
+    np.testing.assert_allclose(u, mode_motion(omega, U, dt * np.arange(steps + 1)), atol=1e-6)
 
 
 @pytest.mark.parametrize("branch, resting", [(0, 0), (1, 1)])
 def test_zone_edge_modes_move_one_sublattice(branch, resting):
     """At q = pi/a the acoustic mode moves only the heavy atoms (1), the optical mode only the light ones (0)."""
-    _, u0 = bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, np.pi / A, branch=branch, cells=2)
-    u0 = u0.reshape(-1, 2)
+    _, U = bloch_mode(diatomic(1.0, 3.0), DIATOMIC_BONDS, np.pi / A, branch=branch, cells=2)
+    u0 = U.real.reshape(-1, 2)
     np.testing.assert_allclose(u0[:, resting], 0, atol=1e-12)
     assert np.all(np.abs(u0[:, 1 - resting]) > 0.1)
 

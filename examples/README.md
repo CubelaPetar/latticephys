@@ -15,7 +15,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 |---|---|---|
 | `chain_animation.py` | Periodic chain, one atom displaced (pygame) | `chain_force_constants`, `simulate`, `animate` |
 | `chain_dispersion.py` | ω(q) of monatomic and diatomic chain | `dispersion` |
-| `diatomic_mode_animation.py` | One acoustic or optical Bloch mode (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
+| `diatomic_mode_animation.py` | One acoustic or optical Bloch mode as a travelling wave (pygame) | `periodic_supercell`, `bloch_mode`, `mode_motion`, `animate` |
 | `finite_chain_modes.py` | Fixed-chain modes lie on ω(q) at q_j = jπ/((N+1)a) | `normal_modes`, `dispersion` |
 | `mass_defect.py` | Localized mode of a light impurity above the band | `normal_modes` |
 | `wave_packet.py` | Packet moving with the group velocity (space–time plot) | `simulate` |
@@ -29,7 +29,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `crystals_2d.py` | NaCl plane, graphene, hBN, triangular, kagome, CuO₂ (Lieb), AFM | `Crystal`, `honeycomb`, `kagome`, `lieb`, `plot_crystal` |
 | `brillouin_zones.py` | First Brillouin zones of the five 2D Bravais lattices | `plot_brillouin_zone` |
 | `phonons_2d.py` | In-plane band structures (triangular, square, graphene, hBN); floppy modes with 1st neighbours only | `neighbour_bonds`, `dispersion`, `k_path`, `plot_bands` |
-| `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `simulate`, `animate` |
+| `mode_animation_2d.py` | One graphene Bloch phonon at Γ, M or K (pygame) | `periodic_supercell`, `bloch_mode`, `mode_motion`, `animate` |
 | `wave_2d.py` | One displaced atom launches longitudinal and transverse waves, atoms coloured by displacement (pygame) | `periodic_supercell`, `force_constants`, `simulate`, `animate` |
 | `dos_2d.py` | Graphene DOS with van Hove peaks, C_V ∝ T² (2D Debye) | `q_grid`, `dispersion`, `density_of_states`, `heat_capacity` |
 | `transverse_springs.py` | Square lattice: central springs leave Γ–X floppy, (K_L, K_T) springs give shear stiffness | `neighbour_bonds` with (K_L, K_T), `plot_bands` |

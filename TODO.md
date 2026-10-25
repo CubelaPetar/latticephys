@@ -15,7 +15,6 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 
 ## Later
 
-- [ ] `bloch_mode` with travelling waves (initial momenta), e.g. chiral phonons
 - [ ] `thermal_state()`: random mode amplitudes and phases for temperature T
 - [ ] `simulate()` with a force function instead of only Φ (anharmonic chains)
 - [ ] angle-bending forces: molecule bending modes, ZA ∝ q² of graphene, flat TA and optical branches of Si

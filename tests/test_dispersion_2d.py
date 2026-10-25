@@ -6,7 +6,7 @@ from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
 from latticephys.lattice.structures import honeycomb, kagome, lieb
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
+from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, mode_motion
 from latticephys.phonons.integrate import simulate
 from latticephys.phonons.modes import atom_weights, normal_modes, phonon_modes
 from latticephys.phonons.springs import force_constants
@@ -60,20 +60,22 @@ def test_matches_finite_periodic_supercell():
     np.testing.assert_allclose(np.sort(omega.ravel()), omega_finite, atol=1e-10)
 
 
-def test_bloch_mode_oscillates_in_supercell():
-    """Optical Bloch mode at M, set up in a supercell, evolves as u0 cos(omega t)."""
+def test_simulate_reproduces_mode_motion_in_supercell():
+    """Optical Bloch mode at q = b1 / 4 in a periodic supercell: the integrator started at u = Re U,
+    p = m omega Im U follows Re[U exp(-i omega t)] of mode_motion()."""
     crystal, cells = graphene(), 4
     bonds = neighbour_bonds(crystal, [10.0, 2.0])
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, cells)
     Phi = force_constants(supercell, supercell_bonds)
 
-    q = reciprocal_vectors(crystal.vectors)[0] / 2
-    omega, u0 = bloch_mode(crystal, bonds, q, branch=3, cells=cells)
+    q = reciprocal_vectors(crystal.vectors)[0] / 4
+    omega, U = bloch_mode(crystal, bonds, q, branch=3, cells=cells)
+    assert np.abs(U.imag).max() > 0.1  # a travelling wave, not a standing one
 
     dt, steps = 0.001, 3000
-    u, _ = simulate(Phi, np.repeat(supercell.masses, 2), u0, np.zeros_like(u0), dt, steps)
-    t = dt * np.arange(steps + 1)
-    np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-6)
+    masses = np.repeat(supercell.masses, 2)
+    u, _ = simulate(Phi, masses, U.real, masses * omega * U.imag, dt, steps)
+    np.testing.assert_allclose(u, mode_motion(omega, U, dt * np.arange(steps + 1)), atol=1e-6)
 
 
 def test_bloch_mode_rejects_q_not_fitting_supercell():
@@ -86,11 +88,11 @@ def test_bloch_mode_rejects_q_not_fitting_supercell():
 @pytest.mark.parametrize("point", ["Γ", "M", "K"])
 @pytest.mark.parametrize("branch", range(4))
 def test_bloch_mode_start_is_never_zero(point, branch):
-    """The largest polarization component is made real, so max |u0| >= 1 / sqrt(B d m_max)."""
+    """The largest polarization component is made real, so max |Re U| >= 1 / sqrt(B d m_max)."""
     crystal = graphene()
     q = special_points("hexagonal", crystal.vectors)[point]
-    _, u0 = bloch_mode(crystal, neighbour_bonds(crystal, [10.0, 2.0]), q, branch=branch, cells=6)
-    assert np.abs(u0).max() >= 1 / np.sqrt(4 * crystal.masses.max()) - 1e-12
+    _, U = bloch_mode(crystal, neighbour_bonds(crystal, [10.0, 2.0]), q, branch=branch, cells=6)
+    assert np.abs(U.real).max() >= 1 / np.sqrt(4 * crystal.masses.max()) - 1e-12
 
 
 @pytest.mark.parametrize("branch", [0, 1])

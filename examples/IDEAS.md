@@ -25,7 +25,7 @@ Animations here should colour atoms by displacement: `animate(..., color_scale=.
 - **Thermal motion:** all modes with random amplitude and phase for temperature T; slow long-wave drifts (Mermin–Wagner in real time). Test: time-averaged ⟨u²⟩ equals `mean_square_displacement`. Needs: `thermal_state()`.
 - **Phonon focusing:** anisotropic wave fronts on the square lattice with second neighbours. Test: front shape against the group-velocity surface.
 - **Isotope defect in 2D:** localized mode above the band, like `chains/mass_defect.py`.
-- **Chiral phonons at K in hBN:** atoms move on circles, opposite sense at K and K′. Needs: travelling-wave start in `bloch_mode`.
+- **Chiral phonons at K in hBN:** atoms move on circles, opposite sense at K and K′. Uses: complex U of `bloch_mode`, `mode_motion`.
 - **Topological edge modes (twisted kagome):** zero modes on one edge of a strip only (Kane & Lubensky). Geometry still to look up.
 - **Strained lattices:** pre-tension gives transverse stiffness to otherwise floppy lattices. Needs: extended spring model.
 - **Anderson localization with mass disorder:** high-frequency waves stay near the source. Needs: sparse matrices (2D localization lengths need large systems).
