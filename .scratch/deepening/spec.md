@@ -1,6 +1,6 @@
 # Deepening plan: Φ(q), modes, Bloch modes, band plots
 
-Status: ready-for-agent
+Status: done
 
 ## Problem Statement
 

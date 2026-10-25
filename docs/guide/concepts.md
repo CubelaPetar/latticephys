@@ -48,6 +48,8 @@ frequencies = dispersion(graphene, graphene_bonds, qs) * OMEGA_TO_THZ  # (len(qs
 print(dispersion(chain, chain_bonds, [0.0, np.pi / 2.5]) * OMEGA_TO_THZ)  # acoustic and optical at Γ and the zone edge
 ```
 
+`phonon_modes(crystal, bonds, qs)` gives frequencies and polarizations together, `atom_weights` the share of each atom and direction in a mode; summed to one number per mode, e.g. the z share `atom_weights(vectors, 3)[..., 2].sum(-1)`, it colours `plot_bands(..., weights=...)`. Φ(q) is `force_constants(crystal, bonds, q)`, with cell phases e^{iq·R_n}.
+
 ## Finite systems
 
 For a molecule, or a supercell of a crystal (`periodic_supercell`), the normal modes are the phonon modes at q = 0:
@@ -61,4 +63,4 @@ omega, vectors = omega[0], vectors[0]  # the only q
 
 For a force-constant matrix Φ itself, from `force_constants(crystal, bonds)` or changed by hand (walls, mass defects), use `normal_modes(Phi, masses)`.
 
-Degrees of freedom are ordered atom by atom, `[u_0x, u_0y, u_1x, ...]`, masses per degree of freedom `np.repeat(masses, d)`. `simulate` integrates the equations of motion and `animate` shows them (pygame).
+Degrees of freedom are ordered atom by atom, `[u_0x, u_0y, u_1x, ...]`, masses per degree of freedom `np.repeat(masses, d)`. `simulate` integrates the equations of motion and `animate` shows them (pygame). For one Bloch mode of a crystal on a supercell, `bloch_mode` gives its displacement amplitude U, `mode_motion` the exact motion and `mode_start` the start for `simulate`.

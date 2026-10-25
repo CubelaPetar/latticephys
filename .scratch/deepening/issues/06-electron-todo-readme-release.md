@@ -4,9 +4,9 @@
 
 **Blocked by:** 01, 02, 03, 04, 05
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] TODO item written, short
-- [ ] README table and guide match the code; docs test passes
-- [ ] Version 0.4.0, tag `v0.4.0`; push only when the user says so
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] TODO item written, short
+- [x] README table and guide match the code; docs test passes
+- [x] Version 0.4.0, tag `v0.4.0`; push only when the user says so
+- [x] `pytest`, `ruff check`, all examples headless

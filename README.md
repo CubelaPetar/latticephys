@@ -44,12 +44,12 @@ plt.show()
 | | Functions |
 |---|---|
 | Structures: 5 + 14 Bravais lattices, honeycomb, kagome, Lieb, rocksalt, diamond, hcp, bilayers, layers in 3D | `Crystal`, `bravais2d/3d.primitive_vectors`, `lattice.structures`, `embed`, `plot_crystal` |
-| Bonds to neighbour shells, central or (K_L, K_T) springs; supercells | `neighbour_bonds`, `periodic_supercell`, `force_constants` |
+| Bonds to neighbour shells, central or (K_L, K_T) springs; supercells; Φ and Φ(q) | `neighbour_bonds`, `periodic_supercell`, `force_constants` |
 | Brillouin zone, special points, paths, grids | `special_points`, `k_path`, `q_grid`, `plot_brillouin_zone` |
-| Band structures, mode character, group and sound velocities | `dispersion`, `atom_weights`, `group_velocities`, `sound_velocities`, `plot_bands` |
+| Band structures, polarizations, mode character, group and sound velocities | `dispersion`, `phonon_modes`, `atom_weights`, `group_velocities`, `sound_velocities`, `plot_bands` (lines or coloured by weight) |
 | Density of states, heat capacity, ⟨u²⟩ | `density_of_states`, `heat_capacity`, `mean_square_displacement` |
 | Neutron/X-ray scattering intensity S(Q, ω) | `structure_factor`, `intensity_map` |
-| Normal modes of molecules and finite systems, time evolution, animation | `normal_modes`, `bloch_mode`, `simulate`, `animate` |
+| Normal modes of molecules and finite systems, Bloch modes and their exact motion, time evolution, animation | `phonon_modes` at q = 0, `normal_modes`, `bloch_mode`, `mode_motion`, `mode_start`, `simulate`, `animate` |
 | JSON export, e.g. for web pages | `save_json` |
 
 Inputs are in Å, amu and eV; `latticephys.units` converts frequencies to THz, meV or cm⁻¹. More in the guide: [concepts](docs/guide/concepts.md), [models](docs/guide/models.md), [units](docs/guide/units.md), and the terms in [`GLOSSARY.md`](GLOSSARY.md).
