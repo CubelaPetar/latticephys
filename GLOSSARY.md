@@ -26,7 +26,7 @@ k or q (1/Å); these letters never mean anything else. q for phonons.
 The p integers n of a cell, located at n_1 a_1 + ... + n_p a_p; cell 0 is the home cell, and a molecule has only n = ().
 
 **Bond**:
-A spring from atom mu in cell 0 to atom nu in cell n, listed once.
+A link from atom mu in cell 0 to atom nu in cell n, listed once, carrying one model parameter (a spring constant for phonons).
 
 **Branch label**:
 Polarization (L longitudinal, T transverse in-plane, Z out-of-plane) plus A acoustic or O optical, e.g. ZA.
@@ -42,8 +42,12 @@ _Avoid_: k, C, D
 All neighbours at the same distance from an atom; springs are given per shell (K1 nearest, K2 second, ...).
 
 **Force-constant matrix**:
-Φ, the matrix of the harmonic potential V = ½ uᵀ Φ u; Φ(q) is its Bloch sum.
+Φ, the matrix of the harmonic potential V = ½ uᵀ Φ u; Φ(q) is its lattice Fourier transform.
 _Avoid_: K (that is a spring constant)
+
+**Lattice Fourier transform**:
+The sum over bonds of one matrix block per bond times a phase: e^{iq·R_n} of the cell the bond reaches (phonons; repeats for q + G) or e^{iq·(R_n + r_ν − r_μ)} of the bond (repeats only up to a phase per atom). Gives Φ(q) for phonons, H(k) for electrons; both phases give the same frequencies or energies.
+_Avoid_: Bloch sum (in electron texts a combination of atomic orbitals)
 
 **Dynamical matrix**:
 D = M^-1/2 Φ M^-1/2; its eigenvalues are ω².
