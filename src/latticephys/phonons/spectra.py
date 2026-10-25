@@ -34,7 +34,8 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
     """Frequencies and one-phonon intensities at momentum transfers Q (1/Å), each shape (len(Qs), B d).
 
     Intensity of branch s: |sum_mu b_mu / sqrt(m_mu) (Q . e_mu,s) exp(-i Q . r_mu)|^2 / omega_s,
-    with scattering lengths b_mu (default 1). Q is not reduced to the first zone, so the
+    with scattering lengths b_mu (default 1) and polarizations e in the cell-phase convention of
+    force_constants(), hence the atom phase exp(-i Q . r_mu) here. Q is not reduced to the first zone, so the
     intensity tells in which Brillouin zone a branch is seen. Zero-temperature phonon
     creation in arbitrary units; multiply by n(omega) + 1 for temperature T. The Debye-Waller
     factor is left out. Zero modes (elastic, Bragg) get intensity 0; unstable modes raise.

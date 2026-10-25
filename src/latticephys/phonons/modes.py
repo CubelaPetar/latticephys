@@ -24,5 +24,10 @@ def normal_modes(force_constants, masses):
     Returns omega (ascending, see diagonalize()) and the eigenvectors of D as
     columns. The displacement pattern of mode j is masses**-0.5 * vectors[:, j].
     """
+    return diagonalize(_mass_weighted(np.asarray(force_constants, dtype=float), masses))
+
+
+def _mass_weighted(Phi, masses):
+    """M^-1/2 Phi M^-1/2 for masses per degree of freedom; Phi of shape (..., N, N)."""
     inv_sqrt_m = 1 / np.sqrt(np.asarray(masses, dtype=float))
-    return diagonalize(inv_sqrt_m[:, None] * np.asarray(force_constants, dtype=float) * inv_sqrt_m[None, :])
+    return inv_sqrt_m[:, None] * Phi * inv_sqrt_m[None, :]

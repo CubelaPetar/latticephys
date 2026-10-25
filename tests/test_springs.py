@@ -1,6 +1,10 @@
 import numpy as np
+import pytest
 
+from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import Crystal
+from latticephys.lattice.reciprocal import reciprocal_vectors
+from latticephys.lattice.structures import honeycomb
 from latticephys.phonons.modes import normal_modes
 from latticephys.phonons.springs import force_constants
 
@@ -72,3 +76,33 @@ def test_molecule_equals_crystal_with_bonds_in_home_cell():
 
     masses = np.repeat(molecule.masses, 2)
     np.testing.assert_array_equal(normal_modes(Phi, masses)[0], normal_modes(Phi_home, masses)[0])
+
+
+def test_fourier_force_constants_are_periodic_in_the_reciprocal_lattice():
+    """With cell phases Phi(q) = sum_n Phi(R_n) exp(i q.R_n) and exp(i G.R_n) = 1, so Phi(q + G) = Phi(q).
+
+    Graphene has two atoms per cell; with atom phases exp(i q.r_mu) instead this would fail.
+    """
+    graphene = honeycomb(2.46, [12.0, 12.0], ["C", "C"])
+    bonds = neighbour_bonds(graphene, [1.0, (0.5, 0.2)])
+    b = reciprocal_vectors(graphene.vectors)
+    q = np.array([0.31, -0.17])
+    Phi = force_constants(graphene, bonds, q)
+    assert np.abs(Phi - force_constants(graphene, bonds, q + b[0])).max() < 1e-12
+    assert np.abs(Phi - force_constants(graphene, bonds, q - 2 * b[1])).max() < 1e-12
+    assert np.abs(Phi - Phi.conj().T).max() < 1e-12
+
+
+def test_wrong_q_dimension_raises():
+    """A chain in 1D has wave vectors with one component; two components raise instead of a silent result."""
+    with pytest.raises(ValueError, match="components"):
+        force_constants(Crystal([[1.0]], [[0.0]], [1.0], ["A"]), [(0, 0, 1, 1.0)], [0.1, 0.2])
+
+
+def test_wave_vector_outside_the_lattice_plane_raises():
+    """A square layer in the xy plane of 3D space has no wave vector component along z."""
+    layer = Crystal([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]], [[0.0, 0.0, 0.0]], [1.0], ["A"])
+    bonds = neighbour_bonds(layer, [1.0])
+    force_constants(layer, bonds, [0.3, -1.0, 0.0])
+    with pytest.raises(ValueError, match="span"):
+        force_constants(layer, bonds, [0.3, -1.0, 1e-3])

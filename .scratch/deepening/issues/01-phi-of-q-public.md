@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `force_constants` with q returns Φ(q); without q unchanged; Bloch-mode and structure-factor docstrings refer to its convention
-- [ ] Test: Φ(q + G) = Φ(q) for graphene
-- [ ] Wrong-length or out-of-span q raises in `force_constants` (and so in `dynamical_matrix`)
-- [ ] No caller outside the spring module uses the old private transform or a `gradient` flag
-- [ ] Mass weighting written once; group-velocity and normal-mode tests pass unchanged
-- [ ] CLAUDE.md Conventions: private names may be imported between modules of one package, never from examples, tests or another package
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] `force_constants` with q returns Φ(q); without q unchanged; Bloch-mode and structure-factor docstrings refer to its convention
+- [x] Test: Φ(q + G) = Φ(q) for graphene
+- [x] Wrong-length or out-of-span q raises in `force_constants` (and so in `dynamical_matrix`)
+- [x] No caller outside the spring module uses the old private transform or a `gradient` flag
+- [x] Mass weighting written once; group-velocity and normal-mode tests pass unchanged
+- [x] CLAUDE.md Conventions: private names may be imported between modules of one package, never from examples, tests or another package
+- [x] `pytest`, `ruff check`, all examples headless

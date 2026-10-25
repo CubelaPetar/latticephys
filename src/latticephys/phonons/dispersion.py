@@ -3,26 +3,18 @@
 import numpy as np
 
 from latticephys.lattice.crystal import cell_offsets
-from latticephys.lattice.reciprocal import lattice_projection
-from latticephys.phonons.modes import diagonalize
-from latticephys.phonons.springs import _fourier_force_constants
+from latticephys.phonons.modes import _mass_weighted, diagonalize
+from latticephys.phonons.springs import _force_constants_gradient, force_constants
 
 
 def dynamical_matrix(crystal, bonds, q):
-    """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d).
+    """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d), with Phi(q) from force_constants().
 
     bonds: list of (mu, nu, n, K), e.g. from neighbour_bonds()
     q:     wave vector (1/Å), length d (a number in 1D), in the span of the lattice vectors
     Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
     """
-    q = np.atleast_1d(np.asarray(q, dtype=float))
-    if q.shape != (crystal.dim,):
-        raise ValueError(f"q must have {crystal.dim} components, got {q.shape}")
-    if np.linalg.norm(q - lattice_projection(crystal.vectors, q)) > 1e-8 * np.linalg.norm(q):
-        raise ValueError(f"q = {q} leaves the span of the lattice vectors")
-
-    inv_sqrt_m = np.repeat(1 / np.sqrt(crystal.masses), crystal.dim)
-    return inv_sqrt_m[:, None] * _fourier_force_constants(crystal, bonds, q) * inv_sqrt_m[None, :]
+    return _mass_weighted(force_constants(crystal, bonds, q), np.repeat(crystal.masses, crystal.dim))
 
 
 def dispersion(crystal, bonds, qs):
@@ -54,7 +46,8 @@ def bloch_mode(crystal, bonds, q, branch, cells):
     q must fit the supercell, q = (i b1 + j b2 + ...) / cells. For degenerate
     branches the returned mode is one arbitrary combination. Displacements
     (B d cells^p,) start the standing wave Re[e_mu exp(i q.R)] / sqrt(m_mu) for
-    simulate(), in the atom order of periodic_supercell().
+    simulate(), in the atom order of periodic_supercell(); the cell phase exp(i q.R)
+    is the convention of force_constants().
     """
     q = np.atleast_1d(np.asarray(q, dtype=float))
     fit = cells * crystal.vectors @ q / (2 * np.pi)
@@ -81,13 +74,12 @@ def group_velocities(crystal, bonds, qs):
     The velocity is not defined for zero modes and for degenerate branches (it depends on
     the chosen combination there), so these entries are nan.
     """
-    d = crystal.dim
-    inv_sqrt_m = np.repeat(1 / np.sqrt(crystal.masses), d)
+    masses = np.repeat(crystal.masses, crystal.dim)
     velocities = []
     for q in qs:
         q = np.atleast_1d(np.asarray(q, dtype=float))
         omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
-        gradient = inv_sqrt_m[:, None] * _fourier_force_constants(crystal, bonds, q, gradient=True) * inv_sqrt_m
+        gradient = _mass_weighted(_force_constants_gradient(crystal, bonds, q), masses)
         slope = np.einsum("as,iab,bs->si", vectors.conj(), gradient, vectors).real
 
         gap = np.abs(omega[:, None] - omega[None, :])

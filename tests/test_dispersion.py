@@ -5,7 +5,7 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
-from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, dynamical_matrix, group_velocities
+from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
 from latticephys.phonons.springs import force_constants
 
@@ -82,11 +82,6 @@ def test_simple_cubic():
     np.testing.assert_allclose(omega**2, expected, atol=1e-12)
 
 
-def test_wrong_q_dimension():
-    with pytest.raises(ValueError):
-        dynamical_matrix(monatomic(1.0), [(0, 0, 1, 1.0)], [0.1, 0.2])
-
-
 def test_bloch_mode_oscillates_in_periodic_chain():
     """Optical Bloch mode at q a = pi / 2, set up in a periodic chain, evolves as u0 cos(omega t)."""
     crystal, cells = diatomic(1.0, 3.0), 8
@@ -133,15 +128,6 @@ def test_atom_weights_at_zone_edge():
     weights = atom_weights(diatomic(1.0, 3.0), DIATOMIC_BONDS, [np.pi / A, 0.7])
     np.testing.assert_allclose(weights[0], [[0, 1], [1, 0]], atol=1e-12)
     np.testing.assert_allclose(weights.sum(axis=2), 1)
-
-
-def test_wave_vector_outside_the_lattice_plane_raises():
-    """A square layer in the xy plane of 3D space has no wave vector component along z."""
-    layer = Crystal([[A, 0.0, 0.0], [0.0, A, 0.0]], [[0.0, 0.0, 0.0]], [1.0], ["A"])
-    bonds = neighbour_bonds(layer, [1.0])
-    dynamical_matrix(layer, bonds, [0.3, -1.0, 0.0])
-    with pytest.raises(ValueError, match="plane|span"):
-        dynamical_matrix(layer, bonds, [0.3, -1.0, 1e-3])
 
 
 def test_embedded_chain_keeps_its_frequencies():
