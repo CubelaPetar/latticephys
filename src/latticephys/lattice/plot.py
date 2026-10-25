@@ -140,12 +140,26 @@ def plot_brillouin_zone(vectors, ax=None):
     return ax
 
 
-def plot_bands(distance, frequencies, corners, labels, ax=None):
-    """Branches against the distance along a k-path, with the k-points as ticks."""
+def plot_bands(distance, frequencies, corners, labels, ax=None, weights=None, weight_label=None):
+    """Branches against the distance along a k-path, with the k-points as ticks.
+
+    weights: optional, shape of frequencies, values in [0, 1] (e.g. from atom_weights()); the
+             branches are then dots coloured by weight, with a colour bar labelled weight_label
+    """
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 4))
 
-    ax.plot(distance, frequencies, color="tab:blue")
+    if weights is None:
+        ax.plot(distance, frequencies, color="tab:blue")
+    else:
+        frequencies, weights = np.asarray(frequencies), np.asarray(weights)
+        if weights.shape != frequencies.shape:
+            raise ValueError(f"weights must have the shape of frequencies {frequencies.shape}, got {weights.shape}")
+        if weights.min() < -1e-9 or weights.max() > 1 + 1e-9:
+            raise ValueError("weights must lie in [0, 1], the range of the colour bar")
+        dots = ax.scatter(np.repeat(distance, frequencies.shape[1]), frequencies.ravel(), c=weights.ravel(),
+                          s=4, cmap="viridis", vmin=0, vmax=1)
+        ax.figure.colorbar(dots, ax=ax, label=weight_label)
     for corner in corners:
         ax.axvline(corner, color="grey", lw=0.5)
     ax.axhline(0, color="grey", lw=0.5)

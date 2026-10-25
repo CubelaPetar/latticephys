@@ -22,6 +22,7 @@ import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import embed
+from latticephys.lattice.plot import plot_bands
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import honeycomb
 from latticephys.phonons.modes import atom_weights, phonon_modes
@@ -54,20 +55,14 @@ def main():
     out_of_plane = atom_weights(eigenvectors, layer.dim)[..., 2].sum(axis=-1)  # z of all atoms
 
     fig, ax = plt.subplots(figsize=(7, 5))
-    dots = ax.scatter(np.repeat(distance, frequencies.shape[1]), frequencies.ravel(), c=out_of_plane.ravel(),
-                      cmap="coolwarm", vmin=0, vmax=1, s=4)
-    fig.colorbar(dots, ax=ax, label="out-of-plane weight (Z)")
+    plot_bands(distance, frequencies, corners, LABELS, ax=ax, weights=out_of_plane,
+               weight_label="out-of-plane weight (Z)")
 
     i = np.searchsorted(distance, LABEL_AT * corners[1])
     for branch, nu in enumerate(frequencies[i]):
         ax.annotate(branch_label(eigenvectors[i][:, branch], qs[i]), (distance[i], nu),
                     xytext=(16 * (branch % 2), 4), textcoords="offset points", ha="center", va="bottom")
 
-    for corner in corners:
-        ax.axvline(corner, color="grey", lw=0.5)
-    ax.axhline(0, color="grey", lw=0.5)
-    ax.set_xticks(corners, LABELS)
-    ax.set_xlim(corners[0], corners[-1])
     ax.set_ylabel(r"$\nu$ (THz)")
     ax.set_title(f"Graphene layer, (K_L, K_T) = {SPRING_CONSTANTS} eV/Å²")
 

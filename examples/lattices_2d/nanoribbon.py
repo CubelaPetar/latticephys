@@ -1,8 +1,8 @@
 """In-plane phonons of a zigzag graphene nanoribbon, a strip periodic along x with free edges.
 
 The ribbon is a crystal with one lattice vector in 2D (periodicity p = 1, dimension
-d = 2): periodic along x, free across. Its bands are plotted against q_x and coloured by the
-weight of each mode on the edge atoms. The lowest branch rises as q_x^2 (in-plane
+d = 2): periodic along x, free across. Its bands are plotted along Γ-X (q along x, X = pi/a)
+and coloured by the weight of each mode on the edge atoms. The lowest branch rises as q_x^2 (in-plane
 bending of the strip). Some modes carry most of their weight on the edges: with
 8 rows, up to about 70 % on the outer 25 % of the atoms.
 """
@@ -12,7 +12,8 @@ import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import Crystal
-from latticephys.lattice.plot import plot_crystal
+from latticephys.lattice.plot import plot_bands, plot_crystal
+from latticephys.lattice.reciprocal import k_path
 from latticephys.phonons.modes import atom_weights, phonon_modes
 from latticephys.units import OMEGA_TO_THZ
 
@@ -39,20 +40,15 @@ def main():
     edge = np.zeros(2 * ROWS, dtype=bool)
     edge[: 2 * EDGE_ROWS] = edge[-2 * EDGE_ROWS :] = True
 
-    qs = np.linspace(0, np.pi / A, 200)
-    q_vectors = np.column_stack([qs, np.zeros_like(qs)])
-    omega, vectors = phonon_modes(ribbon, bonds, q_vectors)
+    qs, distance, corners = k_path([[0.0, 0.0], [np.pi / A, 0.0]], n=200)
+    omega, vectors = phonon_modes(ribbon, bonds, qs)
     frequencies = omega * OMEGA_TO_THZ
     weights = atom_weights(vectors, ribbon.dim)[:, :, edge].sum(axis=(2, 3))
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(13, 5), width_ratios=[2, 1])
-    q_all = np.repeat(qs * A, frequencies.shape[1])
-    points = left.scatter(q_all, frequencies.ravel(), c=weights.ravel(), s=2, cmap="viridis", vmin=0, vmax=1)
-    fig.colorbar(points, ax=left, label="weight on edge atoms")
-    left.axhline(0, color="grey", lw=0.5)
-    left.set_xlabel(r"$q_x a$")
+    plot_bands(distance, frequencies, corners, ["Γ", "X"], ax=left, weights=weights,
+               weight_label="weight on edge atoms")
     left.set_ylabel(r"$\nu$ (THz)")
-    left.set_xticks([0, np.pi / 2, np.pi], ["0", r"$\pi/2$", r"$\pi$"])
     left.set_title(f"zigzag ribbon, {ROWS} rows; edge atoms are {edge.mean():.0%} of all")
 
     plot_crystal(ribbon, radii=[0.35] * 2 * ROWS, colors=["tab:orange" if e else "tab:blue" for e in edge], ax=right)

@@ -79,3 +79,28 @@ def test_plot_points_marks_values_at_every_matching_corner():
     x = np.concatenate([line.get_xdata() for line in ax.lines[lines_before:]])
     y = np.concatenate([line.get_ydata() for line in ax.lines[lines_before:]])
     assert sorted(zip(x, y)) == [(0.0, 5.0), (0.0, 6.0), (2.0, 5.0), (2.0, 6.0), (3.5, 2.0)]
+
+
+def test_plot_bands_with_weights_draws_one_dot_per_frequency_and_a_colour_bar():
+    """Without weights one line per branch; with weights one dot per (q, branch) coloured by
+    its weight, and a colour bar with the weight label."""
+    distance, corners, labels = np.linspace(0, 1, 5), [0.0, 1.0], ["Γ", "X"]
+    frequencies = np.arange(10.0).reshape(5, 2)
+
+    ax = plot_bands(distance, frequencies, corners, labels)
+    assert len(ax.lines) == 2 + len(corners) + 1 and not ax.collections  # branches, corner and zero lines
+
+    weights = np.linspace(0, 1, 10).reshape(5, 2)
+    ax = plot_bands(distance, frequencies, corners, labels, weights=weights, weight_label="edge weight")
+    (dots,) = ax.collections
+    np.testing.assert_array_equal(dots.get_offsets(), np.column_stack([np.repeat(distance, 2), frequencies.ravel()]))
+    np.testing.assert_array_equal(dots.get_array(), weights.ravel())
+    (colour_bar,) = [other for other in ax.figure.axes if other is not ax]
+    assert colour_bar.get_ylabel() == "edge weight"
+
+
+@pytest.mark.parametrize("weights", [np.zeros((5, 1)), np.full((5, 2), 1.5)])
+def test_plot_bands_rejects_weights_of_wrong_shape_or_range(weights):
+    """Weights of another shape than the frequencies, or outside the colour range [0, 1], raise."""
+    with pytest.raises(ValueError):
+        plot_bands(np.linspace(0, 1, 5), np.zeros((5, 2)), [0.0, 1.0], ["Γ", "X"], weights=weights)

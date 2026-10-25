@@ -4,9 +4,9 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: with weights, one dot per frequency and a colour bar; without, unchanged
-- [ ] Graphene layer and nanoribbon examples use it
-- [ ] `docs/images/make_images.py` still produces the graphene layer image
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] Test: with weights, one dot per frequency and a colour bar; without, unchanged
+- [x] Graphene layer and nanoribbon examples use it
+- [x] `docs/images/make_images.py` still produces the graphene layer image
+- [x] `pytest`, `ruff check`, all examples headless
