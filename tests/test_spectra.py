@@ -5,8 +5,8 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import reciprocal_vectors
 from latticephys.lattice.structures import honeycomb
-from latticephys.phonons.dispersion import atom_weights, dispersion
-from latticephys.phonons.modes import normal_modes, phonon_modes
+from latticephys.phonons.dispersion import dispersion
+from latticephys.phonons.modes import atom_weights, normal_modes, phonon_modes
 from latticephys.phonons.spectra import density_of_states, intensity_map, structure_factor
 from latticephys.phonons.springs import force_constants
 

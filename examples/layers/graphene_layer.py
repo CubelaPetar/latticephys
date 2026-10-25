@@ -24,8 +24,7 @@ from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import embed
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import honeycomb
-from latticephys.phonons.dispersion import atom_weights
-from latticephys.phonons.modes import phonon_modes
+from latticephys.phonons.modes import atom_weights, phonon_modes
 from latticephys.units import OMEGA_TO_THZ
 
 A = 2.46  # Å

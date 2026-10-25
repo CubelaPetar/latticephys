@@ -5,9 +5,9 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
-from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, group_velocities
+from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
-from latticephys.phonons.modes import phonon_modes
+from latticephys.phonons.modes import atom_weights, phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 1.0

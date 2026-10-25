@@ -79,14 +79,3 @@ def group_velocities(crystal, bonds, qs):
         velocity[undefined] = np.nan
         velocities.append(velocity)
     return np.array(velocities)
-
-
-def atom_weights(vectors, dim):
-    """Weights |e_mu,i|^2 of atom mu and direction i in each mode, shape (..., B d, B, d); sum to 1 per mode.
-
-    vectors: polarizations (..., B d, B d), modes as columns, e.g. from phonon_modes()
-    dim:     dimension d of the crystal
-    Sum over the last axis for one weight per atom, e.g. for density_of_states().
-    """
-    weights = np.swapaxes(np.abs(np.asarray(vectors)) ** 2, -1, -2)
-    return weights.reshape(*weights.shape[:-1], -1, dim)

@@ -6,9 +6,9 @@ from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
 from latticephys.lattice.structures import honeycomb, kagome, lieb
-from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, group_velocities
+from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
-from latticephys.phonons.modes import normal_modes, phonon_modes
+from latticephys.phonons.modes import atom_weights, normal_modes, phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 2.46

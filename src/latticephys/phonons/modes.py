@@ -1,4 +1,4 @@
-"""Dynamical matrix of a crystal, its frequencies and polarizations; normal modes of finite systems."""
+"""Dynamical matrix of a crystal, its frequencies, polarizations and atom weights; normal modes of finite systems."""
 
 import numpy as np
 
@@ -36,6 +36,17 @@ def diagonalize(dynamical):
     omega_squared, vectors = np.linalg.eigh(dynamical)
     omega_squared[np.abs(omega_squared) < 1e-10 * np.abs(dynamical).sum(axis=1).max()] = 0.0
     return np.sign(omega_squared) * np.sqrt(np.abs(omega_squared)), vectors
+
+
+def atom_weights(vectors, dim):
+    """Weights |e_mu,i|^2 of atom mu and direction i in each mode, shape (..., B d, B, d); sum to 1 per mode.
+
+    vectors: polarizations (..., B d, B d), modes as columns, e.g. from phonon_modes()
+    dim:     dimension d of the crystal
+    Sum over the last axis for one weight per atom, e.g. for density_of_states().
+    """
+    weights = np.swapaxes(np.abs(np.asarray(vectors)) ** 2, -1, -2)
+    return weights.reshape(*weights.shape[:-1], -1, dim)
 
 
 def normal_modes(force_constants, masses):
