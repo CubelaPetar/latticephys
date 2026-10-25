@@ -79,7 +79,7 @@ python3 -m venv .venv
 .venv/bin/pytest && .venv/bin/ruff check
 ```
 
-Every physical result is checked in a test against an analytic formula, an experimental value or an independent calculation; `tests/test_examples.py` runs every example headless. `docs/images/make_images.py` regenerates the images above. Animations use `pygame-ce`, a drop-in fork of pygame (`import pygame`).
+Results are checked in tests against analytic formulas, symmetries, sum rules or a second calculation; `tests/test_examples.py` runs every example headless. `docs/images/make_images.py` regenerates the images above. Animations use `pygame-ce`, a drop-in fork of pygame (`import pygame`).
 
 ## License
 
