@@ -7,6 +7,7 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 ## Next
 
 - [ ] verify that rule 6 in CLAUDE.md is realistic physically (some things can't be computed analytically)
+- [ ] review the CLAUDE.md rules as a whole (after the deepening plan)
 - [ ] check if the library captures all physical concepts described in chapters 1-4 of the book '2016 TheoretischeFestkörperphysik - Czycholl.pdf' in references/ (as far as possible).
 - [ ] include electron physics
 - [ ] include magnon physics
