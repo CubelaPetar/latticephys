@@ -28,6 +28,10 @@ The p integers n of a cell, located at n_1 a_1 + ... + n_p a_p; cell 0 is the ho
 **Bond**:
 A link from atom mu in cell 0 to atom nu in cell n, listed once, carrying one model parameter (a spring constant for phonons).
 
+**Mode**:
+One solution at wave vector q: a frequency ω and a polarization (eigenvector of D). The modes of all q with the same index s form branch s.
+_Avoid_: eigenmode; band (except in plots)
+
 **Branch label**:
 Polarization (L longitudinal, T transverse in-plane, Z out-of-plane) plus A acoustic or O optical, e.g. ZA.
 _Avoid_: flexural branch (use ZA)
