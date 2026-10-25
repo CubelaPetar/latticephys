@@ -12,8 +12,8 @@ import numpy as np
 from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.reciprocal import special_points
 from latticephys.lattice.structures import honeycomb
-from latticephys.phonons.dispersion import bloch_mode, mode_motion
 from latticephys.phonons.display import animate
+from latticephys.phonons.modes import bloch_mode, mode_motion
 from latticephys.units import OMEGA_TO_THZ
 
 POINT = "M"  # "Γ", "M" or "K"

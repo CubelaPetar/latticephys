@@ -6,9 +6,9 @@ from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
 from latticephys.lattice.structures import honeycomb, kagome, lieb
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, mode_motion
+from latticephys.phonons.dispersion import dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
-from latticephys.phonons.modes import atom_weights, normal_modes, phonon_modes
+from latticephys.phonons.modes import atom_weights, bloch_mode, mode_motion, mode_start, normal_modes, phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 2.46
@@ -61,8 +61,8 @@ def test_matches_finite_periodic_supercell():
 
 
 def test_simulate_reproduces_mode_motion_in_supercell():
-    """Optical Bloch mode at q = b1 / 4 in a periodic supercell: the integrator started at u = Re U,
-    p = m omega Im U follows Re[U exp(-i omega t)] of mode_motion()."""
+    """Optical Bloch mode at q = b1 / 4 in a periodic supercell: the integrator started at
+    mode_start() = (Re U, m omega Im U) follows Re[U exp(-i omega t)] of mode_motion()."""
     crystal, cells = graphene(), 4
     bonds = neighbour_bonds(crystal, [10.0, 2.0])
     supercell, supercell_bonds = periodic_supercell(crystal, bonds, cells)
@@ -74,7 +74,7 @@ def test_simulate_reproduces_mode_motion_in_supercell():
 
     dt, steps = 0.001, 3000
     masses = np.repeat(supercell.masses, 2)
-    u, _ = simulate(Phi, masses, U.real, masses * omega * U.imag, dt, steps)
+    u, _ = simulate(Phi, masses, *mode_start(omega, U, masses), dt, steps)
     np.testing.assert_allclose(u, mode_motion(omega, U, dt * np.arange(steps + 1)), atol=1e-6)
 
 

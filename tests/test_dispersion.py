@@ -5,9 +5,9 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, mode_motion
+from latticephys.phonons.dispersion import dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
-from latticephys.phonons.modes import atom_weights, phonon_modes
+from latticephys.phonons.modes import atom_weights, bloch_mode, mode_motion, mode_start, phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 1.0
@@ -85,15 +85,15 @@ def test_simple_cubic():
 
 def test_simulate_reproduces_mode_motion_in_periodic_chain():
     """Optical Bloch mode at q a = pi / 2 in a periodic chain: the integrator started at
-    u = Re U, p = m omega Im U follows the travelling wave Re[U exp(-i omega t)] of mode_motion()."""
+    mode_start() = (Re U, m omega Im U) follows the travelling wave Re[U exp(-i omega t)] of mode_motion()."""
     crystal, cells = diatomic(1.0, 3.0), 8
     supercell, supercell_bonds = periodic_supercell(crystal, DIATOMIC_BONDS, cells)
     omega, U = bloch_mode(crystal, DIATOMIC_BONDS, np.pi / (2 * A), branch=1, cells=cells)
     assert np.abs(U.imag).max() > 0.1  # a travelling wave, not a standing one
 
     dt, steps = 0.001, 5000
-    p0 = supercell.masses * omega * U.imag
-    u, _ = simulate(force_constants(supercell, supercell_bonds), supercell.masses, U.real, p0, dt, steps)
+    u0, p0 = mode_start(omega, U, supercell.masses)
+    u, _ = simulate(force_constants(supercell, supercell_bonds), supercell.masses, u0, p0, dt, steps)
     np.testing.assert_allclose(u, mode_motion(omega, U, dt * np.arange(steps + 1)), atol=1e-6)
 
 

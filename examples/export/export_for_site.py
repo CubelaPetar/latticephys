@@ -15,7 +15,8 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import honeycomb
-from latticephys.phonons.dispersion import bloch_mode, dispersion
+from latticephys.phonons.dispersion import dispersion
+from latticephys.phonons.modes import bloch_mode
 from latticephys.units import OMEGA_TO_THZ
 
 

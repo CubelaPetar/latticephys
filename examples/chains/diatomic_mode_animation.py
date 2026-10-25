@@ -1,7 +1,7 @@
 """Animate one Bloch mode of the diatomic chain: acoustic or optical branch at wave vector q.
 
 The mode is the exact travelling wave Re[U exp(-i omega t)], U = e_mu exp(i q R) / sqrt(m_mu):
-every cell moves alike, shifted in phase by q R, so for 0 < |q| < pi/a the pattern runs
+every cell moves alike, shifted in phase by q R, so for 0 < |q| < pi/a the wave runs
 along the chain; at q = 0 and pi/a the phases are ±1 and the wave stands.
 In the optical mode at q = 0 the two atoms of each cell move against each other
 (the acoustic mode there is a rigid translation and does not oscillate). At the
@@ -13,8 +13,8 @@ import numpy as np
 
 from latticephys.lattice.bonds import periodic_supercell
 from latticephys.lattice.crystal import Crystal
-from latticephys.phonons.dispersion import bloch_mode, mode_motion
 from latticephys.phonons.display import animate
+from latticephys.phonons.modes import bloch_mode, mode_motion
 from latticephys.units import OMEGA_TO_THZ
 
 BRANCH = "optical"  # "acoustic" or "optical"

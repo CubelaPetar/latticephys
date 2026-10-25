@@ -9,9 +9,9 @@ from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.plot import plot_brillouin_zone
 from latticephys.lattice.reciprocal import brillouin_zone, q_grid, special_points, wigner_seitz_cell
 from latticephys.lattice.structures import bilayer, honeycomb
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities, sound_velocities
+from latticephys.phonons.dispersion import dispersion, group_velocities, sound_velocities
 from latticephys.phonons.display import animate
-from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.modes import bloch_mode, normal_modes
 from latticephys.phonons.spectra import density_of_states, structure_factor
 from latticephys.phonons.springs import force_constants
 from latticephys.phonons.thermal import heat_capacity, mean_square_displacement

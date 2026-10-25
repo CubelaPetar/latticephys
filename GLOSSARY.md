@@ -32,6 +32,10 @@ A link from atom mu in cell 0 to atom nu in cell n, listed once, carrying one mo
 One solution at wave vector q: a frequency ω and a polarization (eigenvector of D). The modes of all q with the same index s form branch s.
 _Avoid_: eigenmode; band (except in plots)
 
+**Displacement amplitude**:
+U, the complex displacement of every atom in one mode, e_μ e^{iq·R_n} / √m_μ; the atoms move as Re[U e^{-iωt}]. Unlike the polarization e it carries the masses and the phase of each cell.
+_Avoid_: pattern
+
 **Branch label**:
 Polarization (L longitudinal, T transverse in-plane, Z out-of-plane) plus A acoustic or O optical, e.g. ZA.
 _Avoid_: flexural branch (use ZA)
