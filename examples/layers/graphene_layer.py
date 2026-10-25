@@ -24,8 +24,8 @@ from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import embed
 from latticephys.lattice.reciprocal import k_path, special_points
 from latticephys.lattice.structures import honeycomb
-from latticephys.phonons.dispersion import dynamical_matrix
-from latticephys.phonons.modes import diagonalize
+from latticephys.phonons.dispersion import atom_weights
+from latticephys.phonons.modes import phonon_modes
 from latticephys.units import OMEGA_TO_THZ
 
 A = 2.46  # Å
@@ -50,13 +50,9 @@ def main():
     points = special_points("hexagonal", layer.vectors)
     qs, distance, corners = k_path([points[label] for label in LABELS])
 
-    frequencies, out_of_plane, eigenvectors = [], [], []
-    for q in qs:
-        omega, vectors = diagonalize(dynamical_matrix(layer, bonds, q))
-        frequencies.append(omega * OMEGA_TO_THZ)
-        out_of_plane.append((np.abs(vectors[layer.dim - 1 :: layer.dim]) ** 2).sum(axis=0))  # z of each atom
-        eigenvectors.append(vectors)
-    frequencies, out_of_plane = np.array(frequencies), np.array(out_of_plane)
+    omega, eigenvectors = phonon_modes(layer, bonds, qs)
+    frequencies = omega * OMEGA_TO_THZ
+    out_of_plane = atom_weights(eigenvectors, layer.dim)[..., 2].sum(axis=-1)  # z of all atoms
 
     fig, ax = plt.subplots(figsize=(7, 5))
     dots = ax.scatter(np.repeat(distance, frequencies.shape[1]), frequencies.ravel(), c=out_of_plane.ravel(),

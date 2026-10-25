@@ -13,7 +13,8 @@ import numpy as np
 from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.plot import plot_crystal
-from latticephys.phonons.dispersion import atom_weights, dispersion
+from latticephys.phonons.dispersion import atom_weights
+from latticephys.phonons.modes import phonon_modes
 from latticephys.units import OMEGA_TO_THZ
 
 A = 2.46  # Å, graphene lattice constant = period of the zigzag ribbon
@@ -41,8 +42,9 @@ def main():
 
     qs = np.linspace(0, np.pi / A, 200)
     q_vectors = np.column_stack([qs, np.zeros_like(qs)])
-    frequencies = dispersion(ribbon, bonds, q_vectors) * OMEGA_TO_THZ
-    weights = atom_weights(ribbon, bonds, q_vectors)[:, :, edge].sum(axis=2)
+    omega, vectors = phonon_modes(ribbon, bonds, q_vectors)
+    frequencies = omega * OMEGA_TO_THZ
+    weights = atom_weights(vectors, ribbon.dim)[:, :, edge].sum(axis=(2, 3))
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(13, 5), width_ratios=[2, 1])
     q_all = np.repeat(qs * A, frequencies.shape[1])

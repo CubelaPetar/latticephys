@@ -3,8 +3,7 @@
 import numpy as np
 
 from latticephys.lattice.reciprocal import q_grid
-from latticephys.phonons.dispersion import dynamical_matrix
-from latticephys.phonons.modes import diagonalize
+from latticephys.phonons.modes import phonon_modes
 from latticephys.units import K_B, OMEGA_TO_MEV
 
 
@@ -36,8 +35,7 @@ def mean_square_displacement(crystal, bonds, cells, temperature):
     d, n_basis = crystal.dim, len(crystal.masses)
     qs = q_grid(crystal.vectors, cells)
     total = np.zeros(n_basis)
-    for q in qs:
-        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
+    for q, omega, vectors in zip(qs, *phonon_modes(crystal, bonds, qs)):
         zero = omega == 0
         translations = 0 if np.any(q != 0) else d
         if np.any(omega < 0) or zero.sum() > translations:

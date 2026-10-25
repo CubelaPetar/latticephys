@@ -35,7 +35,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 | `transverse_springs.py` | Square lattice: central springs leave Γ–X floppy, (K_L, K_T) springs give shear stiffness | `neighbour_bonds` with (K_L, K_T), `plot_bands` |
 | `sound_velocities_2d.py` | Sound velocity against direction; c_L/c_T = √3 (Cauchy relation) | `sound_velocities` |
 | `structure_factor_2d.py` | Graphene S(Q, ω) along Γ–M over three zones: optical branches extinct at 3 b1, transverse ones invisible | `structure_factor`, `intensity_map` |
-| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with one lattice vector (p = 1), `dispersion`, `atom_weights` |
+| `nanoribbon.py` | Zigzag graphene ribbon: bands coloured by edge weight | `Crystal` with one lattice vector (p = 1), `phonon_modes`, `atom_weights` |
 | `mermin_wagner.py` | ⟨u²⟩ against size: linear in 1D, logarithmic in 2D, finite in 3D | `mean_square_displacement` |
 | `kagome_lieb.py` | Floppy modes of kagome and Lieb (CuO₂) lattices, rigid unit mode at M | `kagome`, `lieb`, `neighbour_bonds`, `dispersion` |
 
@@ -43,7 +43,7 @@ Run from the repo root, e.g. `.venv/bin/python examples/chains/wave_packet.py`. 
 
 | Example | Shows | Uses |
 |---|---|---|
-| `graphene_layer.py` | Graphene in 3D: ZA, TA, LA, ZO, TO, LO along Γ–M–K–Γ, coloured by out-of-plane weight; ZA linear without bending forces | `embed`, `neighbour_bonds` with (K_L, K_T), `special_points`, `k_path`, `dynamical_matrix`, `diagonalize` |
+| `graphene_layer.py` | Graphene in 3D: ZA, TA, LA, ZO, TO, LO along Γ–M–K–Γ, coloured by out-of-plane weight; ZA linear without bending forces | `embed`, `neighbour_bonds` with (K_L, K_T), `special_points`, `k_path`, `phonon_modes`, `atom_weights` |
 | `bilayer_graphene.py` | AB bilayer: interlayer springs fitted to the Raman shear (31 cm⁻¹) and breathing (81 cm⁻¹) modes; published constants give ≈ 89 cm⁻¹ | `embed`, `honeycomb`, `bilayer`, `neighbour_bonds`, `special_points`, `k_path`, `dispersion` |
 
 ## 3D crystals (`crystals_3d/`)

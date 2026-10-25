@@ -6,7 +6,7 @@ from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import reciprocal_vectors
 from latticephys.lattice.structures import honeycomb
 from latticephys.phonons.dispersion import atom_weights, dispersion
-from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.modes import normal_modes, phonon_modes
 from latticephys.phonons.spectra import density_of_states, intensity_map, structure_factor
 from latticephys.phonons.springs import force_constants
 
@@ -38,8 +38,8 @@ def test_projected_dos_adds_up_and_has_the_gap():
     """Per-atom DOS sums to the total; no modes between the acoustic top sqrt(2K/m2) and optical bottom sqrt(2K/m1)."""
     crystal = Crystal([[A]], [0.0, A / 2], [1.0, 3.0], ["A", "B"])
     qs = ((np.arange(4000) + 0.5) / 4000 - 0.5) * 2 * np.pi / A
-    omega = dispersion(crystal, DIATOMIC_BONDS, qs)
-    weights = atom_weights(crystal, DIATOMIC_BONDS, qs)
+    omega, vectors = phonon_modes(crystal, DIATOMIC_BONDS, qs)
+    weights = atom_weights(vectors, crystal.dim).sum(axis=-1)
     grid = np.linspace(0, 2.2, 200)
 
     total = density_of_states(omega, grid, sigma=0.01)

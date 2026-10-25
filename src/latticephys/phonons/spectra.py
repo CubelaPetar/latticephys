@@ -3,8 +3,7 @@
 import numpy as np
 
 from latticephys.lattice.reciprocal import lattice_projection
-from latticephys.phonons.dispersion import dynamical_matrix
-from latticephys.phonons.modes import diagonalize
+from latticephys.phonons.modes import phonon_modes
 
 
 def density_of_states(omega, grid, sigma, weights=None):
@@ -14,7 +13,7 @@ def density_of_states(omega, grid, sigma, weights=None):
     grid:    frequencies where g is evaluated, same units as omega
     sigma:   Gaussian width; should exceed the level spacing of the sampled modes
     weights: optional w_i, shape of omega, or omega.shape + (B,) for one DOS per
-             atom, e.g. atom_weights(); without weights (w_i = 1) g integrates to 1
+             atom, e.g. atom_weights().sum(axis=-1); without weights (w_i = 1) g integrates to 1
     Returns shape (len(grid),), or (len(grid), B) with per-atom weights.
     """
     omega = np.asarray(omega, dtype=float)
@@ -45,10 +44,10 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
     d, n_basis = crystal.dim, len(crystal.masses)
     b = np.ones(n_basis) if scattering_lengths is None else np.asarray(scattering_lengths, dtype=float)
 
-    frequencies, intensities = [], []
-    for Q in Qs:
-        Q = np.atleast_1d(np.asarray(Q, dtype=float))
-        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, lattice_projection(crystal.vectors, Q)))
+    Qs = [np.atleast_1d(np.asarray(Q, dtype=float)) for Q in Qs]
+    frequencies, all_vectors = phonon_modes(crystal, bonds, [lattice_projection(crystal.vectors, Q) for Q in Qs])
+    intensities = []
+    for Q, omega, vectors in zip(Qs, frequencies, all_vectors):
         if np.any(omega < 0):
             raise ValueError(f"unstable mode at Q = {Q}, no structure factor")
 
@@ -57,9 +56,8 @@ def structure_factor(crystal, bonds, Qs, scattering_lengths=None):
         amplitude = np.einsum("m,i,mis->s", prefactor, Q, polarizations)
         with np.errstate(divide="ignore", invalid="ignore"):
             intensity = np.where(omega > 0, np.abs(amplitude) ** 2 / omega, 0.0)
-        frequencies.append(omega)
         intensities.append(intensity)
-    return np.array(frequencies), np.array(intensities)
+    return frequencies, np.array(intensities)
 
 
 def intensity_map(frequencies, intensities, grid, sigma):

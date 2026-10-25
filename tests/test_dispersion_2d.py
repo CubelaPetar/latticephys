@@ -6,9 +6,9 @@ from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
 from latticephys.lattice.structures import honeycomb, kagome, lieb
-from latticephys.phonons.dispersion import bloch_mode, dispersion, group_velocities
+from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
-from latticephys.phonons.modes import normal_modes
+from latticephys.phonons.modes import normal_modes, phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 2.46
@@ -230,3 +230,14 @@ def test_graphene_layer_with_transverse_springs():
 
     expected = np.sort(np.column_stack([in_plane, out_of_plane]), axis=1)
     np.testing.assert_allclose(dispersion(layer, bonds, qs), expected, atol=1e-7)
+
+
+def test_flat_layer_out_of_plane_weight_only_in_z_modes():
+    """In-plane (K_L, K_T) springs of a flat layer decouple z from x, y: at q != 0 the B = 2 Z modes
+    have all their weight along z, the other 4 none; the weights of each mode sum to 1."""
+    layer = embed(graphene(), 3)
+    _, vectors = phonon_modes(layer, neighbour_bonds(layer, [(10.0, 2.0), (2.0, 0.5)]), [[0.4, -0.3, 0.0]])
+    weights = atom_weights(vectors, 3)[0]
+    z = weights[:, :, 2].sum(axis=1)
+    np.testing.assert_allclose(np.sort(z), [0, 0, 0, 0, 1, 1], atol=1e-12)
+    np.testing.assert_allclose(weights.sum(axis=(1, 2)), 1)

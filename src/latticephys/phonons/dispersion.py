@@ -3,18 +3,8 @@
 import numpy as np
 
 from latticephys.lattice.crystal import cell_offsets
-from latticephys.phonons.modes import _mass_weighted, diagonalize
-from latticephys.phonons.springs import _force_constants_gradient, force_constants
-
-
-def dynamical_matrix(crystal, bonds, q):
-    """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d), with Phi(q) from force_constants().
-
-    bonds: list of (mu, nu, n, K), e.g. from neighbour_bonds()
-    q:     wave vector (1/Å), length d (a number in 1D), in the span of the lattice vectors
-    Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
-    """
-    return _mass_weighted(force_constants(crystal, bonds, q), np.repeat(crystal.masses, crystal.dim))
+from latticephys.phonons.modes import _mass_weighted, phonon_modes
+from latticephys.phonons.springs import _force_constants_gradient
 
 
 def dispersion(crystal, bonds, qs):
@@ -22,7 +12,7 @@ def dispersion(crystal, bonds, qs):
 
     Negative values are unstable modes with imaginary frequency.
     """
-    return np.array([diagonalize(dynamical_matrix(crystal, bonds, q))[0] for q in qs])
+    return phonon_modes(crystal, bonds, qs)[0]
 
 
 def sound_velocities(crystal, bonds, directions, dq=1e-4):
@@ -55,8 +45,8 @@ def bloch_mode(crystal, bonds, q, branch, cells):
         raise ValueError("q does not fit the supercell, use q = (i b1 + j b2 + ...) / cells")
 
     d = crystal.dim
-    omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
-    e = vectors[:, branch]
+    omega, vectors = phonon_modes(crystal, bonds, [q])
+    omega, e = omega[0, branch], vectors[0, :, branch]
     # eigh returns e with an arbitrary complex phase; with e.g. e = (0, i) the real part
     # below would vanish everywhere, so make the largest component real
     e = e * np.exp(-1j * np.angle(e[np.argmax(np.abs(e))]))
@@ -64,7 +54,7 @@ def bloch_mode(crystal, bonds, q, branch, cells):
 
     cell_vectors = cell_offsets(cells, crystal.periodicity) @ crystal.vectors
     u0 = np.real(np.exp(1j * cell_vectors @ q)[:, None, None] * polarization[None])
-    return omega[branch], u0.ravel()
+    return omega, u0.ravel()
 
 
 def group_velocities(crystal, bonds, qs):
@@ -76,9 +66,8 @@ def group_velocities(crystal, bonds, qs):
     """
     masses = np.repeat(crystal.masses, crystal.dim)
     velocities = []
-    for q in qs:
+    for q, omega, vectors in zip(qs, *phonon_modes(crystal, bonds, qs)):
         q = np.atleast_1d(np.asarray(q, dtype=float))
-        omega, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
         gradient = _mass_weighted(_force_constants_gradient(crystal, bonds, q), masses)
         slope = np.einsum("as,iab,bs->si", vectors.conj(), gradient, vectors).real
 
@@ -92,11 +81,12 @@ def group_velocities(crystal, bonds, qs):
     return np.array(velocities)
 
 
-def atom_weights(crystal, bonds, qs):
-    """Weight |e_mu|^2 of each basis atom in each mode, shape (len(qs), B d, B); sums to 1 per mode."""
-    d, n_basis = crystal.dim, len(crystal.masses)
-    weights = []
-    for q in qs:
-        _, vectors = diagonalize(dynamical_matrix(crystal, bonds, q))
-        weights.append((np.abs(vectors) ** 2).reshape(n_basis, d, -1).sum(axis=1).T)
-    return np.array(weights)
+def atom_weights(vectors, dim):
+    """Weights |e_mu,i|^2 of atom mu and direction i in each mode, shape (..., B d, B, d); sum to 1 per mode.
+
+    vectors: polarizations (..., B d, B d), modes as columns, e.g. from phonon_modes()
+    dim:     dimension d of the crystal
+    Sum over the last axis for one weight per atom, e.g. for density_of_states().
+    """
+    weights = np.swapaxes(np.abs(np.asarray(vectors)) ** 2, -1, -2)
+    return weights.reshape(*weights.shape[:-1], -1, dim)

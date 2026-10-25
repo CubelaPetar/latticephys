@@ -7,6 +7,7 @@ from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
 from latticephys.phonons.dispersion import atom_weights, bloch_mode, dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
+from latticephys.phonons.modes import phonon_modes
 from latticephys.phonons.springs import force_constants
 
 A = 1.0
@@ -124,10 +125,13 @@ def test_group_velocity_monatomic_chain():
 
 
 def test_atom_weights_at_zone_edge():
-    """At q = pi/a only the heavy atom moves on the acoustic branch, only the light one on the optical."""
-    weights = atom_weights(diatomic(1.0, 3.0), DIATOMIC_BONDS, [np.pi / A, 0.7])
-    np.testing.assert_allclose(weights[0], [[0, 1], [1, 0]], atol=1e-12)
-    np.testing.assert_allclose(weights.sum(axis=2), 1)
+    """At q = pi/a only the heavy atom moves on the acoustic branch, only the light one on the optical;
+    at any q the weights of a mode sum to 1 (normalized polarization)."""
+    _, vectors = phonon_modes(diatomic(1.0, 3.0), DIATOMIC_BONDS, [np.pi / A, 0.7])
+    weights = atom_weights(vectors, 1)
+    assert weights.shape == (2, 2, 2, 1)
+    np.testing.assert_allclose(weights[0, :, :, 0], [[0, 1], [1, 0]], atol=1e-12)
+    np.testing.assert_allclose(weights.sum(axis=(2, 3)), 1)
 
 
 def test_embedded_chain_keeps_its_frequencies():

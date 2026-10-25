@@ -50,13 +50,15 @@ print(dispersion(chain, chain_bonds, [0.0, np.pi / 2.5]) * OMEGA_TO_THZ)  # acou
 
 ## Finite systems
 
-For a molecule, or a supercell of a crystal (`periodic_supercell`), the force-constant matrix Φ gives the normal modes and the motion in time:
+For a molecule, or a supercell of a crystal (`periodic_supercell`), the normal modes are the phonon modes at q = 0:
 
 ```python
-from latticephys.phonons.modes import normal_modes
-from latticephys.phonons.springs import force_constants
+from latticephys.phonons.modes import phonon_modes
 
-omega, vectors = normal_modes(force_constants(molecule, molecule_bonds), np.repeat(molecule.masses, molecule.dim))
+omega, vectors = phonon_modes(molecule, molecule_bonds, [np.zeros(molecule.dim)])
+omega, vectors = omega[0], vectors[0]  # the only q
 ```
+
+For a force-constant matrix Φ itself, from `force_constants(crystal, bonds)` or changed by hand (walls, mass defects), use `normal_modes(Phi, masses)`.
 
 Degrees of freedom are ordered atom by atom, `[u_0x, u_0y, u_1x, ...]`, masses per degree of freedom `np.repeat(masses, d)`. `simulate` integrates the equations of motion and `animate` shows them (pygame).

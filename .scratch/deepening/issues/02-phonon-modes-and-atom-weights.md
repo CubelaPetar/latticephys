@@ -4,11 +4,11 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: `phonon_modes` frequencies equal `dispersion`; polarizations are orthonormal eigenvectors of D(q)
-- [ ] Test: atom weights sum to 1 per mode; diatomic zone edge moves one sublattice; flat layer has out-of-plane weight only in the Z modes
-- [ ] No `diagonalize(dynamical_matrix(...))` left outside `phonon_modes` (library and examples)
-- [ ] Nanoribbon and graphene layer examples use `phonon_modes` + `atom_weights`
-- [ ] Guide molecule snippet uses `phonon_modes` at q = 0
-- [ ] `pytest`, `ruff check`, all examples headless
+- [x] Test: `phonon_modes` frequencies equal `dispersion`; polarizations are orthonormal eigenvectors of D(q)
+- [x] Test: atom weights sum to 1 per mode; diatomic zone edge moves one sublattice; flat layer has out-of-plane weight only in the Z modes
+- [x] No `diagonalize(dynamical_matrix(...))` left outside `phonon_modes` (library and examples)
+- [x] Nanoribbon and graphene layer examples use `phonon_modes` + `atom_weights`
+- [x] Guide molecule snippet uses `phonon_modes` at q = 0
+- [x] `pytest`, `ruff check`, all examples headless

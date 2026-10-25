@@ -1,6 +1,29 @@
-"""Frequencies and eigenvectors of dynamical matrices; normal modes of finite systems."""
+"""Dynamical matrix of a crystal, its frequencies and polarizations; normal modes of finite systems."""
 
 import numpy as np
+
+from latticephys.phonons.springs import force_constants
+
+
+def dynamical_matrix(crystal, bonds, q):
+    """Bloch dynamical matrix D(q) = M^-1/2 Phi(q) M^-1/2, shape (B d, B d), with Phi(q) from force_constants().
+
+    bonds: list of (mu, nu, n, K), e.g. from neighbour_bonds()
+    q:     wave vector (1/Å), length d (a number in 1D), in the span of the lattice vectors
+    Degrees of freedom are ordered atom by atom: [u_0x, u_0y, u_1x, ...].
+    """
+    return _mass_weighted(force_constants(crystal, bonds, q), np.repeat(crystal.masses, crystal.dim))
+
+
+def phonon_modes(crystal, bonds, qs):
+    """Frequencies omega (len(qs), B d) and polarizations (len(qs), B d, B d) of D(q) at each q.
+
+    Polarizations are the orthonormal eigenvectors of D(q), modes as columns, in the cell-phase
+    convention of force_constants(); omega as in diagonalize(). For a molecule or a finite
+    supercell use qs = [np.zeros(d)].
+    """
+    modes = [diagonalize(dynamical_matrix(crystal, bonds, q)) for q in qs]
+    return np.array([omega for omega, _ in modes]), np.array([vectors for _, vectors in modes])
 
 
 def diagonalize(dynamical):
