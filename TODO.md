@@ -6,7 +6,6 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 
 ## Next
 
-- [ ] unchecked claims in the docs: test or remove them, see `.scratch/claims/`
 - [ ] isnt src/latticephys/lattice/structures.py already an example?
 - [ ] check if the library captures all physical concepts described in chapters 1-4 of the book '2016 TheoretischeFestkörperphysik - Czycholl.pdf' in references/ (as far as possible).
 - [ ] include electron physics (tight binding)

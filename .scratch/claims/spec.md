@@ -1,6 +1,6 @@
 # Unchecked claims in the docs
 
-Status: ready-for-agent
+Status: done
 
 ## Problem
 

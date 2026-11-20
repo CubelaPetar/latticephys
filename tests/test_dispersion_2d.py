@@ -291,3 +291,22 @@ def test_zigzag_ribbon_bends_quadratically():
     ribbon = zigzag_ribbon(2.46, 8, [12.011] * 2, ["C"] * 2)
     omega = dispersion(ribbon, neighbour_bonds(ribbon, [25.0, 5.0]), [[0.01, 0.0], [0.02, 0.0]])
     assert omega[1, 0] / omega[0, 0] == pytest.approx(4.0, rel=0.02)
+
+
+def test_graphene_branches_have_saddle_points_at_m():
+    """M is a critical point of every branch (time reversal and the mirror through Γ-M give zero slope); where the
+    curvature along Γ-M and across it differ in sign it is a saddle, which in 2D gives a logarithmic van Hove peak.
+    Graphene has such saddles at M."""
+    crystal = graphene()
+    bonds = neighbour_bonds(crystal, [25.0, 5.0])
+    m = special_points("hexagonal", crystal.vectors)["M"]
+    along = m / np.linalg.norm(m)
+    across = np.array([-along[1], along[0]])
+    h = 1e-3
+
+    def curvature(direction):
+        return (dispersion(crystal, bonds, [m + h * direction])[0] + dispersion(crystal, bonds, [m - h * direction])[0]
+                - 2 * dispersion(crystal, bonds, [m])[0]) / h**2
+
+    np.testing.assert_allclose(group_velocities(crystal, bonds, [m])[0], 0, atol=1e-9)
+    assert np.any(curvature(along) * curvature(across) < 0)

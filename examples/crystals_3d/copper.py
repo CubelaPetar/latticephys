@@ -10,7 +10,7 @@ Measured values (red points): room-temperature neutron scattering, most likely S
 Brockhouse and Rowe, Phys. Rev. 155, 619 (1967), as quoted by Savrasov and Savrasov,
 Phys. Rev. B 54, 16487 (1996), Table I; secondary source, see docs/research/cu-phonon-frequencies.md.
 
-The DOS has van Hove peaks from flat parts of the branches near the zone boundary. The heat
+The middle panel shows the DOS on the q-grid, broadened by Gaussians. The heat
 capacity plot compares C with the T^3 Debye law at low T; at high T C approaches 3 k_B per atom (Dulong-Petit).
 The finite q-grid has no modes below its smallest q != 0 (Γ is left out), which cuts C off
 at the lowest temperatures.

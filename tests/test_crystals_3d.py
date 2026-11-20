@@ -8,6 +8,7 @@ from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import q_grid, special_points
 from latticephys.lattice.structures import diamond, hcp, rocksalt
 from latticephys.phonons.dispersion import dispersion
+from latticephys.units import OMEGA_TO_THZ
 
 
 def two_by_two(A, B, m1, m2):
@@ -141,3 +142,18 @@ def test_rocksalt_nearest_neighbours_decouple_into_chains():
 
     optical = dispersion(crystal, bonds, [np.zeros(3)])[0][3:]
     np.testing.assert_allclose(optical, np.sqrt(2 * K1 * (1 / m1 + 1 / m2)), rtol=1e-12)
+
+
+def test_silicon_central_springs_raise_the_to_branches():
+    """Si with K1, K2 fitted as in examples/crystals_3d/silicon.py (8 K1 / (3 M) = omega_Γ^2 with 15.53 THz,
+    4 K2 / M = omega_TA(X)^2 with 4.49 THz): the two TO branches lie higher at the zone boundary points X, L, K, W
+    than at Γ, while the next branch (LO, or LA = LO at X) lies lower."""
+    a, M = 5.431, 28.086
+    gamma, ta_x = 15.53 / OMEGA_TO_THZ, 4.49 / OMEGA_TO_THZ
+    si = diamond(a, [M, M], ["Si", "Si"])
+    bonds = neighbour_bonds(si, [3 * M * gamma**2 / 8, M * ta_x**2 / 4])
+    points = special_points("fcc", si.vectors)
+
+    omega = dispersion(si, bonds, [points[label] for label in "XLKW"])
+    assert np.all(omega[:, -2:] > gamma)
+    assert np.all(omega[:, 3] < gamma)

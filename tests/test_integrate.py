@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from latticephys.phonons.chain import chain_force_constants
 from latticephys.phonons.integrate import simulate
@@ -31,3 +32,28 @@ def test_normal_mode_oscillates_harmonically():
 
     t = dt * np.arange(steps + 1)
     np.testing.assert_allclose(u, np.outer(np.cos(omega * t), u0), atol=1e-5)
+
+
+@pytest.mark.parametrize("q0a", [0.3 * np.pi, 0.8 * np.pi])
+def test_wave_packet_moves_at_the_group_velocity_and_spreads(q0a):
+    """Gaussian packet u = envelope cos(q0 x - omega0 t), envelope width w, in a periodic chain: its energy centre
+    moves at v_g = a sqrt(K/m) cos(q0 a / 2) (slow near the zone edge), and dispersion widens the envelope to
+    sigma(t)^2 = w^2 + (omega'' t / w)^2 with omega'' = -a^2 / 2 sqrt(K/m) sin(q0 a / 2); the energy width is
+    sigma / sqrt(2). Measured within 40 sites of the centre: the start is not exactly one-way and leaves a
+    small tail behind."""
+    n, K, m, width, dt, steps = 300, 10.0, 12.0, 10, 0.05, 2000
+    sites, start = np.arange(n), n // 4
+    omega0 = 2 * np.sqrt(K / m) * np.sin(q0a / 2)
+    envelope = np.exp(-((sites - start) ** 2) / (2 * width**2))
+    u, p = simulate(chain_force_constants(n, K, boundary="periodic"), np.full(n, m),
+                    envelope * np.cos(q0a * sites), m * omega0 * envelope * np.sin(q0a * sites), dt, steps)
+
+    weight = u**2 + (p / (m * omega0)) ** 2  # local energy, smooth over the carrier oscillation
+    centre = (weight * sites).sum(axis=1) / weight.sum(axis=1)
+    t = dt * steps
+    assert centre[-1] - centre[0] == pytest.approx(np.sqrt(K / m) * np.cos(q0a / 2) * t, rel=0.01)
+
+    near = np.abs(sites - centre[-1]) < 40
+    spread = np.sqrt((weight[-1, near] * (sites[near] - centre[-1]) ** 2).sum() / weight[-1, near].sum())
+    curvature = -0.5 * np.sqrt(K / m) * np.sin(q0a / 2)
+    assert spread == pytest.approx(np.sqrt(width**2 + (curvature * t / width) ** 2) / np.sqrt(2), rel=0.01)

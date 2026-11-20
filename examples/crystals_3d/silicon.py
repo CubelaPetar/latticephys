@@ -7,7 +7,7 @@ spring constants follow in closed form from two measured frequencies:
   fcc sublattices count, omega^2 = 4 K2 / M (as for fcc Cu).
 
 The other measured points test the model; the example prints model and measured frequencies
-at Γ, X and L. The optical branches rise from Γ towards the zone boundary while the measured ones
+at Γ, X and L. The TO branches rise from Γ towards the zone boundary while the measured ones
 fall. Full dispersion measurements also show the real TA branches flat over most of the
 zone. Both need forces that resist bending the tetrahedral bonds (valence-force or
 bond-charge models), which short-range central springs do not have.
