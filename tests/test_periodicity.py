@@ -200,3 +200,22 @@ def test_aa_bilayer_breathing_mode_and_its_scattering():
     omega, intensity = structure_factor(aa, bonds, np.column_stack([np.zeros((3, 2)), Qz]))
     branch = np.argmin(np.abs(omega[0] - breathing))
     np.testing.assert_allclose(intensity[:, branch], 4 * Qz**2 * np.sin(Qz * c / 2) ** 2 / (M * breathing), atol=1e-12)
+
+
+def test_ab_bilayer_rigid_layer_modes():
+    """AB bilayer, one spring per cell between A2 and B1 with K_perp along z and K_par in the plane. Rigid sheets of 2 M
+    each against each other (reduced mass M) give omega^2 = K_perp / M (breathing) and K_par / M (shear, twice). With
+    stiff sheets the modes reach these values; softer sheets bend and lie below (the rigid-sheet pattern is a trial
+    vector, so its Rayleigh quotient is an upper bound)."""
+    K_perp, K_par = 0.05, 0.02
+    rigid = np.sqrt([K_par, K_par, K_perp]) / np.sqrt(M)
+    for scale, check in ((1e3, "equal"), (1.0, "below")):
+        sheet = layer()
+        in_plane = neighbour_bonds(sheet, [(30.0 * scale, 6.0 * scale), (5.0 * scale, 0.5 * scale)])
+        stacked, bonds = bilayer(sheet, in_plane, sheet.positions[1] + [0.0, 0.0, 3.356])
+        omega = dispersion(stacked, bonds + [(1, 2, (0, 0), (K_perp, K_par))], [np.zeros(3)])[0]
+        np.testing.assert_array_equal(omega[:3], 0)
+        if check == "equal":
+            np.testing.assert_allclose(omega[3:6], rigid, rtol=1e-4)
+        else:
+            assert np.all(omega[3:6] < rigid)

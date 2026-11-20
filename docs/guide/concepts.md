@@ -19,7 +19,7 @@ layer = embed(graphene, 3)                                                      
 copper = Crystal(primitive_vectors("fcc", 3.615), [[0.0, 0.0, 0.0]], [63.546], ["Cu"])                    # p = d = 3
 ```
 
-Ready-made structures in `lattice.structures`: `honeycomb`, `kagome`, `lieb`, `rocksalt`, `diamond`, `hcp`, and `bilayer` to stack two sheets. Bravais lattices: `bravais2d.primitive_vectors` (5) and `bravais3d.primitive_vectors` (14).
+Ready-made structures in `lattice.structures`: `honeycomb`, `zigzag_ribbon`, `kagome`, `lieb`, `rocksalt`, `diamond`, `hcp`, and `bilayer` to stack two sheets. Bravais lattices: `bravais2d.primitive_vectors` (5) and `bravais3d.primitive_vectors` (14).
 
 ## Bonds
 

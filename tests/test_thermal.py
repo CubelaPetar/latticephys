@@ -5,6 +5,7 @@ from latticephys.lattice.bonds import neighbour_bonds
 from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import q_grid
+from latticephys.lattice.structures import honeycomb
 from latticephys.phonons.dispersion import dispersion, sound_velocities
 from latticephys.phonons.thermal import heat_capacity, mean_square_displacement
 from latticephys.units import K_B, OMEGA_TO_MEV
@@ -36,13 +37,15 @@ def test_heat_capacity_limits():
         heat_capacity([-1.0], [300.0])
 
 
-def test_2d_debye_law():
-    """Low T: C ~ T^2 in 2D; high T: Dulong-Petit, k_B per mode.
+@pytest.mark.parametrize(
+    "crystal, spring_constants", [(triangular(), [K]), (honeycomb(A, [12.0] * 2, ["C"] * 2), [25.0, 5.0])]
+)
+def test_2d_debye_law(crystal, spring_constants):
+    """Low T: C ~ T^2 in 2D; high T: Dulong-Petit, k_B per mode (2 k_B per atom in the plane).
 
     T must stay above the lowest mode of the finite grid (~ 1 meV ~ 10 K for 100 x 100 cells).
     """
-    crystal = triangular()
-    omega = dispersion(crystal, neighbour_bonds(crystal, [K]), q_grid(crystal.vectors, 100))
+    omega = dispersion(crystal, neighbour_bonds(crystal, spring_constants), q_grid(crystal.vectors, 100))
     low = heat_capacity(omega, [10.0, 20.0])
     assert low[1] / low[0] == pytest.approx(4.0, rel=0.02)
     assert heat_capacity(omega, [1e5])[0] == pytest.approx(1.0, rel=1e-4)
@@ -101,3 +104,39 @@ def test_mean_square_displacement_3d_converges():
     bonds = neighbour_bonds(cubic, [K, 3.0])
     u2 = [mean_square_displacement(cubic, bonds, n, 300.0)[0] for n in (8, 16, 24)]
     assert 0 < u2[2] - u2[1] < 0.5 * (u2[1] - u2[0])
+
+
+def test_1d_debye_law():
+    """Monatomic chain: at low T only the linear acoustic branch is excited, C ~ T (1D Debye law);
+    at high T k_B per atom (Dulong-Petit)."""
+    qs = ((np.arange(20_000) + 0.5) / 20_000 - 0.5) * 2 * np.pi
+    omega = dispersion(Crystal([[1.0]], [0.0], [12.0], ["C"]), [(0, 0, 1, 10.0)], qs)
+    low = heat_capacity(omega, [2.0, 4.0])
+    assert low[1] / low[0] == pytest.approx(2.0, rel=0.01)
+    assert heat_capacity(omega, [1e6])[0] == pytest.approx(1.0, rel=1e-6)
+
+
+def test_square_sound_velocities_from_elastic_constants():
+    """Square lattice, central K1 (nearest) and K2 (second neighbours): 2D elastic constants C11 = K1 + K2,
+    C12 = C44 = K2, density m / a^2. Along x: c_L^2 = (K1 + K2) a^2 / m, c_T^2 = K2 a^2 / m; along the diagonal
+    c_L^2 = (C11 + C12 + 2 C44) a^2 / (2 m), c_T^2 = (C11 - C12) a^2 / (2 m). Isotropic only for C11 - C12 = 2 C44,
+    i.e. K1 = 2 K2."""
+    a, m, K1 = 2.5, 12.0, 1.0
+    crystal = Crystal(primitive_vectors("square", a), [[0.0, 0.0]], [m], ["C"])
+    directions = [[1.0, 0.0], [1.0, 1.0]]
+    for K2 in (0.3, 0.8):
+        v = sound_velocities(crystal, neighbour_bonds(crystal, [K1, K2]), directions)
+        along_x = np.sqrt([K2, K1 + K2]) * a / np.sqrt(m)
+        diagonal = np.sort(np.sqrt([K1 / 2, (K1 + 4 * K2) / 2])) * a / np.sqrt(m)
+        np.testing.assert_allclose(v, [along_x, diagonal], rtol=1e-6)
+    isotropic = sound_velocities(crystal, neighbour_bonds(crystal, [K1, K1 / 2]), directions)
+    np.testing.assert_allclose(isotropic[0], isotropic[1], rtol=1e-6)
+
+
+def test_graphene_sound_velocities_are_isotropic():
+    """Hexagonal symmetry makes 2D elasticity isotropic: the same c_T and c_L in every direction, for any springs."""
+    crystal = honeycomb(A, [12.0] * 2, ["C"] * 2)
+    angles = np.linspace(0, np.pi, 7)
+    directions = np.column_stack([np.cos(angles), np.sin(angles)])
+    v = sound_velocities(crystal, neighbour_bonds(crystal, [25.0, 5.0]), directions)
+    np.testing.assert_allclose(v, np.tile(v[0], (len(v), 1)), rtol=1e-6)

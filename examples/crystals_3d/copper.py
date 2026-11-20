@@ -12,7 +12,7 @@ Brockhouse and Rowe, Phys. Rev. 155, 619 (1967), as quoted by Savrasov and Savra
 Phys. Rev. B 54, 16487 (1996), Table I; secondary source, see docs/research/cu-phonon-frequencies.md.
 
 The DOS has van Hove peaks from flat parts of the branches near the zone boundary. The heat
-capacity grows as T^3 at low T (3D Debye law) and approaches 3 k_B per atom (Dulong-Petit).
+capacity plot compares C with the T^3 Debye law at low T; at high T C approaches 3 k_B per atom (Dulong-Petit).
 The finite q-grid has no modes below its smallest q != 0 (Γ is left out; lowest mode
 about 0.5 THz for GRID = 24), which cuts C off at the lowest temperatures; near 8 K the
 slope of log C against log T is still somewhat above 3.

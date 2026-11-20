@@ -2,8 +2,8 @@
 
 The triangular lattice with nearest-neighbour springs is elastically isotropic and
 obeys the Cauchy relation c_L / c_T = sqrt(3). Second-neighbour springs on the square
-lattice make the velocities depend on the direction; graphene (hexagonal symmetry)
-stays isotropic for long waves.
+lattice make the velocities depend on the direction, unless K2 = K1 / 2; graphene
+(hexagonal symmetry) stays isotropic for long waves.
 """
 
 import matplotlib.pyplot as plt

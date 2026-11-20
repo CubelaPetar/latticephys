@@ -137,3 +137,20 @@ def test_intensity_map_integrates_to_the_intensities():
     spectrum = intensity_map(omega, intensity, grid, 0.05)
     assert spectrum.shape == (len(grid), 7)
     np.testing.assert_allclose(spectrum.sum(axis=0) * (grid[1] - grid[0]), intensity.sum(axis=1) / 2, rtol=1e-6)
+
+
+def test_transverse_modes_invisible_along_gamma_m():
+    """Γ-M of graphene is a mirror line: each mode there is even or odd, i.e. purely longitudinal (every e_mu along Q)
+    or purely transverse (every e_mu perpendicular to Q). The transverse ones have Q . e_mu = 0 and no intensity."""
+    crystal = honeycomb(2.46, [12.0] * 2, ["C"] * 2)
+    bonds = neighbour_bonds(crystal, [25.0, 5.0])
+    b1 = reciprocal_vectors(crystal.vectors)[0]
+    for t in (0.3, 1.2, 2.6):
+        Q = t * b1
+        _, vectors = phonon_modes(crystal, bonds, [Q])
+        # each mode's share along Q, summed over atoms with |e| = 1: 0 (transverse) or 1 (longitudinal)
+        longitudinal = (np.abs(np.einsum("i,mis->ms", Q / np.linalg.norm(Q), vectors[0].reshape(2, 2, -1))) ** 2).sum(0)
+        np.testing.assert_allclose(np.sort(longitudinal), [0, 0, 1, 1], atol=1e-12)
+        _, intensity = structure_factor(crystal, bonds, [Q])
+        np.testing.assert_allclose(intensity[0][longitudinal < 0.5], 0, atol=1e-12)
+        assert np.all(intensity[0][longitudinal > 0.5] > 1e-4)

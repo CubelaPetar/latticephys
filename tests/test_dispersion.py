@@ -5,7 +5,7 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais3d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.phonons.chain import chain_force_constants
-from latticephys.phonons.dispersion import dispersion, group_velocities
+from latticephys.phonons.dispersion import dispersion, group_velocities, sound_velocities
 from latticephys.phonons.integrate import simulate
 from latticephys.phonons.modes import atom_weights, bloch_mode, mode_motion, mode_start, phonon_modes
 from latticephys.phonons.springs import force_constants
@@ -177,3 +177,14 @@ def test_bcc_first_and_second_neighbours_match_the_analytic_dynamical_matrix():
         D = sum(K / m * np.outer(d, d) / (d @ d) * (1 - np.cos(q @ d)) for K, ds in ((K1, first), (K2, second))
                 for d in ds)
         np.testing.assert_allclose(omega, np.sqrt(np.clip(np.linalg.eigvalsh(D), 0, None)), atol=1e-10)
+
+
+def test_sound_velocity_error_from_the_finite_slope():
+    """Monatomic chain: v(dq) = omega(dq) / dq = 2 sqrt(K/m) sin(dq a / 2) / dq, so the relative error against
+    c = a sqrt(K/m) is 1 - sin(x) / x ~ x^2 / 6 = (dq a)^2 / 24 with x = dq a / 2."""
+    K, m = 1.5, 2.0
+    c = A * np.sqrt(K / m)
+    for dq in (0.05, 0.1):
+        v = sound_velocities(monatomic(m), [(0, 0, 1, K)], [[1.0]], dq=dq)[0, 0]
+        assert v == pytest.approx(2 * np.sqrt(K / m) * np.sin(dq * A / 2) / dq, rel=1e-12)
+        assert 1 - v / c == pytest.approx((dq * A) ** 2 / 24, rel=0.01)

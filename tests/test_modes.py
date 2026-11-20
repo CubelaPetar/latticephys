@@ -49,3 +49,16 @@ def test_phonon_modes_are_orthonormal_eigenvectors_of_the_dynamical_matrix():
     for q, w, e in zip(qs, omega, vectors):
         np.testing.assert_allclose(e.conj().T @ e, np.eye(4), atol=1e-12)
         np.testing.assert_allclose(dynamical_matrix(graphene, bonds, q) @ e, e * np.sign(w) * w**2, atol=1e-10)
+
+
+def test_light_impurity_mode_decays_with_alternating_sign():
+    """Montroll-Potts: around the impurity at n = 0 the localized mode is u_n = u_0 (-(1 - eps) / (1 + eps))^|n|."""
+    K, m, eps, n = 1.0, 1.0, 0.5, 41
+    masses = np.full(n, m)
+    masses[n // 2] = (1 - eps) * m
+    _, vectors = normal_modes(chain_force_constants(n, K, boundary="fixed"), masses)
+    u, c = vectors[:, -1] / np.sqrt(masses), n // 2
+
+    ratio = -(1 - eps) / (1 + eps)
+    np.testing.assert_allclose(u[c + 1 : c + 6] / u[c : c + 5], ratio, rtol=1e-6)
+    np.testing.assert_allclose(u[c - 5 : c] / u[c - 4 : c + 1], ratio, rtol=1e-6)

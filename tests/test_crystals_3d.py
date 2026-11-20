@@ -1,8 +1,10 @@
-"""Two-atom 3D crystals (rocksalt, diamond) against closed-form dynamical matrices."""
+"""3D crystals (fcc, bcc, rocksalt, diamond, hcp) against closed forms and symmetries."""
 
 import numpy as np
 
 from latticephys.lattice.bonds import neighbour_bonds
+from latticephys.lattice.bravais3d import primitive_vectors
+from latticephys.lattice.crystal import Crystal
 from latticephys.lattice.reciprocal import q_grid, special_points
 from latticephys.lattice.structures import diamond, hcp, rocksalt
 from latticephys.phonons.dispersion import dispersion
@@ -69,3 +71,73 @@ def test_hcp_optical_modes_at_gamma():
     omega = dispersion(mg, bonds, [np.zeros(3)])[0]
     expected = np.sqrt([0, 0, 0, 2 * K * a**2 / (M * d2), 2 * K * a**2 / (M * d2), 3 * K * c**2 / (M * d2)])
     np.testing.assert_allclose(omega, np.sort(expected), atol=1e-12)
+
+
+def fcc(K, a=3.615, m=63.546):
+    crystal = Crystal(primitive_vectors("fcc", a), [[0.0, 0.0, 0.0]], [m], ["Cu"])
+    return crystal, neighbour_bonds(crystal, [K])
+
+
+def test_fcc_nearest_neighbours_at_x():
+    """fcc, central K to the 12 neighbours a/2 (+-1, +-1, 0) etc.: D = K/m sum_r (1 - cos q.r) e e^T. At
+    X = 2 pi/a (1, 0, 0) the 8 neighbours with x != 0 have q.r = +-pi, so D = diag(8, 4, 4) K / m:
+    omega_L^2 = 8 K / m, omega_T^2 = 4 K / m (twice)."""
+    K, m = 1.7, 63.546
+    crystal, bonds = fcc(K, m=m)
+    omega = dispersion(crystal, bonds, [special_points("fcc", crystal.vectors)["X"]])[0]
+    np.testing.assert_allclose(omega**2, [4 * K / m, 4 * K / m, 8 * K / m], rtol=1e-12)
+
+
+def test_fcc_transverse_branches_degenerate_on_symmetry_axes():
+    """Along the fourfold axis Γ-X and the threefold axis Γ-L the two transverse branches are degenerate by symmetry;
+    along the twofold axis Γ-K they split."""
+    crystal, bonds = fcc(1.0)
+    points = special_points("fcc", crystal.vectors)
+    for t in (0.25, 0.5, 0.75):
+        for label in ("X", "L"):
+            omega = dispersion(crystal, bonds, [t * points[label]])[0]
+            assert omega[1] - omega[0] < 1e-12 * omega[2]
+        omega = dispersion(crystal, bonds, [t * points["K"]])[0]
+        assert omega[1] - omega[0] > 0.01 * omega[2]
+
+
+def test_bcc_nearest_neighbours_floppy_along_gamma_n():
+    """bcc, central K1 to the 8 neighbours a/2 (+-1, +-1, +-1). For q = t (1, 1, 0) and polarization
+    (1, -1, 0) / sqrt(2) every bond has q.r = 0 (signs of x and y opposite) or is perpendicular to the polarization
+    (same signs), so this transverse branch is 0 on the whole line Γ-N; K2 to the 6 second neighbours stiffens it."""
+    crystal = Crystal(primitive_vectors("bcc", 2.87), [[0.0, 0.0, 0.0]], [55.845], ["Fe"])
+    n = special_points("bcc", crystal.vectors)["N"]
+    line = np.linspace(0.1, 1, 10)[:, None] * n
+    np.testing.assert_allclose(dispersion(crystal, neighbour_bonds(crystal, [1.0]), line)[:, 0], 0, atol=1e-12)
+    assert np.all(dispersion(crystal, neighbour_bonds(crystal, [1.0, 0.5]), line)[:, 0] > 0.01)
+
+
+def test_hcp_branches_pair_up_at_a():
+    """hcp is nonsymmorphic: its screw axis and glide plane map one layer onto the other with a shift c/2. At
+    A = (0, 0, pi / c), the zone face along c, these operations together with time reversal make every branch
+    twofold degenerate."""
+    mg = hcp(3.209, 5.211, [24.305] * 2, ["Mg"] * 2)
+    omega = dispersion(mg, neighbour_bonds(mg, [1.2, 0.7]), [special_points("hexagonal", mg.vectors)["A"]])[0]
+    np.testing.assert_allclose(omega[0::2], omega[1::2], rtol=1e-12)
+
+
+def test_rocksalt_nearest_neighbours_decouple_into_chains():
+    """Rocksalt with central K1 along the cube axes only: each Cartesian direction alpha is a diatomic chain with
+    [[2 K1 / m1, -2 K1 c / sqrt(m1 m2)], [., 2 K1 / m2]], c = cos(q_alpha a / 2). Its acoustic mode vanishes when
+    c = +-1: both TA along Γ-X and X-W, one along Γ-K; at Γ the three optical modes are degenerate (LO = TO)."""
+    a, K1, m1, m2 = 5.64, 1.5, 22.99, 35.45
+    crystal = rocksalt(a, [m1, m2], ["Na", "Cl"])
+    bonds = neighbour_bonds(crystal, [K1])
+    points = special_points("fcc", crystal.vectors)
+
+    lines = [(points["Γ"], points["X"], 2), (points["X"], points["W"], 2), (points["Γ"], points["K"], 1)]
+    for start, end, zeros in lines:
+        for t in (0.3, 0.6):
+            q = start + t * (end - start)
+            chains = [two_by_two(2 * K1, -2 * K1 * np.cos(q_alpha * a / 2), m1, m2) for q_alpha in q]
+            omega = dispersion(crystal, bonds, [q])[0]
+            np.testing.assert_allclose(omega, np.sort(np.concatenate(chains)), atol=1e-9)
+            assert np.sum(omega < 1e-9) == zeros
+
+    optical = dispersion(crystal, bonds, [np.zeros(3)])[0][3:]
+    np.testing.assert_allclose(optical, np.sqrt(2 * K1 * (1 / m1 + 1 / m2)), rtol=1e-12)

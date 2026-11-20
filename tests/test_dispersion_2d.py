@@ -5,7 +5,7 @@ from latticephys.lattice.bonds import neighbour_bonds, periodic_supercell
 from latticephys.lattice.bravais2d import primitive_vectors
 from latticephys.lattice.crystal import Crystal, embed
 from latticephys.lattice.reciprocal import k_path, q_grid, reciprocal_vectors, special_points
-from latticephys.lattice.structures import honeycomb, kagome, lieb
+from latticephys.lattice.structures import honeycomb, kagome, lieb, zigzag_ribbon
 from latticephys.phonons.dispersion import dispersion, group_velocities
 from latticephys.phonons.integrate import simulate
 from latticephys.phonons.modes import atom_weights, bloch_mode, mode_motion, mode_start, normal_modes, phonon_modes
@@ -243,3 +243,51 @@ def test_flat_layer_out_of_plane_weight_only_in_z_modes():
     z = weights[:, :, 2].sum(axis=1)
     np.testing.assert_allclose(np.sort(z), [0, 0, 0, 0, 1, 1], atol=1e-12)
     np.testing.assert_allclose(weights.sum(axis=(1, 2)), 1)
+
+
+def test_lieb_third_branch_vanishes_along_gamma_x():
+    """Nearest neighbours only, q = (q, 0): the Cu-O-Cu chains along y slide rigidly along y, which only turns the
+    bonds along x sideways (no first-order stretch), so besides the two free O modes a third branch is 0."""
+    crystal = lieb(4.0, [63.5, 16.0, 16.0], ["Cu", "O", "O"])
+    x = special_points("square", crystal.vectors)["X"]
+    omega = dispersion(crystal, neighbour_bonds(crystal, [1.0]), np.linspace(0.1, 1, 10)[:, None] * x)
+    np.testing.assert_allclose(omega[:, :3], 0, atol=1e-12)
+    assert np.all(omega[:, 3] > 0.01)
+
+
+def test_square_nearest_neighbours_have_no_shear_stiffness():
+    """Square lattice, central K to the 4 nearest neighbours: x and y decouple,
+    omega_alpha^2 = 2 K / m (1 - cos q_alpha a), so along Γ-X (q_y = 0) the transverse branch is 0."""
+    a, K, m = 2.5, 1.0, 12.0
+    crystal = Crystal(primitive_vectors("square", a), [[0.0, 0.0]], [m], ["C"])
+    points = special_points("square", crystal.vectors)
+    for q in (0.4 * points["X"], 0.4 * points["M"], [0.3, 0.7]):
+        expected = np.sort(np.sqrt(2 * K / m * (1 - np.cos(np.asarray(q) * a))))
+        np.testing.assert_allclose(dispersion(crystal, neighbour_bonds(crystal, [K]), [q])[0], expected, atol=1e-12)
+
+
+def test_graphene_nearest_neighbours_leave_a_zero_branch():
+    """Maxwell counting: 3 central springs per cell for 4 in-plane degrees of freedom leave one zero branch at every q;
+    second-neighbour springs remove it away from Γ."""
+    crystal = graphene()
+    qs = q_grid(crystal.vectors, 7)
+    np.testing.assert_allclose(dispersion(crystal, neighbour_bonds(crystal, [1.0]), qs)[:, 0], 0, atol=1e-12)
+    assert np.all(dispersion(crystal, neighbour_bonds(crystal, [1.0, 0.2]), qs[1:])[:, 0] > 0.01)
+
+
+def test_graphene_degeneracies_at_gamma_and_k():
+    """Sixfold symmetry: at Γ the two optical modes are degenerate (E2g); at K the threefold rotation gives one
+    degenerate pair (E'), the other two branches are single."""
+    crystal = graphene()
+    points = special_points("hexagonal", crystal.vectors)
+    gamma, k = dispersion(crystal, neighbour_bonds(crystal, [25.0, 5.0]), [points["Γ"], points["K"]])
+    assert gamma[3] - gamma[2] < 1e-12 * gamma[3]
+    assert np.sum(np.diff(k) < 1e-12 * k[3]) == 1
+
+
+def test_zigzag_ribbon_bends_quadratically():
+    """A zigzag ribbon has free edges: its lowest branch is the in-plane bending of the strip, omega ~ q^2,
+    so omega(2 dq) / omega(dq) -> 4."""
+    ribbon = zigzag_ribbon(2.46, 8, [12.011] * 2, ["C"] * 2)
+    omega = dispersion(ribbon, neighbour_bonds(ribbon, [25.0, 5.0]), [[0.01, 0.0], [0.02, 0.0]])
+    assert omega[1, 0] / omega[0, 0] == pytest.approx(4.0, rel=0.02)

@@ -43,7 +43,7 @@ plt.show()
 
 | | Functions |
 |---|---|
-| Structures: 5 + 14 Bravais lattices, honeycomb, kagome, Lieb, rocksalt, diamond, hcp, bilayers, layers in 3D | `Crystal`, `bravais2d/3d.primitive_vectors`, `lattice.structures`, `embed`, `plot_crystal` |
+| Structures: 5 + 14 Bravais lattices, honeycomb, zigzag ribbons, kagome, Lieb, rocksalt, diamond, hcp, bilayers, layers in 3D | `Crystal`, `bravais2d/3d.primitive_vectors`, `lattice.structures`, `embed`, `plot_crystal` |
 | Bonds to neighbour shells, central or (K_L, K_T) springs; supercells; Φ and Φ(q) | `neighbour_bonds`, `periodic_supercell`, `force_constants` |
 | Brillouin zone, special points, paths, grids | `special_points`, `k_path`, `q_grid`, `plot_brillouin_zone` |
 | Band structures, polarizations, mode character, group and sound velocities | `dispersion`, `phonon_modes`, `atom_weights`, `group_velocities`, `sound_velocities`, `plot_bands` (lines or coloured by weight) |

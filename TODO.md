@@ -25,4 +25,3 @@ Planned examples are in [`examples/IDEAS.md`](examples/IDEAS.md); the items belo
 - [ ] XYZ trajectory export (3D animation outside pygame)
 - [ ] extended spring model with pre-tension (strained lattices)
 - [ ] sparse force-constant matrices for systems beyond ~3000 atoms
-- [ ] ribbon / strip builder in the library if more ribbon examples follow (now in `examples/lattices_2d/nanoribbon.py`)

@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from latticephys.lattice.bonds import neighbour_bonds
-from latticephys.lattice.structures import diamond, hcp, honeycomb, kagome, lieb, rocksalt
+from latticephys.lattice.structures import diamond, hcp, honeycomb, kagome, lieb, rocksalt, zigzag_ribbon
 
 
 @pytest.mark.parametrize(
@@ -31,3 +31,19 @@ def test_hcp_neighbours():
 
     tall = hcp(a, 1.9 * a, [1.0] * 2, ["A"] * 2)
     assert len(neighbour_bonds(tall, [1.0])) == 6
+
+
+@pytest.mark.parametrize("rows", [1, 4])
+def test_zigzag_ribbon_bonds(rows):
+    """rows zigzag chains of graphene, periodic along x (p = 1): 2 rows atoms, the two edge atoms with 2 neighbours and
+    all others with 3, all at a / sqrt(3), so (3 * 2 rows - 2) / 2 = 3 rows - 1 nearest-neighbour bonds per cell."""
+    a = 2.46
+    ribbon = zigzag_ribbon(a, rows, [12.0, 14.0], ["B", "N"])
+    assert (ribbon.dim, ribbon.periodicity, len(ribbon.positions)) == (2, 1, 2 * rows)
+    assert list(ribbon.masses) == [12.0, 14.0] * rows and ribbon.names == ["B", "N"] * rows
+
+    bonds = neighbour_bonds(ribbon, [1.0])
+    assert len(bonds) == 3 * rows - 1
+    lengths = [np.linalg.norm(ribbon.bond_vector(mu, nu, n)) for mu, nu, n, _ in bonds]
+    np.testing.assert_allclose(lengths, a / np.sqrt(3))
+

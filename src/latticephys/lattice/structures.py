@@ -12,6 +12,20 @@ def honeycomb(a, masses, names):
     return Crystal(primitive_vectors("hexagonal", a), [[0.0, 0.0], [a / 2, a / (2 * np.sqrt(3))]], masses, names)
 
 
+def zigzag_ribbon(a, rows, masses, names):
+    """Zigzag ribbon of the honeycomb lattice: periodic along x with period a, rows zigzag chains across, free edges.
+
+    Chain j is honeycomb(a, ...) shifted by j a2 and folded into the cell; masses and names of the two sublattices
+    repeat on every chain (atoms 2 j and 2 j + 1).
+    """
+    height = a * np.sqrt(3) / 2
+    positions = []
+    for j in range(rows):
+        x = (j * a / 2) % a
+        positions += [[x, j * height], [(x + a / 2) % a, j * height + a / (2 * np.sqrt(3))]]
+    return Crystal([[a, 0.0]], positions, list(masses) * rows, list(names) * rows)
+
+
 def kagome(a, masses, names):
     """Kagome lattice: hexagonal lattice constant a, atoms at 0, a1 / 2 and a2 / 2."""
     vectors = primitive_vectors("hexagonal", a)
