@@ -13,8 +13,7 @@ neighbours only, omega = a/2 sqrt(K_T / m) q). In real graphene ZA is quadratic,
 omega ~ q^2: a rigid rotation of the sheet costs no energy, which transverse springs
 violate. Getting q^2 needs bending (angle) forces, not in this model.
 
-Spring constants are illustrative; they put LO/TO at Γ near the Raman G band
-(1582 cm^-1 ≈ 47.4 THz). Branches are coloured by their out-of-plane weight.
+Spring constants are illustrative. Branches are coloured by their out-of-plane weight.
 """
 
 import matplotlib.pyplot as plt

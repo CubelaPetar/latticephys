@@ -13,10 +13,9 @@ K_perp and K_par numerically to the Raman values
     breathing 81 cm^-1 (Lui et al., Nano Lett. 14, 4615 (2014)).
 
 For comparison it converts the published force constants per area alpha into springs
-per cell, K = alpha A_cell: alpha_par = 12.8e18 N/m^3 (Tan 2012) gives about 31 cm^-1,
-but alpha_perp = 106e18 N/m^3 (Wu et al., ACS Nano 9, 7440 (2015), fitted to thicker
-twisted samples) gives about 89 cm^-1, not the measured 81 (88.7 for rigid sheets, a bit
-less here as the sheets bend). The interlayer distance 3.356 Å is half the c axis of
+per cell, K = alpha A_cell, and prints the frequencies they give: alpha_par = 12.8e18 N/m^3
+(Tan 2012) and alpha_perp = 106e18 N/m^3 (Wu et al., ACS Nano 9, 7440 (2015), fitted to
+thicker twisted samples). The interlayer distance 3.356 Å is half the c axis of
 graphite (Trucano and Chen, Nature 258, 136 (1975)); no measurement for the bilayer was
 found. In this model it only sets the geometry, the springs are fitted. In-plane springs as in graphene_layer.py.
 Details: docs/research/bilayer-graphene-interlayer-modes.md.

@@ -6,8 +6,8 @@ At G = 3 b1 they scatter in phase: the acoustic branch is strong and the optical
 the atoms move against each other, vanish. Along Γ-M only longitudinal modes have Q . e != 0, so
 the transverse branches (dotted) are invisible everywhere.
 
-The extinction needs equal b / m of the two atoms; hBN (b / m of B and N differ by 8 %) is still
-99.5 % extinct at 3 b1. In-plane modes only, spring constants illustrative, as in phonons_2d.py.
+The extinction needs equal b / m of the two atoms. In-plane modes only, spring constants
+illustrative, as in phonons_2d.py.
 Scattering length: coherent neutron value of C from the NIST table (Sears 1992).
 """
 

@@ -3,9 +3,8 @@
 One atom per primitive cell, 12 nearest neighbours at a / sqrt(2), so 3 acoustic branches.
 At X = 2 pi/a (1, 0, 0) the model gives omega_L^2 = 8 K / m and omega_T^2 = 4 K / m, so
 nu_L / nu_T = sqrt(2) there. K is fitted to the measured longitudinal frequency at X,
-K = m omega_L(X)^2 / 8. Then TA at X comes out as measured, LA at L within 1 %, but TA at L
-about 6 % too high: real Cu has weaker forces out to further neighbours. Along Γ-X and Γ-L
-the two transverse branches are degenerate by symmetry; along Γ-K they split.
+K = m omega_L(X)^2 / 8; the example prints model and measured frequencies at X and L.
+Along Γ-X and Γ-L the two transverse branches are degenerate by symmetry; along Γ-K they split.
 
 Measured values (red points): room-temperature neutron scattering, most likely Svensson,
 Brockhouse and Rowe, Phys. Rev. 155, 619 (1967), as quoted by Savrasov and Savrasov,
@@ -13,9 +12,8 @@ Phys. Rev. B 54, 16487 (1996), Table I; secondary source, see docs/research/cu-p
 
 The DOS has van Hove peaks from flat parts of the branches near the zone boundary. The heat
 capacity plot compares C with the T^3 Debye law at low T; at high T C approaches 3 k_B per atom (Dulong-Petit).
-The finite q-grid has no modes below its smallest q != 0 (Γ is left out; lowest mode
-about 0.5 THz for GRID = 24), which cuts C off at the lowest temperatures; near 8 K the
-slope of log C against log T is still somewhat above 3.
+The finite q-grid has no modes below its smallest q != 0 (Γ is left out), which cuts C off
+at the lowest temperatures.
 """
 
 import matplotlib.pyplot as plt

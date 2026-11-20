@@ -3,8 +3,7 @@
 The ribbon is a crystal with one lattice vector in 2D (periodicity p = 1, dimension
 d = 2): periodic along x, free across. Its bands are plotted along Γ-X (q along x, X = pi/a)
 and coloured by the weight of each mode on the edge atoms. The lowest branch rises as q_x^2 (in-plane
-bending of the strip). Some modes carry most of their weight on the edges: with
-8 rows, up to about 70 % on the outer 25 % of the atoms.
+bending of the strip).
 """
 
 import matplotlib.pyplot as plt

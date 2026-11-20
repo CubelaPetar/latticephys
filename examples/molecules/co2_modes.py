@@ -1,7 +1,8 @@
 """Longitudinal normal modes of CO2 (O=C=O) as a linear spring model.
 
-Measured: symmetric stretch ≈ 1340 cm^-1 (seen as the Raman doublet 1285 / 1388 cm^-1
-due to Fermi resonance with the bending overtone), asymmetric stretch 2349 cm^-1.
+Measured, for comparison with the printed model frequencies: symmetric stretch ≈ 1340 cm^-1
+(seen as the Raman doublet 1285 / 1388 cm^-1 due to Fermi resonance with the bending
+overtone), asymmetric stretch 2349 cm^-1.
 """
 
 import numpy as np
